@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java Programs - Ganguly's</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="chapters.css">
+</head>
+<body>
+    <header>
+        <h1>Java Programs</h1>
+        <a href="index.html" class="nav-item back-btn">Back to Home</a>
+    </header>
+
+    <main class="container">
+        <div class="chapters-grid">
+            <a href="#" class="feature-card" onclick="showError('Coming soon!')">
+                <h3>Basic Java Programs</h3>
+                <p>Fundamental programming concepts and exercises</p>
+            </a>
+            <a href="#" class="feature-card" onclick="showError('Coming soon!')">
+                <h3>Array Programs</h3>
+                <p>Array manipulation and algorithms</p>
+            </a>
+            <a href="#" class="feature-card" onclick="showError('Coming soon!')">
+                <h3>String Programs</h3>
+                <p>String handling and text processing</p>
+            </a>
+            <a href="#" class="feature-card" onclick="showError('Coming soon!')">
+                <h3>Object-Oriented Programs</h3>
+                <p>Classes, objects, and OOP concepts</p>
+            </a>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Ganguly's Educational Notes. All rights reserved.</p>
+    </footer>
+
+    <div id="errorModal" class="error-modal">
+        <div class="error-modal-content">
+            <p id="errorMessage" class="error-message"></p>
+            <button onclick="closeErrorModal()" class="close-button">Close</button>
+        </div>
+    </div>
+    <script src="scripts.js"></script>
+</body>
+</html>
