@@ -186,13 +186,13 @@ footer {
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
-  justify-content: center; /* optional: centers the row */
+  justify-content: center;
 }
 
 .video-wrapper {
   position: relative;
-  flex: 1 1 300px;             /* responsive flex sizing */
-  aspect-ratio: 16 / 9;        /* modern, replaces padding hack */
+  flex: 1 1 300px;           /* default size per video */
+  aspect-ratio: 16 / 9;
   max-width: 100%;
   background: #000;
   border-radius: 10px;
@@ -203,8 +203,13 @@ footer {
   position: absolute;
   top: 0; left: 0;
   width: 100%;
-  height: 100%;                /* full height for proper display */
+  height: 100%;
   border: none;
 }
 
-
+/* ✅ Mobile responsiveness */
+@media screen and (max-width: 600px) {
+  .video-wrapper {
+    flex: 1 1 100%;          /* full width on small screens */
+  }
+}
