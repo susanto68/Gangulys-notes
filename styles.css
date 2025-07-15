@@ -191,7 +191,7 @@ footer {
 
 .video-wrapper {
   position: relative;
-  flex: 1 1 50%;           /* default size per video */
+  flex: 1 1 100%;           /* default size per video */
   aspect-ratio: 16 / 9;
   max-width: 100%;
   background: #000;
