@@ -180,3 +180,25 @@ footer {
     transform: translateY(-2px);
     box-shadow: 0 2px 8px rgba(33, 150, 243, 0.4);
 }
+.video-row {
+  display: flex;
+  gap: 16px;            /* spacing between videos */
+  flex-wrap: wrap;      /* wraps on small screens */
+}
+
+/* Each video container keeps 16:9 aspect ratio */
+.video-wrapper {
+  position: relative;
+  width: 320px;         /* adjust base width */
+  padding-bottom: 56.25%; /* 9/16 aspect */
+  background: #000;     /* black background behind loading iframe */
+  flex: 1 1 320px;      /* responsive flexibility */
+}
+
+/* The iframe fills the container */
+.video-wrapper iframe {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  border: none;
+}
