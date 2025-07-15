@@ -192,7 +192,7 @@ footer {
   width: 120px;         /* adjust base width */
   padding-bottom: 16.25%; /* 9/16 aspect */
   background: #000;     /* black background behind loading iframe */
-  flex: 1 1 320px;      /* responsive flexibility */
+  flex: 1 1 120px;      /* responsive flexibility */
 }
 
 /* The iframe fills the container */
