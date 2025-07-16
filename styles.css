@@ -184,9 +184,9 @@ footer {
 
 .video-row {
   display: flex;
-  flex-wrap: wrap;
   gap: 16px;
-  justify-content: center;
+  overflow-x: auto;
+  padding: 20px 0;
 }
 
 .video-wrapper {
