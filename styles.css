@@ -182,34 +182,48 @@ footer {
 }
 
 
-.video-row {
+.video-show {
   display: flex;
-  gap: 16px;
   overflow-x: auto;
+  gap: 16px;
   padding: 20px 0;
+
+  /* Enable horizontal scroll snapping */
+  scroll-snap-type: x mandatory;
+
+  /* Optional enhancements */
+  /* Hide scrollbar gracefully if desired */
+  scrollbar-width: none;         /* Firefox */
+  -ms-overflow-style: none;      /* IE 10+ */
+}
+.video-show::-webkit-scrollbar {
+  display: none;                 /* Safari/WebKit */
 }
 
 .video-wrapper {
   position: relative;
-  flex: 1 1 100%;           /* default size per video */
+  flex: 0 0 calc((100% - 2 * 16px) / 3);
   aspect-ratio: 16 / 9;
-  max-width: 100%;
   background: #000;
   border-radius: 10px;
   overflow: hidden;
+
+  /* Snap alignment per video */
+  scroll-snap-align: start;
 }
 
 .video-wrapper iframe {
   position: absolute;
-  top: 0; left: 0;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   border: none;
 }
 
-/* ✅ Mobile responsiveness */
+/* ✅ Mobile: image resizes seamlessly, still shows exactly 3 per view */
 @media screen and (max-width: 600px) {
   .video-wrapper {
-    flex: 1 1 100%;          /* full width on small screens */
+    /* The above `calc()` still ensures three items across, adjusting width */
   }
 }
