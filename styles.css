@@ -188,27 +188,29 @@ footer {
   gap: 16px;
   padding: 20px 0;
 
-  /* Enable horizontal scroll snapping */
+  /* Enable smooth scroll snapping horizontally */
   scroll-snap-type: x mandatory;
 
-  /* Optional enhancements */
-  /* Hide scrollbar gracefully if desired */
-  scrollbar-width: none;         /* Firefox */
-  -ms-overflow-style: none;      /* IE 10+ */
+  /* Hide default scrollbar while preserving scrollability */
+  scrollbar-width: none;       /* Firefox */
+  -ms-overflow-style: none;    /* IE 10+ */
 }
 .video-show::-webkit-scrollbar {
-  display: none;                 /* Safari/WebKit */
+  display: none;               /* Chrome, Safari, Edge */
 }
 
 .video-wrapper {
   position: relative;
+
+  /* Ensure exactly 3 items fit the view: no grow/shrink */
   flex: 0 0 calc((100% - 2 * 16px) / 3);
+
   aspect-ratio: 16 / 9;
   background: #000;
   border-radius: 10px;
   overflow: hidden;
 
-  /* Snap alignment per video */
+  /* Snap point alignment at the start of each item */
   scroll-snap-align: start;
 }
 
@@ -221,9 +223,9 @@ footer {
   border: none;
 }
 
-/* ✅ Mobile: image resizes seamlessly, still shows exactly 3 per view */
+/* === Responsive behavior: always shows 3 per view === */
 @media screen and (max-width: 600px) {
   .video-wrapper {
-    /* The above `calc()` still ensures three items across, adjusting width */
+    flex: 0 0 calc((100% - 2 * 16px) / 3);
   }
 }
