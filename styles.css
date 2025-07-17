@@ -184,33 +184,28 @@ footer {
 
 .video-show {
   display: flex;
+  flex-wrap: nowrap;      /* prevent vertical wrap */
   overflow-x: auto;
   gap: 16px;
   padding: 20px 0;
-
-  /* Enable smooth scroll snapping horizontally */
   scroll-snap-type: x mandatory;
 
-  /* Hide default scrollbar while preserving scrollability */
-  scrollbar-width: none;       /* Firefox */
-  -ms-overflow-style: none;    /* IE 10+ */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  min-width: 0;           /* allow shrink for flex children */
 }
 .video-show::-webkit-scrollbar {
-  display: none;               /* Chrome, Safari, Edge */
+  display: none;
 }
 
 .video-wrapper {
   position: relative;
-
-  /* Ensure exactly 3 items fit the view: no grow/shrink */
   flex: 0 0 calc((100% - 2 * 16px) / 3);
-
+  min-width: 0;           /* ensure it doesn't stretch vertically */
   aspect-ratio: 16 / 9;
   background: #000;
   border-radius: 10px;
   overflow: hidden;
-
-  /* Snap point alignment at the start of each item */
   scroll-snap-align: start;
 }
 
@@ -221,11 +216,4 @@ footer {
   width: 100%;
   height: 100%;
   border: none;
-}
-
-/* === Responsive behavior: always shows 3 per view === */
-@media screen and (max-width: 600px) {
-  .video-wrapper {
-    flex: 0 0 calc((100% - 2 * 16px) / 3);
-  }
 }
