@@ -59,22 +59,33 @@
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     const row = document.querySelector('.video-row');
-    let speed = 1; // pixels per 15ms; adjust for faster/slower scroll
+    let speed = 1;
+    let scrollInterval;
 
-    function autoScroll() {
-      if (row.scrollLeft >= row.scrollWidth - row.clientWidth) {
-        row.scrollLeft = 0; // reset when reaching end
-      } else {
-        row.scrollLeft += speed;
-      }
+    // Start auto-scroll
+    function startScroll() {
+      if (scrollInterval) return; // Avoid creating duplicates
+      scrollInterval = setInterval(() => {
+        if (row.scrollLeft >= row.scrollWidth - row.clientWidth) {
+          row.scrollLeft = 0;
+        } else {
+          row.scrollLeft += speed;
+        }
+      }, 15);
     }
 
-    // Scroll every 15ms for smooth effect:
-    const interval = setInterval(autoScroll, 15);
+    // Stop auto-scroll
+    function stopScroll() {
+      clearInterval(scrollInterval);
+      scrollInterval = null;
+    }
 
-    // Optional: pause on hover
-    row.addEventListener('mouseenter', () => clearInterval(interval));
-    row.addEventListener('mouseleave', () => setInterval(autoScroll, 15));
+    // Initialize scrolling
+    startScroll();
+
+    // Pause/Resume on hover
+    row.addEventListener('mouseenter', stopScroll);
+    row.addEventListener('mouseleave', startScroll);
   });
 </script>
 
