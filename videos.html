@@ -9,6 +9,32 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
 </head>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const row = document.querySelector('.video-row');
+    let speed = 1; // pixels per 15ms; adjust for faster/slower scroll
+
+    function autoScroll() {
+      if (row.scrollLeft >= row.scrollWidth - row.clientWidth) {
+        row.scrollLeft = 0; // reset when reaching end
+      } else {
+        row.scrollLeft += speed;
+      }
+    }
+
+    // Scroll every 15ms for smooth effect:
+    const interval = setInterval(autoScroll, 15);
+
+    // Optional: pause on hover
+    row.addEventListener('mouseenter', () => clearInterval(interval));
+    row.addEventListener('mouseleave', () => setInterval(autoScroll, 15));
+  });
+</script>
+
+
+
+
+    
 <body>
     <header>
         <h1>Educational Notes Portal</h1>
