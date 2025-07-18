@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Educational Notes - Ganguly's</title>
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="style.css" />
   <link rel="icon" href="/favicon.ico" type="image/x-icon" />
 </head>
 <body>
@@ -15,47 +15,37 @@
 
   <main class="container">
     <div class="video-row">
-      <!-- Video 1 -->
+      <!-- Videos embedded from your Drive links -->
       <div class="video-wrapper">
         <iframe src="https://drive.google.com/file/d/17Cc7Ag2Jr6JuoQ5vh7zzm16V8b_xvs0X/preview" title="Video 1" allowfullscreen></iframe>
       </div>
-      <!-- Video 2 -->
       <div class="video-wrapper">
         <iframe src="https://drive.google.com/file/d/1wGujQSioTHsdRHiogKnkTOn2qY4Vk_Bg/preview" title="Video 2" allowfullscreen></iframe>
       </div>
-      <!-- Video 3 -->
       <div class="video-wrapper">
         <iframe src="https://drive.google.com/file/d/1P6uwmad6bmmIbAm0DytzpdyjCHwBINTQ/preview" title="Video 3" allowfullscreen></iframe>
       </div>
-      <!-- Video 4 -->
       <div class="video-wrapper">
         <iframe src="https://drive.google.com/file/d/1etr0vOHdeVuZIMFJi48-yhVU2u0soYvI/preview" title="Video 4" allowfullscreen></iframe>
       </div>
-      <!-- Video 5 -->
       <div class="video-wrapper">
         <iframe src="https://drive.google.com/file/d/1uWe6CLx_pjX-iH0Fn9cO2w_zx46GcH8g/preview" title="Video 5" allowfullscreen></iframe>
       </div>
-      <!-- Video 6 -->
       <div class="video-wrapper">
         <iframe src="https://drive.google.com/file/d/1uwXS3IwS_L2nO29dA9mv4HUcovZERYyX/preview" title="Video 6" allowfullscreen></iframe>
       </div>
-      <!-- Video 7 -->
       <div class="video-wrapper">
         <iframe src="https://drive.google.com/file/d/1TqsCgp_vBTtkdxveuG7xozN-94ji7FB5/preview" title="Video 7" allowfullscreen></iframe>
       </div>
-      <!-- Video 8 -->
       <div class="video-wrapper">
         <iframe src="https://drive.google.com/file/d/1jQrEglPehtpSY3YBVZLPPsxTyjeOic3_/preview" title="Video 8" allowfullscreen></iframe>
       </div>
-      <!-- Video 9 -->
       <div class="video-wrapper">
         <iframe src="https://drive.google.com/file/d/1ektapnJ4a97NXzxrafWMlWaEeLCOhToF/preview" title="Video 9" allowfullscreen></iframe>
       </div>
-      <!-- Video 10 -->
       <div class="video-wrapper">
         <iframe src="https://drive.google.com/file/d/1ZUCzvdtNCZg_fKT1h6iDDaVTvyNYhmVW/preview" title="Video 10" allowfullscreen></iframe>
       </div>
-      <!-- Video 11 -->
       <div class="video-wrapper">
         <iframe src="https://drive.google.com/file/d/10aVdyBxq7l4vEyYU3a4_w5RmoMmLq57f/preview" title="Video 11" allowfullscreen></iframe>
       </div>
