@@ -15,7 +15,7 @@
   </header>
 
   <main class="container">
-    <div class="video-row" id="videoRow">
+    <div class="video-grid">
       <!-- Original videos -->
       <div class="video-wrapper"><iframe src="https://drive.google.com/file/d/17Cc7Ag2Jr6JuoQ5vh7zzm16V8b_xvs0X/preview" title="Video 1" allowfullscreen></iframe></div>
       <div class="video-wrapper"><iframe src="https://drive.google.com/file/d/1wGujQSioTHsdRHiogKnkTOn2qY4Vk_Bg/preview" title="Video 2" allowfullscreen></iframe></div>
@@ -28,45 +28,8 @@
       <div class="video-wrapper"><iframe src="https://drive.google.com/file/d/1ektapnJ4a97NXzxrafWMlWaEeLCOhToF/preview" title="Video 9" allowfullscreen></iframe></div>
       <div class="video-wrapper"><iframe src="https://drive.google.com/file/d/1ZUCzvdtNCZg_fKT1h6iDDaVTvyNYhmVW/preview" title="Video 10" allowfullscreen></iframe></div>
       <div class="video-wrapper"><iframe src="https://drive.google.com/file/d/10aVdyBxq7l4vEyYU3a4_w5RmoMmLq57f/preview" title="Video 11" allowfullscreen></iframe></div>
-
-      <!-- Duplicate videos for seamless scroll -->
-      <div class="video-wrapper"><iframe src="https://drive.google.com/file/d/17Cc7Ag2Jr6JuoQ5vh7zzm16V8b_xvs0X/preview" title="Video 1 copy" allowfullscreen></iframe></div>
-      <div class="video-wrapper"><iframe src="https://drive.google.com/file/d/1wGujQSioTHsdRHiogKnkTOn2qY4Vk_Bg/preview" title="Video 2 copy" allowfullscreen></iframe></div>
-      <div class="video-wrapper"><iframe src="https://drive.google.com/file/d/1P6uwmad6bmmIbAm0DytzpdyjCHwBINTQ/preview" title="Video 3 copy" allowfullscreen></iframe></div>
-      <div class="video-wrapper"><iframe src="https://drive.google.com/file/d/1etr0vOHdeVuZIMFJi48-yhVU2u0soYvI/preview" title="Video 4 copy" allowfullscreen></iframe></div>
-      <div class="video-wrapper"><iframe src="https://drive.google.com/file/d/1uWe6CLx_pjX-iH0Fn9cO2w_zx46GcH8g/preview" title="Video 5 copy" allowfullscreen></iframe></div>
-      <div class="video-wrapper"><iframe src="https://drive.google.com/file/d/1uwXS3IwS_L2nO29dA9mv4HUcovZERYyX/preview" title="Video 6 copy" allowfullscreen></iframe></div>
-      <div class="video-wrapper"><iframe src="https://drive.google.com/file/d/1TqsCgp_vBTtkdxveuG7xozN-94ji7FB5/preview" title="Video 7 copy" allowfullscreen></iframe></div>
-      <div class="video-wrapper"><iframe src="https://drive.google.com/file/d/1jQrEglPehtpSY3YBVZLPPsxTyjeOic3_/preview" title="Video 8 copy" allowfullscreen></iframe></div>
-      <div class="video-wrapper"><iframe src="https://drive.google.com/file/d/1ektapnJ4a97NXzxrafWMlWaEeLCOhToF/preview" title="Video 9 copy" allowfullscreen></iframe></div>
-      <div class="video-wrapper"><iframe src="https://drive.google.com/file/d/1ZUCzvdtNCZg_fKT1h6iDDaVTvyNYhmVW/preview" title="Video 10 copy" allowfullscreen></iframe></div>
-      <div class="video-wrapper"><iframe src="https://drive.google.com/file/d/10aVdyBxq7l4vEyYU3a4_w5RmoMmLq57f/preview" title="Video 11 copy" allowfullscreen></iframe></div>
     </div>
   </main>
-
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const row = document.getElementById('videoRow');
-      let speed = 1, interval;
-      function start() {
-        if (interval) return;
-        interval = setInterval(() => {
-          if (row.scrollLeft >= row.scrollWidth / 2) {
-            row.scrollLeft = 0;
-          } else {
-            row.scrollLeft += speed;
-          }
-        }, 15);
-      }
-      function stop() {
-        clearInterval(interval);
-        interval = null;
-      }
-      start();
-      row.addEventListener('mouseenter', stop);
-      row.addEventListener('mouseleave', start);
-    });
-  </script>
 
   <footer>
     <p>&copy; 2024 Ganguly's Educational Notes. All rights reserved.</p>
