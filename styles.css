@@ -16,7 +16,7 @@ header {
   color: white;
   text-align: center;
   padding: 2rem;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
   position: relative;
   overflow: hidden;
 }
@@ -54,7 +54,7 @@ header p {
   border-radius: 15px;
   backdrop-filter: blur(10px);
   box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-  padding-bottom: 4rem; /* space for footer */
+  padding-bottom: 4rem;
 }
 
 .video-row {
@@ -69,11 +69,10 @@ header p {
 }
 
 @keyframes marquee {
-  0%   { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
 }
 
-/* Pause on hover */
 .video-row:hover .inner {
   animation-play-state: paused;
 }
@@ -106,12 +105,8 @@ footer {
 }
 
 @media (max-width: 768px) {
-  header {
-    padding: 1.5rem;
-  }
-  header h1 {
-    font-size: 1.8rem;
-  }
+  header { padding: 1.5rem; }
+  header h1 { font-size: 1.8rem; }
   .video-wrapper {
     flex: 0 0 calc((100% - 16px) / 2);
   }
