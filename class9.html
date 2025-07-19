@@ -1,49 +1,138 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Class 9 Notes - Ganguly's</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="chapters.css">
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
-</head>
-<body>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="chapters.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  </head>
+  <body>
     <header>
-        <h1>Class 9 Notes</h1>
-        <a href="index.html" class="back-btn">Back to Home</a>
+      <h1>Class 9 Notes</h1>
+      <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Home</a>
     </header>
-<!--class 9 chapter 1:- https://drive.google.com/file/d/1j_yF1YjOZHY7NCeVp3wBCOSeXm-j2iGk/view?usp=drive_link-->
-<!--class 9 chapter 2:-    https://drive.google.com/file/d/1rma4FfzJqxyCYaP9-fKJlGMct7Y_qY01/view?usp=drive_link -->
-<!--class 9 chapter 3:-    https://drive.google.com/file/d/1iwujDQNboPVexF3IbFevsPKRO9JK1nFi/view?usp=drive_link -->
+    <!--class 9 chapter 1:- https://drive.google.com/file/d/1j_yF1YjOZHY7NCeVp3wBCOSeXm-j2iGk/view?usp=drive_link-->
+    <!--class 9 chapter 2:-    https://drive.google.com/file/d/1rma4FfzJqxyCYaP9-fKJlGMct7Y_qY01/view?usp=drive_link -->
+    <!--class 9 chapter 3:-    https://drive.google.com/file/d/1iwujDQNboPVexF3IbFevsPKRO9JK1nFi/view?usp=drive_link -->
     <main class="container">
-        <div class="chapters-grid">
-            <a href="https://drive.google.com/file/d/1j_yF1YjOZHY7NCeVp3wBCOSeXm-j2iGk/view" class="chapter-btn" onclick="handlePDFClick(event, 'https://drive.google.com/file/d/1j_yF1YjOZHY7NCeVp3wBCOSeXm-j2iGk/view')"> <h2>Chapter 1:</h2> <br> <h4>Principles of Object-Oriented Programming</h4> </a>
-            <a href="https://drive.google.com/file/d/1rma4FfzJqxyCYaP9-fKJlGMct7Y_qY01/view" class="chapter-btn" onclick="handlePDFClick(event, 'https://drive.google.com/file/d/1rma4FfzJqxyCYaP9-fKJlGMct7Y_qY01/view')"> <h2>Chapter 2:</h2> <br> <h4>Introduction to Java</h4> </a>
-            <a href="https://drive.google.com/file/d/1iwujDQNboPVexF3IbFevsPKRO9JK1nFi/view" class="chapter-btn" onclick="handlePDFClick(event, 'https://drive.google.com/file/d/1iwujDQNboPVexF3IbFevsPKRO9JK1nFi/view')"> <h2>Chapter 3:</h2> <br> <h4>Elementary Concept of Objects and Class</h4> </a>
-            <a href="PDFS/CLASS 9/CLASS 9 CH-1.pdf" class="chapter-btn" onclick="handlePDFClick(event, 'PDFS/CLASS 9/CLASS 9 CH-1.pdf')">Chapter 4: Under Construction<br> <marquee direction= "left" behaviour="scroll"> You will get it soon </marquee> </a>
-            <a href="PDFS/CLASS 9/CLASS 9 CH-2.pdf" class="chapter-btn" onclick="handlePDFClick(event, 'PDFS/CLASS 9/CLASS 9 CH-2.pdf')">Chapter 5: Under Construction<br> <marquee direction= "left" behaviour="scroll">You will get it soon </marquee> </a>
-            <a href="PDFS/CLASS 9/CLASS 9 CH-3.pdf" class="chapter-btn" onclick="handlePDFClick(event, 'PDFS/CLASS 9/CLASS 9 CH-3.pdf')">Chapter 6: Under Construction<br> <marquee direction= "left" behaviour="scroll">You will get it soon </marquee> </a>
-            <a href="PDFS/CLASS 9/CLASS 9 CH-4.pdf" class="chapter-btn" onclick="handlePDFClick(event, 'PDFS/CLASS 9/CLASS 9 CH-4.pdf')">Chapter 7: Under Construction<br> <marquee direction= "left" behaviour="scroll">You will get it soon </marquee> </a>
-            <a href="PDFS/CLASS 9/CLASS 9 CH-1.pdf" class="chapter-btn" onclick="handlePDFClick(event, 'PDFS/CLASS 9/CLASS 9 CH-1.pdf')">Chapter 8: Under Construction<br> <marquee direction= "left" behaviour="scroll"> You will get it soon </marquee> </a>
-            <a href="PDFS/CLASS 9/CLASS 9 CH-2.pdf" class="chapter-btn" onclick="handlePDFClick(event, 'PDFS/CLASS 9/CLASS 9 CH-2.pdf')">Chapter 9: Under Construction<br> <marquee direction= "left" behaviour="scroll">You will get it soon </marquee> </a>
-            <a href="PDFS/CLASS 9/CLASS 9 CH-3.pdf" class="chapter-btn" onclick="handlePDFClick(event, 'PDFS/CLASS 9/CLASS 9 CH-3.pdf')">Chapter 10: Under Construction<br> <marquee direction= "left" behaviour="scroll">You will get it soon </marquee> </a>
-            <a href="PDFS/CLASS 9/CLASS 9 CH-4.pdf" class="chapter-btn" onclick="handlePDFClick(event, 'PDFS/CLASS 9/CLASS 9 CH-4.pdf')">Chapter 11: Under Construction<br> <marquee direction= "left" behaviour="scroll">You will get it soon </marquee> </a>
-        </div>
+      <div class="chapters-grid">
+        <a
+          href="https://drive.google.com/file/d/1j_yF1YjOZHY7NCeVp3wBCOSeXm-j2iGk/view"
+          class="chapter-btn"
+          onclick="handlePDFClick(event, 'https://drive.google.com/file/d/1j_yF1YjOZHY7NCeVp3wBCOSeXm-j2iGk/view')"
+        ><i class="fas fa-book-open"></i>
+          <h2>Chapter 1:</h2>
+          <br />
+          <h4>Principles of Object-Oriented Programming</h4>
+        </a>
+        <a
+          href="https://drive.google.com/file/d/1rma4FfzJqxyCYaP9-fKJlGMct7Y_qY01/view"
+          class="chapter-btn"
+          onclick="handlePDFClick(event, 'https://drive.google.com/file/d/1rma4FfzJqxyCYaP9-fKJlGMct7Y_qY01/view')"
+        ><i class="fas fa-book-open"></i>
+          <h2>Chapter 2:</h2>
+          <br />
+          <h4>Introduction to Java</h4>
+        </a>
+        <a
+          href="https://drive.google.com/file/d/1iwujDQNboPVexF3IbFevsPKRO9JK1nFi/view"
+          class="chapter-btn"
+          onclick="handlePDFClick(event, 'https://drive.google.com/file/d/1iwujDQNboPVexF3IbFevsPKRO9JK1nFi/view')"
+        ><i class="fas fa-book-open"></i>
+          <h2>Chapter 3:</h2>
+          <br />
+          <h4>Elementary Concept of Objects and Class</h4>
+        </a>
+        <a
+          href="PDFS/CLASS 9/CLASS 9 CH-1.pdf"
+          class="chapter-btn"
+          onclick="handlePDFClick(event, 'PDFS/CLASS 9/CLASS 9 CH-1.pdf')"
+          ><i class="fas fa-tools"></i> Chapter 4: Under Construction<br />
+          <marquee direction="left" behaviour="scroll">
+            You will get it soon
+          </marquee>
+        </a>
+        <a
+          href="PDFS/CLASS 9/CLASS 9 CH-2.pdf"
+          class="chapter-btn"
+          onclick="handlePDFClick(event, 'PDFS/CLASS 9/CLASS 9 CH-2.pdf')"
+          ><i class="fas fa-tools"></i> Chapter 5: Under Construction<br />
+          <marquee direction="left" behaviour="scroll"
+            >You will get it soon
+          </marquee>
+        </a>
+        <a
+          href="PDFS/CLASS 9/CLASS 9 CH-3.pdf"
+          class="chapter-btn"
+          onclick="handlePDFClick(event, 'PDFS/CLASS 9/CLASS 9 CH-3.pdf')"
+          ><i class="fas fa-tools"></i> Chapter 6: Under Construction<br />
+          <marquee direction="left" behaviour="scroll"
+            >You will get it soon
+          </marquee>
+        </a>
+        <a
+          href="PDFS/CLASS 9/CLASS 9 CH-4.pdf"
+          class="chapter-btn"
+          onclick="handlePDFClick(event, 'PDFS/CLASS 9/CLASS 9 CH-4.pdf')"
+          ><i class="fas fa-tools"></i> Chapter 7: Under Construction<br />
+          <marquee direction="left" behaviour="scroll"
+            >You will get it soon
+          </marquee>
+        </a>
+        <a
+          href="PDFS/CLASS 9/CLASS 9 CH-1.pdf"
+          class="chapter-btn"
+          onclick="handlePDFClick(event, 'PDFS/CLASS 9/CLASS 9 CH-1.pdf')"
+          ><i class="fas fa-tools"></i> Chapter 8: Under Construction<br />
+          <marquee direction="left" behaviour="scroll">
+            You will get it soon
+          </marquee>
+        </a>
+        <a
+          href="PDFS/CLASS 9/CLASS 9 CH-2.pdf"
+          class="chapter-btn"
+          onclick="handlePDFClick(event, 'PDFS/CLASS 9/CLASS 9 CH-2.pdf')"
+          >Chapter 9: Under Construction<br />
+          <marquee direction="left" behaviour="scroll"
+            >You will get it soon
+          </marquee>
+        </a>
+        <a
+          href="PDFS/CLASS 9/CLASS 9 CH-3.pdf"
+          class="chapter-btn"
+          onclick="handlePDFClick(event, 'PDFS/CLASS 9/CLASS 9 CH-3.pdf')"
+          >Chapter 10: Under Construction<br />
+          <marquee direction="left" behaviour="scroll"
+            >You will get it soon
+          </marquee>
+        </a>
+        <a
+          href="PDFS/CLASS 9/CLASS 9 CH-4.pdf"
+          class="chapter-btn"
+          onclick="handlePDFClick(event, 'PDFS/CLASS 9/CLASS 9 CH-4.pdf')"
+          >Chapter 11: Under Construction<br />
+          <marquee direction="left" behaviour="scroll"
+            >You will get it soon
+          </marquee>
+        </a>
+      </div>
     </main>
 
     <!-- Error Modal -->
     <div id="errorModal" class="error-modal">
-        <div class="error-modal-content">
-            <p id="errorMessage" class="error-message"></p>
-            <button onclick="closeErrorModal()" class="close-button">Close</button>
-        </div>
+      <div class="error-modal-content">
+        <p id="errorMessage" class="error-message"></p>
+        <button onclick="closeErrorModal()" class="close-button">Close</button>
+      </div>
     </div>
 
-    <footer style="font-size: 12px; padding: 5px; text-align: center;">
-        <p>&copy; 2024 Ganguly's Educational Notes. All rights reserved.</p>
+    <footer style="font-size: 12px; padding: 5px; text-align: center">
+      <p>&copy; 2024 Ganguly's Educational Notes. All rights reserved.</p>
     </footer>
 
     <script src="scripts.js"></script>
-</body>
+  </body>
 </html>
