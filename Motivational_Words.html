@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Ganguly's Motivation Hub</title>
   <style>
+    /* Base Reset */
     * {
       margin: 0;
       padding: 0;
@@ -13,16 +14,18 @@
 
     body {
       height: 100vh;
+      background: linear-gradient(135deg, #89f7fe, #66a6ff);
+      overflow: hidden;
+      font-family: 'Segoe UI', sans-serif;
       display: flex;
       flex-direction: column;
-      justify-content: center;
       align-items: center;
-      background: linear-gradient(135deg, #f6d365, #fda085);
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      overflow: hidden;
+      justify-content: center;
       text-align: center;
+      position: relative;
     }
 
+    /* Logo and Title */
     header {
       position: absolute;
       top: 20px;
@@ -30,6 +33,7 @@
       flex-direction: column;
       align-items: center;
       gap: 10px;
+      z-index: 2;
     }
 
     header img {
@@ -41,47 +45,35 @@
 
     header h1 {
       font-size: 1.5rem;
-      color: #333;
-      background: rgba(255, 255, 255, 0.4);
-      padding: 6px 18px;
+      background: rgba(255, 255, 255, 0.3);
+      padding: 8px 20px;
       border-radius: 12px;
-      backdrop-filter: blur(4px);
+      backdrop-filter: blur(5px);
+      color: #111;
     }
 
+    /* Motivator Box */
     .motivator {
-      text-align: center;
-      padding: 30px;
-      max-width: 90%;
+      padding: 40px;
       background: rgba(255, 255, 255, 0.2);
-      border-radius: 20px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-      backdrop-filter: blur(8px);
+      border-radius: 25px;
+      border: 4px double rgba(255, 255, 255, 0.5);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(12px);
+      z-index: 2;
+      max-width: 90%;
     }
 
     .rainbow-text {
-      font-size: 1.8rem;
+      font-size: 2.2rem;
       font-weight: bold;
       background: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet);
       background-size: 400%;
       background-clip: text;
       -webkit-background-clip: text;
       color: transparent;
-      animation: rainbow 4s ease infinite;
+      animation: rainbow 4s linear infinite;
       transition: opacity 1s ease-in-out;
-    }
-
-    .hindi-text {
-      font-size: 1.2rem;
-      color: #222;
-      margin-top: 8px;
-    }
-
-    .author {
-      margin-top: 10px;
-      font-size: 1rem;
-      color: #222;
-      font-style: italic;
-      opacity: 0.8;
     }
 
     @keyframes rainbow {
@@ -89,71 +81,96 @@
       100% { background-position: 100% }
     }
 
-    .fade {
-      opacity: 0;
-      transition: opacity 1s ease-in-out;
+    .hindi-text {
+      margin-top: 15px;
+      font-size: 1.6rem;
+      color: #222;
+      font-family: 'Noto Sans Devanagari', sans-serif;
     }
 
-    .show {
-      opacity: 1;
+    .author {
+      margin-top: 15px;
+      font-size: 1.1rem;
+      font-style: italic;
+      color: #222;
+      opacity: 0.8;
     }
 
+    /* Bubble Background */
+    .bubble {
+      position: absolute;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #fff, transparent);
+      opacity: 0.2;
+      animation: float 20s infinite ease-in-out;
+    }
+
+    @keyframes float {
+      from { transform: translateY(100vh) scale(1); }
+      to { transform: translateY(-100vh) scale(1.2); }
+    }
+
+    /* Music Button */
     .controls {
       position: absolute;
       bottom: 20px;
-      display: flex;
-      gap: 10px;
+      z-index: 2;
     }
 
     .btn {
-      padding: 8px 16px;
+      padding: 10px 20px;
+      background: rgba(255, 255, 255, 0.6);
       border: none;
-      background: #ffffffaa;
-      color: #333;
       border-radius: 8px;
-      cursor: pointer;
       font-weight: bold;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-      transition: background 0.3s;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
 
     .btn:hover {
-      background: #ffffff;
+      background: #fff;
     }
 
-    @media (max-width: 500px) {
-      .rainbow-text {
-        font-size: 1.3rem;
-      }
+    /* Bubble Sizes */
+    .bubble1 { width: 60px; height: 60px; left: 10%; animation-duration: 25s; }
+    .bubble2 { width: 40px; height: 40px; left: 25%; animation-duration: 18s; }
+    .bubble3 { width: 80px; height: 80px; left: 40%; animation-duration: 30s; }
+    .bubble4 { width: 30px; height: 30px; left: 60%; animation-duration: 15s; }
+    .bubble5 { width: 50px; height: 50px; left: 75%; animation-duration: 22s; }
 
-      .hindi-text {
-        font-size: 1rem;
-      }
-
-      .author {
-        font-size: 0.9rem;
-      }
-
-      header h1 {
-        font-size: 1.1rem;
-      }
+    @media (max-width: 600px) {
+      .rainbow-text { font-size: 1.6rem; }
+      .hindi-text { font-size: 1.2rem; }
+      .author { font-size: 1rem; }
     }
   </style>
+
+  <!-- Load Hindi font -->
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari&display=swap" rel="stylesheet">
 </head>
 <body>
 
+  <!-- Bubbles -->
+  <div class="bubble bubble1"></div>
+  <div class="bubble bubble2"></div>
+  <div class="bubble bubble3"></div>
+  <div class="bubble bubble4"></div>
+  <div class="bubble bubble5"></div>
+
+  <!-- Header -->
   <header>
-    <!-- 🔁 Replace this with your actual logo -->
     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_2015_logo.svg/320px-Google_2015_logo.svg.png" alt="Logo">
     <h1>Ganguly's Student Motivation Hub</h1>
   </header>
 
+  <!-- Motivational Content -->
   <div class="motivator">
     <div id="quote" class="rainbow-text"></div>
     <div id="hindi" class="hindi-text"></div>
     <div id="author" class="author"></div>
   </div>
 
+  <!-- Music Controls -->
   <div class="controls">
     <button class="btn" onclick="toggleMusic()">🔊 Toggle Music</button>
   </div>
@@ -161,9 +178,10 @@
   <!-- Background Music -->
   <audio id="bg-music" loop autoplay>
     <source src="https://cdn.pixabay.com/download/audio/2023/01/18/audio_c2b1e7e95e.mp3?filename=inspiration-126153.mp3" type="audio/mp3">
-    Your browser does not support the audio tag.
+    Your browser does not support the audio element.
   </audio>
 
+  <!-- Script -->
   <script>
     const quotes = [
       {
@@ -232,7 +250,6 @@
         quoteEl.textContent = quotes[index].en;
         hindiEl.textContent = quotes[index].hi;
         authorEl.textContent = `— ${quotes[index].author}`;
-
         quoteEl.classList.add("show");
         hindiEl.classList.add("show");
         authorEl.classList.add("show");
@@ -244,14 +261,9 @@
     showQuote();
     setInterval(showQuote, 6000);
 
-    // Music toggle
-    const music = document.getElementById('bg-music');
     function toggleMusic() {
-      if (music.paused) {
-        music.play();
-      } else {
-        music.pause();
-      }
+      const music = document.getElementById("bg-music");
+      music.paused ? music.play() : music.pause();
     }
   </script>
 
