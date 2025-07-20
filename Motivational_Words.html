@@ -3,33 +3,68 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Motivational Typing Animation</title>
+  <title>Student Motivation</title>
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: 'Courier New', monospace;
-      background-color: #f0f8ff;
+      height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
-      margin: 0;
+      background: linear-gradient(135deg, #74ebd5, #ACB6E5);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      overflow: hidden;
     }
 
-    .typing-text {
-      font-size: 24px;
-      border-right: 2px solid #3498db;
-      white-space: nowrap;
-      overflow: hidden;
-      color: #2c3e50;
+    .motivator {
+      text-align: center;
+      padding: 20px;
+      max-width: 90%;
+    }
+
+    .rainbow-text {
+      font-size: 2rem;
+      font-weight: bold;
+      background: linear-gradient(
+        90deg,
+        red, orange, yellow, green, blue, indigo, violet
+      );
+      background-size: 400%;
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      animation: rainbow 4s ease infinite;
+      transition: opacity 1s ease-in-out;
+    }
+
+    @keyframes rainbow {
+      0% { background-position: 0% }
+      100% { background-position: 100% }
+    }
+
+    .fade {
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+    }
+
+    .show {
+      opacity: 1;
     }
   </style>
 </head>
 <body>
 
-  <h2 class="typing-text" id="text"></h2>
+  <div class="motivator">
+    <div id="quote" class="rainbow-text"></div>
+  </div>
 
   <script>
-    const messages = [
+    const quotes = [
       "Believe in yourself — every expert was once a beginner.",
       "Dream big, work hard, and never give up.",
       "Your effort today is an investment in your tomorrow.",
@@ -42,40 +77,21 @@
       "Be proud of how far you’ve come."
     ];
 
-    let i = 0;
-    let j = 0;
-    let currentText = '';
-    let isDeleting = false;
-    const speed = 100;
-    const target = document.getElementById('text');
+    let index = 0;
+    const quoteEl = document.getElementById("quote");
 
-    function type() {
-      const fullText = messages[i];
-      
-      if (isDeleting) {
-        currentText = fullText.substring(0, currentText.length - 1);
-      } else {
-        currentText = fullText.substring(0, currentText.length + 1);
-      }
-
-      target.textContent = currentText;
-
-      let typingSpeed = isDeleting ? speed / 2 : speed;
-
-      if (!isDeleting && currentText === fullText) {
-        typingSpeed = 2000; // Pause before deleting
-        isDeleting = true;
-      } else if (isDeleting && currentText === '') {
-        isDeleting = false;
-        i = (i + 1) % messages.length;
-        typingSpeed = 1000; // Pause before typing next
-      }
-
-      setTimeout(type, typingSpeed);
+    function showQuote() {
+      quoteEl.classList.remove("show");
+      setTimeout(() => {
+        quoteEl.textContent = quotes[index];
+        quoteEl.classList.add("show");
+        index = (index + 1) % quotes.length;
+      }, 500);
     }
 
-    // Start the typing effect
-    type();
+    // Start showing quotes
+    showQuote();
+    setInterval(showQuote, 4000);
   </script>
 
 </body>
