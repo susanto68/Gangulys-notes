@@ -99,9 +99,9 @@
     .bubble {
       position: absolute;
       border-radius: 50%;
-      background: radial-gradient(circle at 30% 30%, #fff, transparent);
-      opacity: 0.2;
-      animation: float 12s infinite ease-in-out;
+      opacity: 0.4;
+      animation: float 8s infinite ease-in-out;
+      mix-blend-mode: screen;
     }
 
     @keyframes float {
@@ -109,33 +109,13 @@
       to { transform: translateY(-100vh) scale(1.4); }
     }
 
-    .controls {
-      position: absolute;
-      bottom: 20px;
-      z-index: 2;
-    }
-
-    .btn {
-      padding: 10px 20px;
-      background: rgba(255, 255, 255, 0.6);
-      border: none;
-      border-radius: 8px;
-      font-weight: bold;
-      cursor: pointer;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-
-    .btn:hover {
-      background: #fff;
-    }
-
-    .bubble1 { width: 60px; height: 60px; left: 10%; animation-duration: 14s; }
-    .bubble2 { width: 40px; height: 40px; left: 25%; animation-duration: 10s; }
-    .bubble3 { width: 80px; height: 80px; left: 40%; animation-duration: 20s; }
-    .bubble4 { width: 30px; height: 30px; left: 60%; animation-duration: 9s; }
-    .bubble5 { width: 50px; height: 50px; left: 75%; animation-duration: 12s; }
-    .bubble6 { width: 35px; height: 35px; left: 85%; animation-duration: 11s; }
-    .bubble7 { width: 55px; height: 55px; left: 5%; animation-duration: 16s; }
+    .bubble1 { width: 60px; height: 60px; left: 10%; animation-duration: 7s; background: radial-gradient(circle, red, transparent); }
+    .bubble2 { width: 40px; height: 40px; left: 25%; animation-duration: 5.5s; background: radial-gradient(circle, orange, transparent); }
+    .bubble3 { width: 80px; height: 80px; left: 40%; animation-duration: 6.2s; background: radial-gradient(circle, yellow, transparent); }
+    .bubble4 { width: 30px; height: 30px; left: 60%; animation-duration: 4.8s; background: radial-gradient(circle, green, transparent); }
+    .bubble5 { width: 50px; height: 50px; left: 75%; animation-duration: 6.7s; background: radial-gradient(circle, blue, transparent); }
+    .bubble6 { width: 35px; height: 35px; left: 85%; animation-duration: 5s; background: radial-gradient(circle, indigo, transparent); }
+    .bubble7 { width: 55px; height: 55px; left: 5%; animation-duration: 7.2s; background: radial-gradient(circle, violet, transparent); }
 
     @media (max-width: 600px) {
       .rainbow-text { font-size: 1.6rem; }
@@ -144,7 +124,6 @@
     }
   </style>
 
-  <!-- Hindi font -->
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -160,7 +139,7 @@
 
   <!-- Header -->
   <header>
-    <img src="https://cdn-icons-png.flaticon.com/512/616/616408.png" alt="Logo">
+    <img src="https://cdn-icons-png.flaticon.com/512/616/616408.png" alt="Star Icon">
     <h1><span style="font-weight: bold;">Udaan – उड़ान</span><br>
     <span style="font-size: 1rem; font-style: italic;">A Flight Towards Your Dreams</span></h1>
   </header>
@@ -172,17 +151,7 @@
     <div id="author" class="author"></div>
   </div>
 
-  <!-- Music Controls -->
-  <div class="controls">
-    <button class="btn" onclick="toggleMusic()">🔊 Toggle Music</button>
-  </div>
-
-  <!-- Music -->
-  <audio id="bg-music" loop autoplay>
-    <source src="https://cdn.pixabay.com/download/audio/2023/01/18/audio_c2b1e7e95e.mp3?filename=inspiration-126153.mp3" type="audio/mp3">
-  </audio>
-
-  <!-- Quotes Script -->
+  <!-- Script -->
   <script>
     const quotes = [
       {
@@ -261,12 +230,6 @@
 
     showQuote();
     setInterval(showQuote, 6000);
-
-    function toggleMusic() {
-      const music = document.getElementById("bg-music");
-      music.paused ? music.play() : music.pause();
-    }
   </script>
 </body>
 </html>
-
