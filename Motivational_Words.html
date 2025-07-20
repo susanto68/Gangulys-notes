@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Typing Animation</title>
+  <title>Motivational Typing Animation</title>
   <style>
     body {
       font-family: 'Courier New', monospace;
@@ -16,47 +16,67 @@
     }
 
     .typing-text {
+      font-size: 24px;
+      border-right: 2px solid #3498db;
       white-space: nowrap;
       overflow: hidden;
-      border-right: 3px solid #3498db;
-      font-size: 24px;
-      color: #333;
-      width: 0;
-      animation: typing 4s steps(40, end) forwards, blink 0.75s step-end infinite;
-    }
-
-    @keyframes typing {
-      from { width: 0; }
-      to { width: 100%; }
-    }
-
-    @keyframes blink {
-      from, to { border-color: transparent; }
-      50% { border-color: #3498db; }
+      color: #2c3e50;
     }
   </style>
 </head>
 <body>
 
-  <h2 class="typing-text">"1. Believe in yourself — every expert was once a beginner."<br>
+  <h2 class="typing-text" id="text"></h2>
 
-"2. Dream big, work hard, and never give up."<br>
+  <script>
+    const messages = [
+      "Believe in yourself — every expert was once a beginner.",
+      "Dream big, work hard, and never give up.",
+      "Your effort today is an investment in your tomorrow.",
+      "Don’t wait for opportunity. Create it.",
+      "Success is being better than you were yesterday.",
+      "You are capable of amazing things — just keep going.",
+      "Mistakes are proof that you are trying.",
+      "Education is your superpower.",
+      "The only limit is your own mindset.",
+      "Be proud of how far you’ve come."
+    ];
 
-"3. Your effort today is an investment in your tomorrow."<br>
+    let i = 0;
+    let j = 0;
+    let currentText = '';
+    let isDeleting = false;
+    const speed = 100;
+    const target = document.getElementById('text');
 
-"4. Don’t wait for opportunity. Create it."<br>
+    function type() {
+      const fullText = messages[i];
+      
+      if (isDeleting) {
+        currentText = fullText.substring(0, currentText.length - 1);
+      } else {
+        currentText = fullText.substring(0, currentText.length + 1);
+      }
 
-"5. Success is not about being the best. It’s about being better than you were yesterday."<br>
+      target.textContent = currentText;
 
-"6. You are capable of amazing things — just keep going."<br>
+      let typingSpeed = isDeleting ? speed / 2 : speed;
 
-"7. Mistakes are proof that you are trying."<br>
+      if (!isDeleting && currentText === fullText) {
+        typingSpeed = 2000; // Pause before deleting
+        isDeleting = true;
+      } else if (isDeleting && currentText === '') {
+        isDeleting = false;
+        i = (i + 1) % messages.length;
+        typingSpeed = 1000; // Pause before typing next
+      }
 
-"8. Education is the most powerful weapon you can use to change the world."<br>
+      setTimeout(type, typingSpeed);
+    }
 
-"9. The only limit to your achievement is your own mindset."<br>
-
-"10 Be proud of how far you’ve come, and have faith in how far you can go."<br> </h2>
+    // Start the typing effect
+    type();
+  </script>
 
 </body>
 </html>
