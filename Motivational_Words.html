@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Typing Animation</title>
+  <style>
+    body {
+      font-family: 'Courier New', monospace;
+      background-color: #f0f8ff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .typing-text {
+      white-space: nowrap;
+      overflow: hidden;
+      border-right: 3px solid #3498db;
+      font-size: 24px;
+      color: #333;
+      width: 0;
+      animation: typing 4s steps(40, end) forwards, blink 0.75s step-end infinite;
+    }
+
+    @keyframes typing {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+
+    @keyframes blink {
+      from, to { border-color: transparent; }
+      50% { border-color: #3498db; }
+    }
+  </style>
+</head>
+<body>
+
+  <h2 class="typing-text">"1. Believe in yourself — every expert was once a beginner."<br>
+
+"2. Dream big, work hard, and never give up."<br>
+
+"3. Your effort today is an investment in your tomorrow."<br>
+
+"4. Don’t wait for opportunity. Create it."<br>
+
+"5. Success is not about being the best. It’s about being better than you were yesterday."<br>
+
+"6. You are capable of amazing things — just keep going."<br>
+
+"7. Mistakes are proof that you are trying."<br>
+
+"8. Education is the most powerful weapon you can use to change the world."<br>
+
+"9. The only limit to your achievement is your own mindset."<br>
+
+"10 Be proud of how far you’ve come, and have faith in how far you can go."<br> </h2>
+
+</body>
+</html>
