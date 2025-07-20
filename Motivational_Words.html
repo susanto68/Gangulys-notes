@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Udaan – उड़ान | A Flight Towards Your Dreams</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      height: 100vh;
+      background: linear-gradient(135deg, #89f7fe, #66a6ff);
+      overflow: hidden;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+      border: 8px solid rgba(255, 255, 255, 0.3);
+      border-radius: 20px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.2);
+    }
+
+    header {
+      position: absolute;
+      top: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      z-index: 2;
+    }
+
+    #bird {
+      position: absolute;
+      top: 10px;
+      left: 0;
+      animation: birdfly 10s linear infinite;
+      z-index: 2;
+    }
+
+    @keyframes birdfly {
+      0% { left: -100px; top: 20px; }
+      50% { left: 50vw; top: 10px; }
+      100% { left: 110vw; top: 30px; }
+    }
+
+    header h1 {
+      font-size: 1.6rem;
+      background: rgba(255, 255, 255, 0.3);
+      padding: 10px 24px;
+      border-radius: 12px;
+      backdrop-filter: blur(5px);
+      color: #111;
+      margin-top: 60px;
+    }
+
+    .motivator {
+      padding: 40px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 25px;
+      border: 4px double rgba(255, 255, 255, 0.5);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(12px);
+      z-index: 2;
+      max-width: 90%;
+    }
+
+    .rainbow-text {
+      font-size: 2.2rem;
+      font-weight: bold;
+      background: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet);
+      background-size: 400%;
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      animation: rainbow 3s linear infinite;
+    }
+
+    @keyframes rainbow {
+      0% { background-position: 0% }
+      100% { background-position: 100% }
+    }
+
+    .hindi-text {
+      margin-top: 15px;
+      font-size: 1.6rem;
+      color: #222;
+      font-family: 'Noto Sans Devanagari', sans-serif;
+    }
+
+    .author {
+      margin-top: 15px;
+      font-size: 1.1rem;
+      font-style: italic;
+      color: #222;
+      opacity: 0.8;
+    }
+
+    .bubble {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0.4;
+      animation: float 8s infinite ease-in-out;
+      mix-blend-mode: screen;
+    }
+
+    @keyframes float {
+      from { transform: translateY(100vh) scale(1); }
+      to { transform: translateY(-100vh) scale(1.4); }
+    }
+
+    .bubble1 { width: 60px; height: 60px; left: 10%; animation-duration: 7s; background: radial-gradient(circle, red, transparent); }
+    .bubble2 { width: 40px; height: 40px; left: 25%; animation-duration: 5.5s; background: radial-gradient(circle, orange, transparent); }
+    .bubble3 { width: 80px; height: 80px; left: 40%; animation-duration: 6.2s; background: radial-gradient(circle, yellow, transparent); }
+    .bubble4 { width: 30px; height: 30px; left: 60%; animation-duration: 4.8s; background: radial-gradient(circle, green, transparent); }
+    .bubble5 { width: 50px; height: 50px; left: 75%; animation-duration: 6.7s; background: radial-gradient(circle, blue, transparent); }
+    .bubble6 { width: 35px; height: 35px; left: 85%; animation-duration: 5s; background: radial-gradient(circle, indigo, transparent); }
+    .bubble7 { width: 55px; height: 55px; left: 5%; animation-duration: 7.2s; background: radial-gradient(circle, violet, transparent); }
+
+    /* Music Info */
+    .music-info {
+      position: absolute;
+      bottom: 10px;
+      font-size: 0.7rem;
+      color: #333;
+      background: rgba(255, 255, 255, 0.5);
+      padding: 6px 10px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      z-index: 2;
+    }
+
+    .music-info img {
+      width: 16px;
+      height: 16px;
+    }
+
+    @media (max-width: 600px) {
+      .rainbow-text { font-size: 1.6rem; }
+      .hindi-text { font-size: 1.2rem; }
+      .author { font-size: 1rem; }
+    }
+  </style>
+
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Bubbles -->
+  <div class="bubble bubble1"></div>
+  <div class="bubble bubble2"></div>
+  <div class="bubble bubble3"></div>
+  <div class="bubble bubble4"></div>
+  <div class="bubble bubble5"></div>
+  <div class="bubble bubble6"></div>
+  <div class="bubble bubble7"></div>
+
+  <!-- Flying Bird Header -->
+  <header>
+    <svg id="bird" viewBox="0 0 100 100" width="80" height="80">
+      <path d="M10 50 Q 40 10, 70 50 Q 40 30, 10 50" fill="none" stroke="#fff" stroke-width="2">
+        <animateTransform attributeName="transform" attributeType="XML"
+          type="translate"
+          values="-100 0; 200 0"
+          dur="6s"
+          repeatCount="indefinite" />
+      </path>
+    </svg>
+    <h1>
+      <span style="font-weight: bold;">Udaan – उड़ान</span><br>
+      <span style="font-size: 1rem; font-style: italic;">A Flight Towards Your Dreams</span>
+    </h1>
+  </header>
+
+  <!-- Motivational Box -->
+  <div class="motivator">
+    <div id="quote" class="rainbow-text"></div>
+    <div id="hindi" class="hindi-text"></div>
+    <div id="author" class="author"></div>
+  </div>
+
+  <!-- Music Info Box -->
+  <div class="music-info">
+    <img src="https://cdn-icons-png.flaticon.com/512/727/727245.png" alt="Music Icon">
+    <span>Touch anywhere for music 🎶</span>
+  </div>
+
+  <!-- Hidden Background Music -->
+  <audio id="bg-music" autoplay loop>
+    <source src="https://cdn.pixabay.com/download/audio/2023/01/18/audio_c2b1e7e95e.mp3?filename=inspiration-126153.mp3" type="audio/mp3">
+  </audio>
+
+  <!-- JavaScript -->
+  <script>
+    const quotes = [
+      { en: "Believe in yourself — every expert was once a beginner.", hi: "खुद पर विश्वास रखें — हर विशेषज्ञ कभी एक शुरुआती था।", author: "Helen Hayes" },
+      { en: "Dream big, work hard, and never give up.", hi: "बड़े सपने देखें, मेहनत करें, और कभी हार न मानें।", author: "Dwayne Johnson" },
+      { en: "Your effort today is an investment in your tomorrow.", hi: "आपकी आज की मेहनत आपके कल में निवेश है।", author: "Unknown" },
+      { en: "Don’t wait for opportunity. Create it.", hi: "अवसर का इंतजार न करें। उसे खुद बनाएं।", author: "George Bernard Shaw" },
+      { en: "Success is being better than you were yesterday.", hi: "सफलता का मतलब है कल से बेहतर बनना।", author: "APJ Abdul Kalam" },
+      { en: "You are capable of amazing things — just keep going.", hi: "आप अद्भुत चीजें कर सकते हैं — बस चलते रहें।", author: "Barack Obama" },
+      { en: "Mistakes are proof that you are trying.", hi: "गलतियाँ यह साबित करती हैं कि आप प्रयास कर रहे हैं।", author: "Jennifer Lim" },
+      { en: "Education is your superpower.", hi: "शिक्षा आपकी असली ताकत है।", author: "Malala Yousafzai" },
+      { en: "The only limit is your own mindset.", hi: "एकमात्र सीमा आपकी सोच है।", author: "Napoleon Hill" },
+      { en: "Be proud of how far you’ve come.", hi: "अब तक जो हासिल किया है उस पर गर्व करें।", author: "Michelle Obama" }
+    ];
+
+    let index = 0;
+    const quoteEl = document.getElementById("quote");
+    const hindiEl = document.getElementById("hindi");
+    const authorEl = document.getElementById("author");
+
+    function showQuote() {
+      quoteEl.textContent = quotes[index].en;
+      hindiEl.textContent = quotes[index].hi;
+      authorEl.textContent = `— ${quotes[index].author}`;
+      index = (index + 1) % quotes.length;
+    }
+
+    showQuote();
+    setInterval(showQuote, 6000);
+
+    // Autoplay music on first interaction
+    const music = document.getElementById("bg-music");
+    const tryPlay = () => {
+      music.play().catch(() => {
+        document.body.addEventListener("click", () => music.play(), { once: true });
+      });
+    };
+    window.addEventListener("load", tryPlay);
+  </script>
+</body>
+</html>

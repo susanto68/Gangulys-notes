@@ -6,9 +6,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Educational Notes - Ganguly's</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
+
+<!-- Manifest -->
+<link rel="manifest" href="manifest.json">
+
+<!-- Theme color for browser -->
+<meta name="theme-color" content="#66a6ff">
+
+<!-- Service Worker Registration -->
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+      navigator.serviceWorker.register('/service-worker.js')
+        .then(reg => console.log("✅ Service Worker Registered"))
+        .catch(err => console.log("❌ Service Worker Error", err));
+    });
+  }
+</script>
+
+
+
+
+    
 </head>
 <body>
+<!-- ----------- --counter -->
+<h3> No Of Visitors </h3>
+<a href="https://www.freecounterstat.com" title="page hit counter"><img src="https://counter1.optistats.ovh/private/freecounterstat.php?c=39r6espucml7h4sesyx8f8j2cplpfr41" border="0" title="page hit counter" alt="page hit counter"></a>
+<!-- ------------------- -->
     <header>
         <h1>Educational Notes Portal</h1>
         <p>Welcome to your comprehensive study resource</p>
@@ -19,20 +46,26 @@
         <div class="class-buttons">
             <!--<a href="#" class="chapter-btn" onclick="showError('Coming soon!')">-->
             
-            <a href="videos.html" class="class-btn">Tutorial Videos</a>
-            <a href="Java_program.html" class="class-btn">Java Programs</a>
-            <a href="#" class="class-btn" onclick="showError('Coming soon!')"> Python Programs</a>
-            <a href="#" class="class-btn" onclick="showError('Coming soon!')"> C Programs</a>
-            <a href="#" class="class-btn" onclick="showError('Coming soon!')"> C++ Programs</a>
-            <a href="class8.html" class="class-btn">Class 8</a>
-            <a href="class9.html" class="class-btn">Class 9</a>
-            <a href="class10.html" class="class-btn">Class 10</a>
-            <a href="class12.html" class="class-btn">Class 12</a>
+            <a href="videos.html" class="class-btn"><i class="fas fa-video"></i> Tutorial Videos</a>
+            <a href="Java_program.html" class="class-btn"><i class="fas fa-code"></i> Java Programs</a>
+            <a href="#" class="class-btn" onclick="showError('Coming soon!')"><i class="fas fa-code"></i> Python Programs</a>
+            <a href="#" class="class-btn" onclick="showError('Coming soon!')"><i class="fas fa-code"></i> C Programs</a>
+            <a href="#" class="class-btn" onclick="showError('Coming soon!')"><i class="fas fa-code"></i> C++ Programs</a>
+            <a href="class8.html" class="class-btn"><i class="fas fa-book"></i> Class 8</a>
+            <a href="class9.html" class="class-btn"><i class="fas fa-book"></i> Class 9</a>
+            <a href="class10.html" class="class-btn"><i class="fas fa-book"></i> Class 10</a>
+            <a href="class12.html" class="class-btn"><i class="fas fa-book"></i> Class 12</a>
+            <a href="Motivational_Words.html" class="class-btn"><i class="fas fa-book"></i> Motivational Lines for Students</a>
+             <a href="https://drive.google.com/file/d/1Rt70D3ExL5rXLMKPehLryzgshIvyJfPp/view" class="class-btn"><i class="fas fa-book"></i>ध्यान के प्रकार</a>
             
         </div>
     </main>
 
+<<<<<<< HEAD
     <footer style="font-size: 12px; padding: 5px; text-align: center;">
+=======
+   <footer style="font-size: 12px; padding: 5px; text-align: center;">
+>>>>>>> 4a1bf1eb3e9de17c38cb56c6068d08fde09f051e
     <p>&copy; 2024 Ganguly's Educational Notes. All rights reserved.</p>
 </footer>
 </body>
