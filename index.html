@@ -1,73 +1,252 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Educational Notes - Ganguly's</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Voice Assistant</title>
+  <style>
+    /* Reset & Base */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      height: 100%;
+      overflow: auto;
+      font-family: 'Segoe UI', Tahoma, Verdana, sans-serif;
+      background: linear-gradient(135deg, #a5b4fc, #f0f9ff);
+      color: #1e293b;
+    }
+    body { display: flex; justify-content: center; align-items: flex-start; padding: 16px; }
+    .app {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      width: 100%;
+      max-width: 1000px;
+    }
+    /* Containers scrollable */
+    .container, .view2 {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      padding: 16px;
+      overflow-y: auto;
+    }
+    .container {
+      flex: 2;
+      display: flex;
+      flex-direction: column;
+      text-align: center;
+    }
+    .view2 {
+      flex: 1;
+      display: none;
+      flex-direction: column;
+    }
+    .view2.active { display: flex; }
 
-<!-- Manifest -->
-<link rel="manifest" href="manifest.json">
+    /* Header */
+    h1 {
+      font-size: 1.5rem;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+    }
+    h1 img { width: 28px; }
 
-<!-- Theme color for browser -->
-<meta name="theme-color" content="#66a6ff">
+    /* Avatar */
+    #avatar {
+      width: 100px;
+      height: 100px;
+      margin: 0 auto;
+      border-radius: 50%;
+      transition: transform 0.2s ease;
+    }
+    @keyframes float { 0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);} }
 
-<!-- Service Worker Registration -->
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function() {
-      navigator.serviceWorker.register('/service-worker.js')
-        .then(reg => console.log("✅ Service Worker Registered"))
-        .catch(err => console.log("❌ Service Worker Error", err));
-    });
-  }
-</script>
+    /* Response Box */
+    #responseBox {
+      background: #f1f5f9;
+      padding: 12px;
+      border-radius: 12px;
+      margin-top: 12px;
+      font-size: 0.9rem;
+      min-height: 60px;
+      text-align: left;
+      line-height: 1.4;
+      white-space: pre-wrap;
+      flex-grow: 1;
+    }
 
+    /* Status */
+    #status {
+      margin-top: 8px;
+      font-size: 0.8rem;
+      color: #64748b;
+      min-height: 1.2em;
+    }
 
+    /* Controls */
+    #controls {
+      margin-top: 12px;
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+    }
+    button {
+      flex: 1;
+      padding: 10px;
+      font-size: 0.9rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.2s;
+    }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    #talkBtn { background: #3b82f6; color: #fff; }
+    #talkBtn:hover:not(:disabled) { background: #2563eb; }
+    #stopBtn { background: #ef4444; color: #fff; }
+    #stopBtn:hover:not(:disabled) { background: #dc2626; }
 
+    /* Side Panel Content */
+    .view2 h2 {
+      margin-bottom: 8px;
+      font-size: 1.2rem;
+      color: #1e40af;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .snippet, .qa {
+      background: #f8fafc;
+      padding: 12px;
+      border-radius: 8px;
+      margin-top: 8px;
+      overflow-x: auto;
+      font-family: 'Courier New', monospace;
+      font-size: 0.85rem;
+      white-space: pre-wrap;
+    }
+    .copyBtn {
+      margin-top: 6px;
+      align-self: flex-end;
+      padding: 6px 10px;
+      font-size: 0.8rem;
+      background: #10b981;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .copyBtn:hover { background: #059669; }
 
-    
+    /* Responsive: code pane below main */
+    @media (max-width: 768px) {
+      .app { flex-direction: column; }
+      .container, .view2 { width: 100%; }
+      .view2 { margin-top: 16px; }
+      h1 { font-size: 1.25rem; }
+      #avatar { width: 80px; height: 80px; }
+      #responseBox, .snippet, .qa { font-size: 0.85rem; }
+      button { font-size: 0.85rem; padding: 8px; }
+    }
+
+  </style>
 </head>
 <body>
-<!-- ----------- --counter -->
-<h3> No Of Visitors </h3>
-<a href="https://www.freecounterstat.com" title="page hit counter"><img src="https://counter1.optistats.ovh/private/freecounterstat.php?c=39r6espucml7h4sesyx8f8j2cplpfr41" border="0" title="page hit counter" alt="page hit counter"></a>
-<!-- ------------------- -->
-    <header>
-        <h1>Educational Notes Portal</h1>
-        <p>Welcome to your comprehensive study resource</p>
-    </header>
+  <div class="app">
+    <div class="container">
+      <h1>🎤 AI Voice Assistant <img src="https://img.icons8.com/color/48/000000/robot-2.png" alt="Bot" /></h1>
+      <img id="avatar" src="sirgnaguly.png" alt="Avatar" />
+      <div id="responseBox">Ask me anything about computer science…</div>
+      <div id="status"></div>
+      <div id="controls">
+        <button id="talkBtn"><img src="https://img.icons8.com/ios-filled/24/ffffff/microphone.png" alt="Talk" />Talk</button>
+        <button id="stopBtn" disabled><img src="https://img.icons8.com/ios-filled/24/ffffff/stop.png" alt="Stop" />Stop</button>
+      </div>
+    </div>
+    <div class="view2" id="view2"></div>
+  </div>
+  <script>
+    const talkBtn = document.getElementById('talkBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    const statusEl = document.getElementById('status');
+    const responseBox = document.getElementById('responseBox');
+    const avatar = document.getElementById('avatar');
+    const view2 = document.getElementById('view2');
 
-    <main class="container">
-         
-        <div class="class-buttons">
-            <!--<a href="#" class="chapter-btn" onclick="showError('Coming soon!')">-->
-            
-            <a href="videos.html" class="class-btn"><i class="fas fa-video"></i> Tutorial Videos</a>
-            <a href="Java_program.html" class="class-btn"><i class="fas fa-code"></i> Java Programs</a>
-            <a href="#" class="class-btn" onclick="showError('Coming soon!')"><i class="fas fa-code"></i> Python Programs</a>
-            <a href="#" class="class-btn" onclick="showError('Coming soon!')"><i class="fas fa-code"></i> C Programs</a>
-            <a href="#" class="class-btn" onclick="showError('Coming soon!')"><i class="fas fa-code"></i> C++ Programs</a>
-            <a href="class8.html" class="class-btn"><i class="fas fa-book"></i> Class 8</a>
-            <a href="class9.html" class="class-btn"><i class="fas fa-book"></i> Class 9</a>
-            <a href="class10.html" class="class-btn"><i class="fas fa-book"></i> Class 10</a>
-            <a href="class12.html" class="class-btn"><i class="fas fa-book"></i> Class 12</a>
-            <a href="Motivational_Words.html" class="class-btn"><i class="fas fa-book"></i> Motivational Lines for Students</a>
-           <a href="https://drive.google.com/file/d/1Rt70D3ExL5rXLMKPehLryzgshIvyJfPp/view" 
-   class="class-btn" 
-   target="_blank" 
-   rel="noopener noreferrer">
-   <i class="fas fa-book"></i> ध्यान के प्रकार
-</a>
-            
-        </div>
-    </main>
+    let recognition, utterance, isListening = false;
 
-   <footer style="font-size: 8px; padding: 5px; text-align: center;">
-    <p>&copy; 2024 Ganguly's Educational Notes. All rights reserved.</p>
-</footer>
+    function initRecognition() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        statusEl.textContent = 'Speech Recognition not supported.'; talkBtn.disabled = true; return;
+      }
+      recognition = new SpeechRecognition(); recognition.lang = 'en-IN'; recognition.interimResults = false; recognition.maxAlternatives = 1;
+
+      recognition.onstart = () => { isListening = true; statusEl.textContent = 'Listening...'; talkBtn.disabled = true; stopBtn.disabled = false; };
+      recognition.onresult = async (e) => {
+        const transcript = e.results[0][0].transcript;
+        responseBox.textContent = transcript;
+        statusEl.textContent = 'Thinking...';
+        cleanupView2();
+        let data;
+        try { const res = await fetch('http://localhost:3000/api/chat', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ message: transcript }) }); data = await res.json(); }
+        catch { data = { reply: 'Sorry, I could not reach the server.' }; }
+        handleResponse(data.reply);
+      };
+      recognition.onerror = e => { statusEl.textContent = 'Error: '+e.error; cleanup(); };
+      recognition.onend = () => { isListening = false; talkBtn.disabled = false; stopBtn.disabled = true; if(statusEl.textContent==='Listening...') statusEl.textContent=''; };
+    }
+
+    function handleResponse(reply) {
+      const codeMatch = reply.match(/```([\s\S]*?)```/) || reply.match(/```([\s\S]*)/);
+      const qaMatch = reply.match(/\*\*(.*?)\*\*([\s\S]*)/);
+      if (codeMatch) {
+        const code = codeMatch[1].trim();
+        showSnippet(code);
+        responseBox.textContent = reply.replace(codeMatch[0], '').trim();
+      } else if (qaMatch) {
+        showQA(qaMatch[1].trim(), qaMatch[2].trim());
+        responseBox.textContent = '';
+      } else {
+        responseBox.textContent = reply;
+      }
+      speakText(responseBox.textContent || reply);
+    }
+
+    function showSnippet(code) {
+      view2.innerHTML = `<h2>Code Snippet</h2><div class="snippet">${code}</div><button class="copyBtn"><img src="https://img.icons8.com/ios-glyphs/24/ffffff/copy.png" alt="Copy"/>Copy Code</button>`;
+      view2.querySelector('.copyBtn').onclick = () => navigator.clipboard.writeText(code);
+      view2.classList.add('active');
+    }
+
+    function showQA(question, answer) {
+      view2.innerHTML = `<h2>Q & A</h2><div class="qa"><strong>${question}</strong><br>${answer}</div>`; 
+      view2.classList.add('active');
+    }
+
+    function cleanupView2() { view2.innerHTML = ''; view2.classList.remove('active'); }
+
+    function speakText(text) {
+      window.speechSynthesis.cancel(); avatar.style.animation='float 1s ease-in-out infinite';
+      utterance = new SpeechSynthesisUtterance(text); utterance.lang='en-IN'; utterance.rate=1; utterance.pitch=1;
+      utterance.onend = () => { avatar.style.animation=''; statusEl.textContent=''; };
+      speechSynthesis.speak(utterance);
+    }
+
+    function cleanup() { if(isListening) recognition.stop(); if(utterance) speechSynthesis.cancel(); avatar.style.animation=''; talkBtn.disabled=false; stopBtn.disabled=true; statusEl.textContent=''; }
+
+    talkBtn.onclick = () => { cleanup(); recognition.start(); };
+    stopBtn.onclick = () => { cleanup(); };
+    initRecognition();
+  </script>
 </body>
 </html>
