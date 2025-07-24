@@ -65,7 +65,7 @@
       <div id="responseBox">Ask me anything about computer science…</div>
       <div id="status"></div>
       <div id="controls">
-        <button id="talkBtn"><img src="https://img.icons8.com/ios-filled/24/ffffff/microphone.png" alt="Talk" />Talk</button>
+        <button id="talkBtn" disabled><img src="https://img.icons8.com/ios-filled/24/ffffff/microphone.png" alt="Talk" />Talk</button>
         <button id="stopBtn" disabled><img src="https://img.icons8.com/ios-filled/24/ffffff/stop.png" alt="Stop" />Stop</button>
       </div>
     </div>
@@ -91,12 +91,11 @@
 
     function initRecognition() {
       const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-      if (!SR) { statusEl.textContent='Speech Recognition not supported.'; talkBtn.disabled=true; return; }
+      if (!SR) { statusEl.textContent='Speech Recognition not supported.'; return; }
       recognition = new SR(); recognition.lang='en-IN'; recognition.interimResults=false; recognition.maxAlternatives=1;
 
       recognition.onstart = () => { isListening=true; statusEl.textContent='Listening...'; talkBtn.disabled=true; stopBtn.disabled=false; };
       recognition.onresult = async e => {
-        // stop speaking before making API call
         stopSpeech();
         const transcript = e.results[0][0].transcript;
         responseBox.textContent=transcript; statusEl.textContent='Thinking...'; cleanupView2();
@@ -112,7 +111,6 @@
     }
 
     function handleResponse(reply) {
-      // show reply, then speak
       responseBox.textContent = reply;
       speakText(reply);
     }
@@ -121,9 +119,10 @@
 
     function speakText(text) {
       stopSpeech();
-      isSpeaking=true; statusEl.textContent='Speaking...'; stopBtn.disabled=false; talkBtn.disabled=true;
+      isSpeaking=true; statusEl.textContent='Speaking...'; stopBtn.disabled=false;
       utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang='en-IN'; utterance.rate=1; utterance.pitch=1; if (maleVoice) utterance.voice=maleVoice;
+      utterance.lang='en-IN'; utterance.rate=1; utterance.pitch=1;
+      if (maleVoice) utterance.voice=maleVoice;
       utterance.onend = () => { isSpeaking=false; avatar.style.animation=''; statusEl.textContent=''; stopBtn.disabled=true; talkBtn.disabled=false; };
       avatar.style.animation='float 1s ease-in-out infinite';
       speechSynthesis.speak(utterance);
@@ -136,18 +135,22 @@
         avatar.style.animation='';
         statusEl.textContent='';
         stopBtn.disabled=true;
+        talkBtn.disabled=false;
       }
     }
 
     function cleanup() {
       if (isListening) recognition.stop();
       stopSpeech();
-      talkBtn.disabled=false;
     }
 
+    // initial setup and greeting
+    initRecognition();
+    window.addEventListener('load', () => {
+      speakText('Hello I am Sir Ganguly. Welcome to my AI Avatar Experiment. Feel free to learn new things with me.');
+    });
     talkBtn.onclick = () => { cleanup(); recognition.start(); };
     stopBtn.onclick = () => { stopSpeech(); if (isListening) recognition.stop(); };
-    initRecognition();
   </script>
 </body>
 </html>
