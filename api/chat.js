@@ -31,7 +31,7 @@ export default async function handler(req, res) {
         { role: 'user', content: message.trim() }
       ],
       temperature: 0.6,
-      max_tokens: 500
+      max_tokens: 1100
     });
 
     res.status(200).json({ reply: resp.choices[0].message.content.trim() });
