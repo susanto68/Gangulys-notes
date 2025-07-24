@@ -174,14 +174,32 @@
 
     function cleanupView2() { view2.innerHTML = ''; view2.classList.remove('active'); }
 
-    function speakText(text) {
-      window.speechSynthesis.cancel();
-      avatar.style.animation = 'float 1s ease-in-out infinite';
-      utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'en-IN'; utterance.rate = 1; utterance.pitch = 1;
-      utterance.onend = () => { avatar.style.animation = ''; statusEl.textContent = ''; };
-      speechSynthesis.speak(utterance);
-    }
+function speakText(text) {
+  // stop any current speech + start float animation
+  window.speechSynthesis.cancel();
+  avatar.style.animation = 'float 1s ease-in-out infinite';
+
+  // build utterance
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'en-IN';
+  u.rate = 1;
+  u.pitch = 1;
+
+  // pick a male voice
+  const voices = window.speechSynthesis.getVoices();
+  const male = voices.find(v =>
+    (v.lang === 'en-IN' || v.lang.startsWith('en')) &&
+    /male/i.test(v.name)
+  );
+  if (male) u.voice = male;
+
+  u.onend = () => {
+    avatar.style.animation = '';
+    statusEl.textContent = '';
+  };
+  speechSynthesis.speak(u);
+}
+
 
     function cleanup() {
       if (isListening) recognition.stop();
