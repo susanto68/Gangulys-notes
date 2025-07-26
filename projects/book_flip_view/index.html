@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Kindle-like Reader</title>
+    <!-- Tailwind CSS CDN for utility classes -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Custom styles for specific layout and potential overrides -->
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Custom styles for the flipbook container and pages */
+        /* These styles are crucial for the page-flip library to work correctly */
+        #flipbook {
+            width: 100%; /* Will be adjusted by JS */
+            height: 100%; /* Will be adjusted by JS */
+            margin: 0 auto;
+            background-color: #f0f0f0; /* Light background for the book area */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 8px; /* Rounded corners for the book */
+            overflow: hidden; /* Ensure pages don't overflow */
+            position: relative; /* Needed for absolute positioning of pages by turn.js */
+        }
+
+        #flipbook canvas {
+            display: block; /* Remove extra space below canvas */
+            width: 100%;
+            height: 100%;
+            object-fit: contain; /* Ensure page content fits within canvas */
+        }
+
+        /* Basic styling for the loading message */
+        .loading-message {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            width: 100%;
+            color: #555;
+            font-size: 1.25rem; /* text-xl */
+            font-family: 'Inter', sans-serif;
+            text-align: center;
+        }
+
+        /* Ensure Inter font is used */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex flex-col min-h-screen items-center justify-center p-4">
+
+    <div class="max-w-4xl w-full bg-white rounded-lg shadow-xl p-6 flex flex-col items-center">
+        <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">My Digital Reader</h1>
+
+        <!-- Flipbook Container -->
+        <div id="flipbook" class="flex-grow w-full max-w-3xl aspect-video relative">
+            <div class="loading-message">
+                <!-- CSS-only spinner will be rendered here -->
+                <div class="spinner"></div>
+                <span>Loading PDF... Please wait.</span>
+            </div>
+            <!-- PDF pages will be rendered into canvas elements here by app.js -->
+        </div>
+
+        <!-- Navigation Buttons -->
+        <div class="flex justify-center space-x-4 mt-6 w-full">
+            <button id="prevPage" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75">
+                Previous Page
+            </button>
+            <button id="nextPage" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75">
+                Next Page
+            </button>
+        </div>
+    </div>
+
+    <!-- JavaScript Libraries: jQuery 2.x, Turn.js, then app.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/turn.js@0.8.0/turn.min.js"></script>
+    <!-- Add PDF.js library for pdfjsLib -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+    <script src="app.js"></script>
+    <!-- PDF.js library for rendering PDFs -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+    <!-- Turn.js library for page-flipping effect -->
+    <script src="https://cdn.jsdelivr.net/npm/turn.js@0.8.0/turn.min.js"></script>
+    <!-- Your custom application logic -->
+    <script src="app.js"></script>
+</body>
+</html>

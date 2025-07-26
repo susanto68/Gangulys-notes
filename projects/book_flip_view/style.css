@@ -1,0 +1,128 @@
+/* style.css */
+
+/* Ensure HTML and Body take full viewport height for proper centering */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden; /* Prevent horizontal scroll */
+}
+
+/* Apply Inter font family */
+body {
+    font-family: 'Inter', sans-serif;
+}
+
+/*
+  The following styles are already defined inline in index.html for #flipbook
+  and #flipbook canvas. They are crucial for the page-flip library.
+  It's good practice to keep them here or in a dedicated CSS file
+  if they become more complex or need overrides.
+*/
+/*
+#flipbook {
+    width: 100%;
+    height: 100%;
+    margin: 0 auto;
+    background-color: #f0f0f0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+}
+
+#flipbook canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+*/
+
+/* Styles for the loading message, complementing Tailwind classes */
+.loading-message {
+    /* These properties are already set inline in index.html,
+       but can be extended or overridden here if needed. */
+    /*
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    color: #555;
+    font-size: 1.25rem;
+    font-family: 'Inter', sans-serif;
+    text-align: center;
+    */
+}
+
+.loading-message img {
+    /* These properties are already set inline in index.html,
+       but can be extended or overridden here if needed. */
+    /*
+    width: 50px;
+    height: 50px;
+    margin-bottom: 1rem;
+    */
+}
+
+/*
+  Media queries for responsiveness if more specific breakpoints are needed
+  beyond what Tailwind provides directly on elements.
+*/
+@media (max-width: 768px) {
+    /* Adjustments for smaller screens, e.g., tablets and mobile phones */
+    .max-w-4xl {
+        max-width: 100%;
+        padding: 1rem;
+    }
+
+    .text-3xl {
+        font-size: 2rem; /* Slightly smaller heading on mobile */
+    }
+
+    .space-x-4 > *:not(:first-child) {
+        margin-left: 0.5rem; /* Reduce button spacing */
+    }
+
+    .py-2 {
+        padding-top: 0.75rem;
+        padding-bottom: 0.75rem;
+    }
+    .px-6 {
+        padding-left: 1.25rem;
+        padding-right: 1.25rem;
+    }
+}
+
+/* Additional styles for the page-flipping effect, if Turn.js requires them or for customization */
+/* Turn.js often adds its own classes like .page, .hard, .shadow */
+.turn-page {
+    background-color: white; /* Default background for pages */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for pages */
+}
+
+/* Style for the "hard" pages (covers) if using Turn.js's 'hard' option */
+.turn-page.hard {
+    background-color: #333; /* Darker background for covers */
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+/* Hide elements that should only appear after JS loads or are managed by Turn.js */
+.loading-message {
+    /* Initially visible, app.js will hide this */
+    display: flex;
+}
+
+/* Example of how to hide scrollbars if they appear due to content overflow,
+   though overflow: hidden on #flipbook should largely prevent this. */
+::-webkit-scrollbar {
+    width: 0px;
+    background: transparent; /* make scrollbar transparent */
+}
