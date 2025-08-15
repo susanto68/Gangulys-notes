@@ -1,0 +1,55 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Circle -->
+  <circle cx="256" cy="256" r="256" fill="url(#gradient1)"/>
+  
+  <!-- AI Brain Icon -->
+  <g transform="translate(128, 128)">
+    <!-- Main Brain Shape -->
+    <path d="M128 64C128 28.7 156.7 0 192 0H256C291.3 0 320 28.7 320 64V128C320 163.3 291.3 192 256 192H192C156.7 192 128 163.3 128 128V64Z" fill="url(#gradient2)"/>
+    
+    <!-- Brain Details -->
+    <circle cx="160" cy="80" r="16" fill="white" opacity="0.9"/>
+    <circle cx="288" cy="80" r="16" fill="white" opacity="0.9"/>
+    <circle cx="160" cy="144" r="16" fill="white" opacity="0.9"/>
+    <circle cx="288" cy="144" r="16" fill="white" opacity="0.9"/>
+    
+    <!-- Connection Lines -->
+    <path d="M176 80L240 80" stroke="white" stroke-width="4" opacity="0.7"/>
+    <path d="M272 80L240 80" stroke="white" stroke-width="4" opacity="0.7"/>
+    <path d="M176 144L240 144" stroke="white" stroke-width="4" opacity="0.7"/>
+    <path d="M272 144L240 144" stroke="white" stroke-width="4" opacity="0.7"/>
+    <path d="M240 80L240 144" stroke="white" stroke-width="4" opacity="0.7"/>
+  </g>
+  
+  <!-- Avatar Silhouette -->
+  <g transform="translate(200, 280)">
+    <!-- Head -->
+    <circle cx="56" cy="40" r="32" fill="url(#gradient3)"/>
+    
+    <!-- Body -->
+    <rect x="32" y="72" width="48" height="64" rx="24" fill="url(#gradient3)"/>
+    
+    <!-- Arms -->
+    <rect x="8" y="80" width="24" height="48" rx="12" fill="url(#gradient3)"/>
+    <rect x="80" y="80" width="24" height="48" rx="12" fill="url(#gradient3)"/>
+  </g>
+  
+  <!-- Gradients -->
+  <defs>
+    <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e3a8a;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#6366f1;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="gradient2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.9" />
+      <stop offset="100%" style="stop-color:#f3f4f6;stop-opacity:0.9" />
+    </linearGradient>
+    
+    <linearGradient id="gradient3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#e5e7eb;stop-opacity:0.8" />
+    </linearGradient>
+  </defs>
+</svg>

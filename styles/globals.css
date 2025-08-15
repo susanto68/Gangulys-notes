@@ -1,0 +1,505 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap');
+
+@layer base {
+  html {
+    font-family: 'Inter', 'Poppins', system-ui, sans-serif;
+    /* Enable hardware acceleration */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* Prevent zoom on double tap for iOS */
+    touch-action: manipulation;
+  }
+  
+  body {
+    @apply bg-gradient-to-br from-primary-500 via-secondary-500 to-accent-500 min-h-screen;
+    @apply text-gray-800 antialiased overflow-x-hidden;
+    /* Support for safe areas on notched devices */
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+  
+  /* Dark mode styles */
+  .dark body {
+    @apply bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900;
+    @apply text-gray-100;
+  }
+  
+  /* Text wrapping and overflow handling */
+  * {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+  
+  /* Ensure all text containers handle long content properly */
+  p, div, span, h1, h2, h3, h4, h5, h6, li, td, th {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+  
+  /* Code blocks and pre elements */
+  pre, code {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: pre-wrap;
+  }
+  
+  /* Scrollbar styles for better mobile experience */
+  ::-webkit-scrollbar {
+    width: 4px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 2px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
+  }
+}
+
+@layer components {
+  /* Loading animations */
+  .loading-spinner {
+    @apply w-8 h-8 border-4 border-white/30 border-t-white rounded-full animate-spin;
+  }
+  
+  /* Glass morphism effect */
+  .glass {
+    @apply backdrop-blur-md bg-white/10 border border-white/20;
+    @apply shadow-lg shadow-black/25;
+  }
+  
+  .glass-dark {
+    @apply backdrop-blur-md bg-gray-900/10 border border-gray-700/30;
+    @apply shadow-lg shadow-black/50;
+  }
+  
+  /* Avatar card animations */
+  .avatar-card {
+    @apply transform transition-all duration-300 ease-out;
+    @apply hover:scale-105 hover:shadow-2xl;
+    @apply focus:scale-105 focus:shadow-2xl focus:outline-none focus:ring-4 focus:ring-primary-500/50;
+  }
+  
+  /* Speaking animation for avatar */
+  .speaking {
+    @apply animate-speaking;
+  }
+  
+  /* Button styles - Mobile optimized */
+  .btn-primary {
+    @apply bg-gradient-to-r from-primary-500 to-primary-600;
+    @apply text-white font-medium px-4 sm:px-6 py-3 sm:py-3 rounded-xl;
+    @apply transform transition-all duration-200 ease-out;
+    @apply hover:scale-105 hover:shadow-lg;
+    @apply focus:outline-none focus:ring-4 focus:ring-primary-500/50;
+    @apply active:scale-95;
+    /* Minimum touch target size for accessibility */
+    min-height: 44px;
+    min-width: 44px;
+    /* Prevent text selection on mobile */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    /* Better touch response */
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  .btn-secondary {
+    @apply bg-gradient-to-r from-secondary-500 to-secondary-600;
+    @apply text-white font-medium px-4 sm:px-6 py-3 sm:py-3 rounded-xl;
+    @apply transform transition-all duration-200 ease-out;
+    @apply hover:scale-105 hover:shadow-lg;
+    @apply focus:outline-none focus:ring-4 focus:ring-secondary-500/50;
+    @apply active:scale-95;
+    min-height: 44px;
+    min-width: 44px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  .btn-ghost {
+    @apply bg-white/10 backdrop-blur-md border border-white/20;
+    @apply text-white font-medium px-3 sm:px-4 py-2 sm:py-3 rounded-xl;
+    @apply transform transition-all duration-200 ease-out;
+    @apply hover:bg-white/20 hover:scale-105;
+    @apply focus:outline-none focus:ring-4 focus:ring-white/30;
+    @apply active:scale-95;
+    min-height: 44px;
+    min-width: 44px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  /* Input styles */
+  .input-primary {
+    @apply bg-white/10 backdrop-blur-md border border-white/20;
+    @apply text-white placeholder-white/70;
+    @apply px-4 py-3 rounded-xl;
+    @apply focus:outline-none focus:ring-4 focus:ring-primary-500/50;
+    @apply focus:border-primary-500/50;
+  }
+  
+  /* Chat bubble styles */
+  .chat-bubble-user {
+    @apply bg-gradient-to-r from-primary-500 to-primary-600;
+    @apply text-white rounded-2xl rounded-br-md p-4 max-w-xs;
+    @apply shadow-lg;
+  }
+  
+  .chat-bubble-ai {
+    @apply bg-white/90 backdrop-blur-md;
+    @apply text-gray-800 rounded-2xl rounded-bl-md p-4 max-w-sm;
+    @apply shadow-lg border border-white/30;
+  }
+  
+  .dark .chat-bubble-ai {
+    @apply bg-gray-800/90 text-gray-100 border-gray-700/50;
+  }
+  
+  /* Status indicator */
+  .status-listening {
+    @apply bg-green-500 text-white px-3 py-1 rounded-full text-sm;
+    @apply animate-pulse;
+  }
+  
+  .status-processing {
+    @apply bg-yellow-500 text-white px-3 py-1 rounded-full text-sm;
+    @apply animate-pulse;
+  }
+  
+  .status-speaking {
+    @apply bg-blue-500 text-white px-3 py-1 rounded-full text-sm;
+    @apply animate-pulse;
+  }
+  
+  /* Notification styles */
+  .notification {
+    @apply fixed top-4 right-4 z-50;
+    @apply px-6 py-4 rounded-xl;
+    @apply font-medium text-white;
+    @apply shadow-lg backdrop-blur-md;
+    @apply transform transition-all duration-300 ease-out;
+    @apply max-w-sm;
+  }
+  
+  .notification-success {
+    @apply bg-green-500;
+  }
+  
+  .notification-error {
+    @apply bg-red-500;
+  }
+  
+  .notification-info {
+    @apply bg-blue-500;
+  }
+  
+  /* Modal styles */
+  .modal-overlay {
+    @apply fixed inset-0 z-50 flex items-center justify-center;
+    @apply bg-black/50 backdrop-blur-sm;
+  }
+  
+  .modal-content {
+    @apply bg-white dark:bg-gray-800 rounded-2xl;
+    @apply max-w-md w-full mx-4;
+    @apply shadow-2xl;
+    @apply transform transition-all duration-300 ease-out;
+  }
+}
+
+@layer utilities {
+  /* Text wrapping utilities */
+  .text-wrap-balance {
+    text-wrap: balance;
+  }
+  
+  .text-wrap-pretty {
+    text-wrap: pretty;
+  }
+  
+  .text-wrap-stable {
+    text-wrap: stable;
+  }
+  
+  /* Overflow handling utilities */
+  .overflow-wrap-normal {
+    overflow-wrap: normal;
+  }
+  
+  .overflow-wrap-break-word {
+    overflow-wrap: break-word;
+  }
+  
+  .overflow-wrap-anywhere {
+    overflow-wrap: anywhere;
+  }
+  
+  /* Word breaking utilities */
+  .break-normal {
+    word-break: normal;
+  }
+  
+  .break-words {
+    word-break: break-words;
+  }
+  
+  .break-all {
+    word-break: break-all;
+  }
+  
+  .break-keep {
+    word-break: keep-all;
+  }
+  
+  /* Hyphenation utilities */
+  .hyphens-none {
+    hyphens: none;
+  }
+  
+  .hyphens-manual {
+    hyphens: manual;
+  }
+  
+  .hyphens-auto {
+    hyphens: auto;
+  }
+  
+  /* Line clamp utilities for text truncation */
+  .line-clamp-1 {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+  
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+  
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+  
+  /* PWA-specific animations */
+  .animate-fadeIn {
+    animation: fadeIn 0.5s ease-out;
+  }
+  
+  .animate-slideInRight {
+    animation: slideInRight 0.3s ease-out;
+  }
+  
+  .animate-bounceIn {
+    animation: bounceIn 0.6s ease-out;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes slideInRight {
+    from {
+      opacity: 0;
+      transform: translateX(100%);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  @keyframes bounceIn {
+    0% {
+      opacity: 0;
+      transform: scale(0.3);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.05);
+    }
+    70% {
+      transform: scale(0.9);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  
+  /* PWA install prompt specific styles */
+  .pwa-install-prompt {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+  }
+  
+  /* PWA status indicators */
+  .pwa-status {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+  }
+  
+  .pwa-status:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-1px);
+  }
+  
+  /* Custom scrollbar */
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  /* Text gradient */
+  .text-gradient {
+    @apply bg-gradient-to-r from-primary-500 to-accent-500;
+    @apply bg-clip-text text-transparent;
+  }
+  
+  /* Safe area utilities for notched devices */
+  .safe-area-top {
+    padding-top: max(1rem, env(safe-area-inset-top));
+  }
+  
+  .safe-area-bottom {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+  
+  .safe-area-left {
+    padding-left: max(1rem, env(safe-area-inset-left));
+  }
+  
+  .safe-area-right {
+    padding-right: max(1rem, env(safe-area-inset-right));
+  }
+  
+  /* Enhanced animations */
+  .animate-fade-in {
+    animation: fadeIn 0.6s ease-out;
+  }
+  
+  .animate-slide-up {
+    animation: slideUp 0.4s ease-out;
+  }
+  
+  .animate-bounce-in {
+    animation: bounceIn 0.6s ease-out;
+  }
+  
+  /* Touch-friendly interactions */
+  .touch-manipulation {
+    touch-action: manipulation;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  /* Mobile-first responsive utilities */
+  .mobile-padding {
+    @apply px-3 sm:px-4 lg:px-6;
+  }
+  
+  .mobile-text {
+    @apply text-sm sm:text-base lg:text-lg;
+  }
+  
+  /* Better focus styles for mobile */
+  .mobile-focus {
+    @apply focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-transparent;
+  }
+}
+
+/* Custom animations keyframes are defined in tailwind.config.js */
+
+/* Voice window specific styles */
+.voice-window {
+  @apply bg-white/10 backdrop-blur-md border border-white/20;
+  @apply rounded-2xl p-6 min-h-[200px];
+  @apply flex items-center justify-center;
+  @apply text-white text-center;
+  @apply shadow-lg;
+}
+
+.dark .voice-window {
+  @apply bg-gray-800/20 border-gray-700/30;
+}
+
+/* Avatar image container */
+.avatar-image-container {
+  @apply mx-auto mb-4;
+  @apply rounded-full;
+  @apply transition-transform duration-300;
+}
+
+.avatar-image-container img {
+  @apply border-4 border-white/30;
+  @apply shadow-lg;
+  @apply transition-transform duration-300;
+}
+
+.avatar-image-container:hover img {
+  @apply scale-110;
+}
+
+/* Q&A Summary styles */
+.qa-summary {
+  @apply bg-white/10 backdrop-blur-md border border-white/20;
+  @apply rounded-2xl p-6 mt-6;
+  @apply shadow-lg;
+}
+
+.dark .qa-summary {
+  @apply bg-gray-800/20 border-gray-700/30;
+}
