@@ -1,7 +1,7 @@
 {
   "name": "ai-avatar-assistant",
   "version": "2.0.0",
-      "description": "Colorful AI Avatar Assistant Created by Sir Ganguly with voice interaction and multiple subject teachers",
+  "description": "Colorful AI Avatar Assistant Created by Sir Ganguly with voice interaction and multiple subject teachers",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -30,10 +30,10 @@
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
     "critters": "^0.0.25",
-    "next": "^14.0.0",
+    "next": "^13.5.6",
     "openai": "^4.20.1",
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "react-markdown": "^10.1.0",
     "remark-gfm": "^4.0.1"
   },

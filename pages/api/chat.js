@@ -370,64 +370,64 @@ const parseRelatedContent = (contentText, type) => {
 const generateFallbackArticles = (avatarType) => {
   const fallbackArticles = {
     'computer-teacher': [
-      { title: "Programming Fundamentals", description: "Essential concepts for beginners", thumbnailUrl: "https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?w=400&h=200&fit=crop", url: "https://www.w3schools.com/programming/" },
-      { title: "Web Development Guide", description: "Learn HTML, CSS, and JavaScript", thumbnailUrl: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=400&h=200&fit=crop", url: "https://developer.mozilla.org/en-US/docs/Web" },
-      { title: "Computer Science Basics", description: "Core concepts and principles", thumbnailUrl: "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=200&fit=crop", url: "https://www.khanacademy.org/computing" }
+              { title: "Programming Fundamentals", description: "Essential concepts for beginners", url: "https://www.w3schools.com/programming/" },
+              { title: "Web Development Guide", description: "Learn HTML, CSS, and JavaScript", url: "https://developer.mozilla.org/en-US/docs/Web" },
+              { title: "Computer Science Basics", description: "Core concepts and principles", url: "https://www.khanacademy.org/computing" }
     ],
     'mathematics-teacher': [
-      { title: "Math Fundamentals", description: "Basic mathematical concepts", thumbnailUrl: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=400&h=200&fit=crop", url: "https://www.khanacademy.org/math" },
-      { title: "Algebra Basics", description: "Introduction to algebraic concepts", thumbnailUrl: "https://images.unsplash.com/photo-1509228468518-180dd4864904?w=400&h=200&fit=crop", url: "https://www.mathsisfun.com/algebra/" },
-      { title: "Geometry Concepts", description: "Understanding shapes and space", thumbnailUrl: "https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=400&h=200&fit=crop", url: "https://www.mathsisfun.com/geometry/" }
+              { title: "Math Fundamentals", description: "Basic mathematical concepts", url: "https://www.khanacademy.org/math" },
+              { title: "Algebra Basics", description: "Introduction to algebraic concepts", url: "https://www.mathsisfun.com/algebra/" },
+              { title: "Geometry Concepts", description: "Understanding shapes and space", url: "https://www.mathsisfun.com/geometry/" }
     ],
     'english-teacher': [
-      { title: "English Grammar", description: "Essential grammar rules", thumbnailUrl: "https://images.unsplash.com/photo-1455390582262-044cdead277a?w=400&h=200&fit=crop", url: "https://www.grammarly.com/blog/" },
-      { title: "Writing Skills", description: "Improve your writing", thumbnailUrl: "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=400&h=200&fit=crop", url: "https://owl.purdue.edu/owl/" },
-      { title: "Literature Guide", description: "Understanding literary works", thumbnailUrl: "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&h=200&fit=crop", url: "https://www.sparknotes.com/" }
+              { title: "English Grammar", description: "Essential grammar rules", url: "https://www.grammarly.com/blog/" },
+              { title: "Writing Skills", description: "Improve your writing", url: "https://owl.purdue.edu/owl/" },
+              { title: "Literature Guide", description: "Understanding literary works", url: "https://www.sparknotes.com/" }
     ],
     'biology-teacher': [
-      { title: "Biology Fundamentals", description: "Essential life science concepts", thumbnailUrl: "https://images.unsplash.com/photo-1530026405186-ed1f139313f1?w=400&h=200&fit=crop", url: "https://www.khanacademy.org/science/biology" },
-      { title: "Human Anatomy", description: "Learn about the human body", thumbnailUrl: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=200&fit=crop", url: "https://www.innerbody.com/" },
-      { title: "Cell Biology", description: "Understanding cellular processes", thumbnailUrl: "https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?w=400&h=200&fit=crop", url: "https://www.khanacademy.org/science/biology/cellular-molecular-biology" }
+              { title: "Biology Fundamentals", description: "Essential life science concepts", url: "https://www.khanacademy.org/science/biology" },
+              { title: "Human Anatomy", description: "Learn about the human body", url: "https://www.innerbody.com/" },
+              { title: "Cell Biology", description: "Understanding cellular processes", url: "https://www.khanacademy.org/science/biology/cellular-molecular-biology" }
     ],
     'physics-teacher': [
-      { title: "Physics Fundamentals", description: "Basic physics concepts", thumbnailUrl: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=200&fit=crop", url: "https://www.khanacademy.org/science/physics" },
-      { title: "Mechanics", description: "Motion, forces, and energy", thumbnailUrl: "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=200&fit=crop", url: "https://www.physicsclassroom.com/" },
-      { title: "Electricity & Magnetism", description: "Electromagnetic concepts", thumbnailUrl: "https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?w=400&h=200&fit=crop", url: "https://www.khanacademy.org/science/physics/magnetic-forces-and-magnetic-fields" }
+              { title: "Physics Fundamentals", description: "Basic physics concepts", url: "https://www.khanacademy.org/science/physics" },
+              { title: "Mechanics", description: "Motion, forces, and energy", url: "https://www.physicsclassroom.com/" },
+              { title: "Electricity & Magnetism", description: "Electromagnetic concepts", url: "https://www.khanacademy.org/science/physics/magnetic-forces-and-magnetic-fields" }
     ],
     'chemistry-teacher': [
-      { title: "Chemistry Basics", description: "Fundamental chemical concepts", thumbnailUrl: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=200&fit=crop", url: "https://www.khanacademy.org/science/chemistry" },
-      { title: "Periodic Table", description: "Understanding elements", thumbnailUrl: "https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?w=400&h=200&fit=crop", url: "https://www.rsc.org/periodic-table" },
-      { title: "Chemical Reactions", description: "Types of chemical changes", thumbnailUrl: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=200&fit=crop", url: "https://www.khanacademy.org/science/chemistry/chemical-reactions-stoichiometry" }
+              { title: "Chemistry Basics", description: "Fundamental chemical concepts", url: "https://www.khanacademy.org/science/chemistry" },
+              { title: "Periodic Table", description: "Understanding elements", url: "https://www.rsc.org/periodic-table" },
+              { title: "Chemical Reactions", description: "Types of chemical changes", url: "https://www.khanacademy.org/science/chemistry/chemical-reactions-stoichiometry" }
     ],
     'history-teacher': [
-      { title: "World History", description: "Major historical events", thumbnailUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=200&fit=crop", url: "https://www.khanacademy.org/humanities/world-history" },
-      { title: "Ancient Civilizations", description: "Early human societies", thumbnailUrl: "https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?w=400&h=200&fit=crop", url: "https://www.khanacademy.org/humanities/ancient-art-civilizations" },
-      { title: "Modern History", description: "Recent historical developments", thumbnailUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=200&fit=crop", url: "https://www.khanacademy.org/humanities/us-history" }
+              { title: "World History", description: "Major historical events", url: "https://www.khanacademy.org/humanities/world-history" },
+              { title: "Ancient Civilizations", description: "Early human societies", url: "https://www.khanacademy.org/humanities/ancient-art-civilizations" },
+              { title: "Modern History", description: "Recent historical developments", url: "https://www.khanacademy.org/humanities/us-history" }
     ],
     'geography-teacher': [
-      { title: "Physical Geography", description: "Earth's natural features", thumbnailUrl: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=200&fit=crop", url: "https://www.khanacademy.org/humanities/geography" },
-      { title: "World Maps", description: "Understanding global geography", thumbnailUrl: "https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?w=400&h=200&fit=crop", url: "https://www.nationalgeographic.org/maps/" },
-      { title: "Climate & Weather", description: "Atmospheric conditions", thumbnailUrl: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=200&fit=crop", url: "https://www.khanacademy.org/science/weather-and-climate" }
+              { title: "Physical Geography", description: "Earth's natural features", url: "https://www.khanacademy.org/humanities/geography" },
+              { title: "World Maps", description: "Understanding global geography", url: "https://www.nationalgeographic.org/maps/" },
+              { title: "Climate & Weather", description: "Atmospheric conditions", url: "https://www.khanacademy.org/science/weather-and-climate" }
     ],
     'hindi-teacher': [
-      { title: "Hindi Grammar", description: "हिंदी व्याकरण के नियम", thumbnailUrl: "https://images.unsplash.com/photo-1455390582262-044cdead277a?w=400&h=200&fit=crop", url: "https://www.hindigranth.com/" },
-      { title: "Hindi Literature", description: "हिंदी साहित्य का अध्ययन", thumbnailUrl: "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&h=200&fit=crop", url: "https://www.hindisahitya.com/" },
-      { title: "Hindi Writing", description: "हिंदी लेखन कौशल", thumbnailUrl: "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=400&h=200&fit=crop", url: "https://www.hindigranth.com/writing" }
+              { title: "Hindi Grammar", description: "हिंदी व्याकरण के नियम", url: "https://www.hindigranth.com/" },
+              { title: "Hindi Literature", description: "हिंदी साहित्य का अध्ययन", url: "https://www.hindisahitya.com/" },
+              { title: "Hindi Writing", description: "हिंदी लेखन कौशल", url: "https://www.hindigranth.com/" }
     ],
     'doctor': [
-      { title: "Health Basics", description: "Fundamental health concepts", thumbnailUrl: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=200&fit=crop", url: "https://www.mayoclinic.org/healthy-lifestyle" },
-      { title: "Nutrition Guide", description: "Healthy eating principles", thumbnailUrl: "https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?w=400&h=200&fit=crop", url: "https://www.nutrition.gov/" },
-      { title: "Exercise & Fitness", description: "Physical activity guidelines", thumbnailUrl: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=200&fit=crop", url: "https://www.cdc.gov/physicalactivity/index.html" }
+              { title: "Health Basics", description: "Fundamental health concepts", url: "https://www.mayoclinic.org/healthy-lifestyle" },
+              { title: "Nutrition Guide", description: "Healthy eating principles", url: "https://www.nutrition.gov/" },
+              { title: "Exercise & Fitness", description: "Physical activity guidelines", url: "https://www.cdc.gov/physicalactivity/index.html" }
     ],
     'engineer': [
-      { title: "Engineering Basics", description: "Fundamental engineering concepts", thumbnailUrl: "https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?w=400&h=200&fit=crop", url: "https://www.khanacademy.org/science/engineering" },
-      { title: "Mechanical Engineering", description: "Machines and mechanisms", thumbnailUrl: "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=200&fit=crop", url: "https://www.khanacademy.org/science/mechanical-engineering" },
-      { title: "Electrical Engineering", description: "Circuits and electronics", thumbnailUrl: "https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?w=400&h=200&fit=crop", url: "https://www.khanacademy.org/science/electrical-engineering" }
+              { title: "Engineering Basics", description: "Fundamental engineering concepts", url: "https://www.khanacademy.org/science/engineering" },
+              { title: "Mechanical Engineering", description: "Machines and mechanisms", url: "https://www.khanacademy.org/science/mechanical-engineering" },
+              { title: "Electrical Engineering", description: "Circuits and electronics", url: "https://www.khanacademy.org/science/electrical-engineering" }
     ],
     'lawyer': [
-      { title: "Legal Basics", description: "Fundamental legal concepts", thumbnailUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=200&fit=crop", url: "https://www.law.cornell.edu/" },
-      { title: "Constitutional Law", description: "Understanding the constitution", thumbnailUrl: "https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?w=400&h=200&fit=crop", url: "https://constitutioncenter.org/" },
-      { title: "Civil Rights", description: "Individual rights and freedoms", thumbnailUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=200&fit=crop", url: "https://www.aclu.org/" }
+              { title: "Legal Basics", description: "Fundamental legal concepts", url: "https://www.law.cornell.edu/" },
+              { title: "Constitutional Law", description: "Understanding the constitution", url: "https://constitutioncenter.org/" },
+              { title: "Civil Rights", description: "Individual rights and freedoms", url: "https://www.aclu.org/" }
     ]
   }
   
@@ -438,52 +438,52 @@ const generateFallbackArticles = (avatarType) => {
 const generateFallbackVideos = (avatarType) => {
   const fallbackVideos = {
     'computer-teacher': [
-      { title: "Programming for Beginners", description: "Learn to code from scratch", duration: "15:30", thumbnailUrl: "https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?w=400&h=200&fit=crop", url: "https://www.youtube.com/watch?v=zOjov2YO4Es" },
-      { title: "Web Development Tutorial", description: "Build your first website", duration: "22:15", thumbnailUrl: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=400&h=200&fit=crop", url: "https://www.youtube.com/watch?v=916GWv2Qs08" }
+      { title: "Programming for Beginners", description: "Learn to code from scratch", duration: "15:30", url: "https://www.youtube.com/watch?v=zOjov2YO4Es" },
+      { title: "Web Development Tutorial", description: "Build your first website", duration: "22:15", url: "https://www.youtube.com/watch?v=916GWv2Qs08" }
     ],
     'mathematics-teacher': [
-      { title: "Math Fundamentals", description: "Essential mathematical concepts", duration: "12:20", thumbnailUrl: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=400&h=200&fit=crop", url: "https://www.youtube.com/watch?v=Kp2bYWRQylk" },
-      { title: "Algebra Basics", description: "Understanding algebra", duration: "16:40", thumbnailUrl: "https://images.unsplash.com/photo-1509228468518-180dd4864904?w=400&h=200&fit=crop", url: "https://www.youtube.com/watch?v=NybHckSEQBI" }
+      { title: "Math Fundamentals", description: "Essential mathematical concepts", duration: "12:20", url: "https://www.youtube.com/watch?v=Kp2bYWRQylk" },
+      { title: "Algebra Basics", description: "Understanding algebra", duration: "16:40", url: "https://www.youtube.com/watch?v=NybHckSEQBI" }
     ],
     'english-teacher': [
-      { title: "English Grammar Basics", description: "Essential grammar rules", duration: "13:25", thumbnailUrl: "https://images.unsplash.com/photo-1455390582262-044cdead277a?w=400&h=200&fit=crop", url: "https://www.youtube.com/watch?v=8WJYtGj1g5Q" },
-      { title: "Writing Skills", description: "Improve your writing", duration: "19:10", thumbnailUrl: "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=400&h=200&fit=crop", url: "https://www.youtube.com/watch?v=1ajte3bMroe" }
+      { title: "English Grammar Basics", description: "Essential grammar rules", duration: "13:25", url: "https://www.youtube.com/watch?v=8WJYtGj1g5Q" },
+      { title: "Writing Skills", description: "Improve your writing", duration: "19:10", url: "https://www.youtube.com/watch?v=1ajte3bMroe" }
     ],
     'biology-teacher': [
-      { title: "Biology Introduction", description: "Basic life science concepts", duration: "14:30", thumbnailUrl: "https://images.unsplash.com/photo-1530026405186-ed1f139313f1?w=400&h=200&fit=crop", url: "https://www.youtube.com/watch?v=izRvPaAWgyw" },
-      { title: "Human Body Systems", description: "Understanding anatomy", duration: "18:45", thumbnailUrl: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=200&fit=crop", url: "https://www.youtube.com/watch?v=0jbniqJ4nQc" }
+      { title: "Biology Introduction", description: "Basic life science concepts", duration: "14:30", url: "https://www.youtube.com/watch?v=izRvPaAWgyw" },
+      { title: "Human Body Systems", description: "Understanding anatomy", duration: "18:45", url: "https://www.youtube.com/watch?v=0jbniqJ4nQc" }
     ],
     'physics-teacher': [
-      { title: "Physics Fundamentals", description: "Basic physics concepts", duration: "16:20", thumbnailUrl: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=200&fit=crop", url: "https://www.youtube.com/watch?v=CQYELiTtUs8" },
-      { title: "Mechanics Explained", description: "Motion and forces", duration: "21:15", thumbnailUrl: "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=200&fit=crop", url: "https://www.youtube.com/watch?v=7DjsD7Hcd9U" }
+      { title: "Physics Fundamentals", description: "Basic physics concepts", duration: "16:20", url: "https://www.youtube.com/watch?v=CQYELiTtUs8" },
+      { title: "Mechanics Explained", description: "Motion and forces", duration: "21:15", url: "https://www.youtube.com/watch?v=7DjsD7Hcd9U" }
     ],
     'chemistry-teacher': [
-      { title: "Chemistry Basics", description: "Fundamental chemical concepts", duration: "15:40", thumbnailUrl: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=200&fit=crop", url: "https://www.youtube.com/watch?v=7DjsD7Hcd9U" },
-      { title: "Periodic Table", description: "Understanding elements", duration: "19:30", thumbnailUrl: "https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?w=400&h=200&fit=crop", url: "https://www.youtube.com/watch?v=0RRVV4Diomg" }
+      { title: "Chemistry Basics", description: "Fundamental chemical concepts", duration: "15:40", url: "https://www.youtube.com/watch?v=7DjsD7Hcd9U" },
+      { title: "Periodic Table", description: "Understanding elements", duration: "19:30", url: "https://www.youtube.com/watch?v=0RRVV4Diomg" }
     ],
     'history-teacher': [
-      { title: "World History Overview", description: "Major historical events", duration: "17:25", thumbnailUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=200&fit=crop", url: "https://www.youtube.com/watch?v=Yocja_N5s1I" },
-      { title: "Ancient Civilizations", description: "Early human societies", duration: "20:10", thumbnailUrl: "https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?w=400&h=200&fit=crop", url: "https://www.youtube.com/watch?v=8ZtInClXe1Q" }
+      { title: "World History Overview", description: "Major historical events", duration: "17:25", url: "https://www.youtube.com/watch?v=Yocja_N5s1I" },
+      { title: "Ancient Civilizations", description: "Early human societies", duration: "20:10", url: "https://www.youtube.com/watch?v=8ZtInClXe1Q" }
     ],
     'geography-teacher': [
-      { title: "Physical Geography", description: "Earth's natural features", duration: "16:45", thumbnailUrl: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=200&fit=crop", url: "https://www.youtube.com/watch?v=7DjsD7Hcd9U" },
-      { title: "World Geography", description: "Global geographical features", duration: "18:20", thumbnailUrl: "https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?w=400&h=200&fit=crop", url: "https://www.youtube.com/watch?v=0RRVV4Diomg" }
+      { title: "Physical Geography", description: "Earth's natural features", duration: "16:45", url: "https://www.youtube.com/watch?v=7DjsD7Hcd9U" },
+      { title: "World Geography", description: "Global geographical features", duration: "18:20", url: "https://www.youtube.com/watch?v=0RRVV4Diomg" }
     ],
     'hindi-teacher': [
-      { title: "हिंदी व्याकरण", description: "Basic Hindi grammar rules", duration: "14:15", thumbnailUrl: "https://images.unsplash.com/photo-1455390582262-044cdead277a?w=400&h=200&fit=crop", url: "https://www.youtube.com/watch?v=7DjsD7Hcd9U" },
-      { title: "हिंदी लेखन", description: "Hindi writing skills", duration: "16:50", thumbnailUrl: "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=400&h=200&fit=crop", url: "https://www.youtube.com/watch?v=0RRVV4Diomg" }
+      { title: "हिंदी व्याकरण", description: "Basic Hindi grammar rules", duration: "14:15", url: "https://www.youtube.com/watch?v=7DjsD7Hcd9U" },
+      { title: "हिंदी लेखन", description: "Hindi writing skills", duration: "16:50", url: "https://www.youtube.com/watch?v=0RRVV4Diomg" }
     ],
     'doctor': [
-      { title: "Health Basics", description: "Fundamental health concepts", duration: "15:30", thumbnailUrl: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=200&fit=crop", url: "https://www.youtube.com/watch?v=7DjsD7Hcd9U" },
-      { title: "Nutrition Guide", description: "Healthy eating principles", duration: "18:45", thumbnailUrl: "https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?w=400&h=200&fit=crop", url: "https://www.youtube.com/watch?v=0RRVV4Diomg" }
+      { title: "Health Basics", description: "Fundamental health concepts", duration: "15:30", url: "https://www.youtube.com/watch?v=7DjsD7Hcd9U" },
+      { title: "Nutrition Guide", description: "Healthy eating principles", duration: "18:45", url: "https://www.youtube.com/watch?v=0RRVV4Diomg" }
     ],
     'engineer': [
-      { title: "Engineering Fundamentals", description: "Basic engineering concepts", duration: "16:20", thumbnailUrl: "https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?w=400&h=200&fit=crop", url: "https://www.youtube.com/watch?v=7DjsD7Hcd9U" },
-      { title: "Mechanical Engineering", description: "Machines and mechanisms", duration: "19:15", thumbnailUrl: "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=200&fit=crop", url: "https://www.youtube.com/watch?v=0RRVV4Diomg" }
+      { title: "Engineering Fundamentals", description: "Basic engineering concepts", duration: "16:20", url: "https://www.youtube.com/watch?v=7DjsD7Hcd9U" },
+      { title: "Mechanical Engineering", description: "Machines and mechanisms", duration: "19:15", url: "https://www.youtube.com/watch?v=0RRVV4Diomg" }
     ],
     'lawyer': [
-      { title: "Legal Basics", description: "Fundamental legal concepts", duration: "17:40", thumbnailUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=200&fit=crop", url: "https://www.youtube.com/watch?v=7DjsD7Hcd9U" },
-      { title: "Constitutional Law", description: "Understanding the constitution", duration: "20:25", thumbnailUrl: "https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?w=400&h=200&fit=crop", url: "https://www.youtube.com/watch?v=0RRVV4Diomg" }
+      { title: "Legal Basics", description: "Fundamental legal concepts", duration: "17:40", url: "https://www.youtube.com/watch?v=7DjsD7Hcd9U" },
+      { title: "Constitutional Law", description: "Understanding the constitution", duration: "20:25", url: "https://www.youtube.com/watch?v=0RRVV4Diomg" }
     ]
   }
   

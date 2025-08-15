@@ -155,6 +155,14 @@ async function handleDocumentRequest(request) {
 
 // Handle resource requests (cache-first)
 async function handleResourceRequest(request) {
+  // Skip chrome-extension and other unsupported schemes
+  if (request.url.startsWith('chrome-extension://') || 
+      request.url.startsWith('moz-extension://') || 
+      request.url.startsWith('safari-extension://')) {
+    console.log('⚠️ Skipping unsupported scheme:', request.url);
+    return new Response('Scheme not supported', { status: 400 });
+  }
+
   // Try cache first
   const cachedResponse = await caches.match(request);
   if (cachedResponse) {
