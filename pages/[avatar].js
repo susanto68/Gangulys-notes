@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
 import { AVATAR_CONFIG } from '../lib/avatars'
-import { initSynth, speakText, stopSpeaking, testSpeech, getSpeechStatus } from '../lib/speech'
+import { initSynth, speakText, stopSpeaking } from '../lib/speech'
 import { useSpeechRecognition } from '../hooks/useSpeechRecognition'
 import { usePWA } from '../hooks/usePWA'
 import { generateContentSuggestions } from '../lib/contentSuggestions'
@@ -427,12 +427,7 @@ export default function AvatarChat() {
     clearAllTimeouts()
   }, [setIsSpeaking, clearAllTimeouts])
 
-  const handleTestSpeech = useCallback(() => {
-    console.log('🧪 Testing speech system...')
-    const status = getSpeechStatus()
-    console.log('📊 Current speech status:', status)
-    testSpeech()
-  }, [])
+
 
   // Dismiss error
   const dismissError = useCallback(() => {
@@ -744,21 +739,7 @@ export default function AvatarChat() {
         </div>
       </div>
 
-      {/* Debug Button - Temporary for testing */}
-      <div className="fixed bottom-20 left-4 z-50">
-        <button
-          onClick={handleTestSpeech}
-          className="flex items-center gap-2 px-3 md:px-4 py-2 text-xs md:text-sm font-semibold bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white rounded-lg shadow-lg transform transition-all duration-200 hover:scale-105 backdrop-blur-md"
-        >
-          <svg width="14" height="14" className="md:w-4 md:h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M9 12l2 2 4-4"/>
-            <path d="M21 12c-1 0-2-1-2-2s1-2 2-2 2 1 2 2-1 2-2 2z"/>
-            <path d="M3 12c1 0 2-1 2-2s-1-2-2-2-2 1-2 2 1 2 2 2z"/>
-          </svg>
-          <span className="hidden md:inline">{UI_TEXT.BUTTONS.TEST_SPEECH}</span>
-          <span className="md:hidden">Test</span>
-        </button>
-      </div>
+
 
       {/* Fixed Talk Button at Bottom Center */}
       <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50">
