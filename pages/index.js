@@ -11,6 +11,7 @@ export default function Home() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(true)
   const [hasPlayedWelcome, setHasPlayedWelcome] = useState(false)
+  const [visitorCount, setVisitorCount] = useState('Loading...')
   const welcomeTimeoutRef = useRef(null)
 
   const { speakText, isSpeaking } = useSpeechSynthesis()
@@ -63,12 +64,59 @@ export default function Home() {
     }
   }, [playWelcomeGreeting]) // Dependency array updated
 
+  // Visitor counter effect
+  useEffect(() => {
+    fetch('https://api.countapi.xyz/hit/ai-avatar-vercel.vercel.app/visits')
+      .then(res => res.json())
+      .then(data => {
+        let value = 0;
+        const target = data.value;
+
+        // Smooth increment animation
+        const interval = setInterval(() => {
+          value += Math.ceil((target - value) / 10);
+          if(value >= target) {
+            value = target;
+            clearInterval(interval);
+          }
+          setVisitorCount(`Visitors: ${value}`);
+        }, 50);
+      })
+      .catch(err => {
+        console.error("Visitor counter error:", err);
+        setVisitorCount("Visitors: Unable to load");
+      });
+  }, []);
+
   if (isLoading) {
     return <LoadingScreen />
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900">
+      {/* Global Visitor Counter */}
+      <div id="visitor-counter" style={{
+        position: 'fixed',
+        top: '15px',
+        left: '15px',
+        fontSize: '20px',
+        fontWeight: 'bold',
+        color: '#ff6600',
+        background: 'linear-gradient(90deg, #fff8e1, #ffecb3)',
+        padding: '12px 18px',
+        borderRadius: '15px',
+        boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+        fontFamily: "'Poppins', sans-serif",
+        zIndex: 9999,
+        display: 'flex',
+        alignItems: 'center',
+        gap: '8px',
+        animation: 'floatCounter 2s infinite alternate'
+      }}>
+        <span>🌸</span>
+        <span id="visitor-count-number">{visitorCount}</span>
+      </div>
+
       <Head>
         <title>Avatar AI Assistant - Choose Your AI Teacher</title>
         <meta name="description" content="Interactive AI Avatar Assistant Created by Sir Ganguly. Choose from various AI teachers for personalized learning experiences." />

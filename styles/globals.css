@@ -503,3 +503,10 @@
 .dark .qa-summary {
   @apply bg-gray-800/20 border-gray-700/30;
 }
+
+/* Visitor Counter Floating Animation */
+@keyframes floatCounter {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-4px); }
+  100% { transform: translateY(0px); }
+}
