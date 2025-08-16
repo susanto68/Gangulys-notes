@@ -77,10 +77,11 @@ export default function Home() {
           if (stored) {
             return parseInt(stored);
           }
-          return 0;
+          // Start local count from 500
+          return 500;
         } catch (error) {
           console.warn('localStorage not available:', error);
-          return 0;
+          return 500;
         }
       };
 
@@ -129,7 +130,7 @@ export default function Home() {
         }
         
         // Animate both counts
-        let displayCount = 0;
+        let displayCount = 500; // Start animation from 500
         let displayGlobalCount = 0;
         const target = currentCount;
         const globalTarget = globalCount;
@@ -161,7 +162,7 @@ export default function Home() {
             };
             localStorage.setItem('globalVisitorData', JSON.stringify(globalData));
             setVisitorCount(`🌍 Global: 1 | Local: ${currentCount.toLocaleString()}`);
-            console.log('🌍 Initialized global count to 1');
+            console.log('🌍 Initialized global count to 1, local count from 500');
           } catch (error) {
             console.warn('Could not initialize global count:', error);
             setVisitorCount(`🌍 Global: 1 | Local: ${currentCount.toLocaleString()}`);
@@ -173,7 +174,7 @@ export default function Home() {
       }
     } catch (error) {
       console.error('Visitor counter error:', error);
-      setVisitorCount('🌍 Global: 1 | Local: 1');
+      setVisitorCount('🌍 Global: 1 | Local: 500');
     }
   }, []);
 

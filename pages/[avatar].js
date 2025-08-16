@@ -93,10 +93,11 @@ export default function AvatarChat() {
           if (stored) {
             return parseInt(stored);
           }
-          return 0;
+          // Start local count from 500
+          return 500;
         } catch (error) {
           console.warn('localStorage not available:', error);
-          return 0;
+          return 500;
         }
       };
 
@@ -142,7 +143,7 @@ export default function AvatarChat() {
         }
         
         // Animate both counts
-        let displayCount = 0;
+        let displayCount = 500; // Start animation from 500
         let displayGlobalCount = 0;
         const target = currentCount;
         const globalTarget = globalCount;
@@ -171,7 +172,7 @@ export default function AvatarChat() {
               count: 1,
               lastUpdated: Date.now(),
               sessionId: `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-          };
+            };
             localStorage.setItem('globalVisitorData', JSON.stringify(globalData));
             setVisitorCount(`🌍 Global: 1 | Local: ${currentCount.toLocaleString()}`);
           } catch (error) {
@@ -184,7 +185,7 @@ export default function AvatarChat() {
       }
     } catch (error) {
       console.error('Visitor counter error:', error);
-      setVisitorCount('🌍 Global: 1 | Local: 1');
+      setVisitorCount('🌍 Global: 1 | Local: 500');
     }
   }, []);
 
