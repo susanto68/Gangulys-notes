@@ -100,39 +100,74 @@ export default function AvatarChat() {
         }
       };
 
+      // Get global visitor count (stored with timestamp for uniqueness)
+      const getGlobalVisitorCount = () => {
+        try {
+          const globalData = localStorage.getItem('globalVisitorData');
+          if (globalData) {
+            const data = JSON.parse(globalData);
+            return data.count || 0;
+          }
+          return 0;
+        } catch (error) {
+          console.warn('Global visitor data not available:', error);
+          return 0;
+        }
+      };
+
       // Check if this is a new session
       const hasVisited = sessionStorage.getItem('hasVisited');
       
       if (!hasVisited) {
-        // This is a new session, increment the count
+        // This is a new session, increment both local and global counts
         const currentCount = getVisitorCount() + 1;
+        const globalCount = getGlobalVisitorCount() + 1;
+        
         try {
+          // Store local count
           localStorage.setItem('visitorCount', currentCount.toString());
+          
+          // Store global count with timestamp for uniqueness
+          const globalData = {
+            count: globalCount,
+            lastUpdated: Date.now(),
+            sessionId: `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+          };
+          localStorage.setItem('globalVisitorData', JSON.stringify(globalData));
+          
+          // Mark this session as visited
           sessionStorage.setItem('hasVisited', 'true');
         } catch (error) {
           console.warn('Storage not available:', error);
         }
         
-        // Animate the count
+        // Animate both counts
         let displayCount = 0;
+        let displayGlobalCount = 0;
         const target = currentCount;
+        const globalTarget = globalCount;
         
         const interval = setInterval(() => {
           displayCount += Math.ceil((target - displayCount) / 10);
-          if (displayCount >= target) {
+          displayGlobalCount += Math.ceil((globalTarget - displayGlobalCount) / 10);
+          
+          if (displayCount >= target && displayGlobalCount >= globalTarget) {
             displayCount = target;
+            displayGlobalCount = globalTarget;
             clearInterval(interval);
           }
-          setVisitorCount(`Visitors: ${displayCount.toLocaleString()}`);
+          
+          setVisitorCount(`🌍 Global: ${displayGlobalCount.toLocaleString()} | Local: ${displayCount.toLocaleString()}`);
         }, 50);
       } else {
-        // Already visited this session, just display the count
+        // Already visited this session, just display the counts
         const currentCount = getVisitorCount();
-        setVisitorCount(`Visitors: ${currentCount.toLocaleString()}`);
+        const globalCount = getGlobalVisitorCount();
+        setVisitorCount(`🌍 Global: ${globalCount.toLocaleString()} | Local: ${currentCount.toLocaleString()}`);
       }
     } catch (error) {
       console.error('Visitor counter error:', error);
-      setVisitorCount('Visitors: 1');
+      setVisitorCount('🌍 Global: 1 | Local: 1');
     }
   }, []);
 
@@ -532,7 +567,7 @@ export default function AvatarChat() {
         position: 'fixed',
         top: '15px',
         left: '15px',
-        fontSize: '20px',
+        fontSize: '16px',
         fontWeight: 'bold',
         color: '#ff6600',
         background: 'linear-gradient(90deg, #fff8e1, #ffecb3)',
@@ -544,10 +579,14 @@ export default function AvatarChat() {
         display: 'flex',
         alignItems: 'center',
         gap: '8px',
-        animation: 'floatCounter 2s infinite alternate'
+        animation: 'floatCounter 2s infinite alternate',
+        maxWidth: '300px',
+        minWidth: '280px',
+        textAlign: 'center',
+        lineHeight: '1.2'
       }}>
         <span>🌸</span>
-        <span id="visitor-count-number">{visitorCount}</span>
+        <span id="visitor-count-number" style={{ fontSize: '14px' }}>{visitorCount}</span>
       </div>
 
       <Head>
