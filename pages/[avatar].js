@@ -116,73 +116,44 @@ export default function AvatarChat() {
         }
       };
 
-      // Check if this is a new session
-      const hasVisited = sessionStorage.getItem('hasVisited');
+      // Count on EVERY refresh/reload (not just new sessions)
+      const currentCount = getVisitorCount() + 1;
+      const globalCount = getGlobalVisitorCount() + 1;
       
-      if (!hasVisited) {
-        // This is a new session, increment both local and global counts
-        const currentCount = getVisitorCount() + 1;
-        const globalCount = getGlobalVisitorCount() + 1;
+      try {
+        // Store local count
+        localStorage.setItem('visitorCount', currentCount.toString());
         
-        try {
-          // Store local count
-          localStorage.setItem('visitorCount', currentCount.toString());
-          
-          // Store global count with timestamp for uniqueness
-          const globalData = {
-            count: globalCount,
-            lastUpdated: Date.now(),
-            sessionId: `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-          };
-          localStorage.setItem('globalVisitorData', JSON.stringify(globalData));
-          
-          // Mark this session as visited
-          sessionStorage.setItem('hasVisited', 'true');
-        } catch (error) {
-          console.warn('Storage not available:', error);
-        }
-        
-        // Animate both counts
-        let displayCount = 500; // Start animation from 500
-        let displayGlobalCount = 0;
-        const target = currentCount;
-        const globalTarget = globalCount;
-        
-        const interval = setInterval(() => {
-          displayCount += Math.ceil((target - displayCount) / 10);
-          displayGlobalCount += Math.ceil((globalTarget - displayGlobalCount) / 10);
-          
-          if (displayCount >= target && displayGlobalCount >= globalTarget) {
-            displayCount = target;
-            displayGlobalCount = globalTarget;
-            clearInterval(interval);
-          }
-          
-          setVisitorCount(`🌍 Global: ${displayGlobalCount.toLocaleString()} | Local: ${displayCount.toLocaleString()}`);
-        }, 50);
-      } else {
-        // Already visited this session, just display the existing counts
-        const currentCount = getVisitorCount();
-        const globalCount = getGlobalVisitorCount();
-        
-        // If no global count exists yet, initialize it
-        if (globalCount === 0) {
-          try {
-            const globalData = {
-              count: 1,
-              lastUpdated: Date.now(),
-              sessionId: `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-            };
-            localStorage.setItem('globalVisitorData', JSON.stringify(globalData));
-            setVisitorCount(`🌍 Global: 1 | Local: ${currentCount.toLocaleString()}`);
-          } catch (error) {
-            console.warn('Could not initialize global count:', error);
-            setVisitorCount(`🌍 Global: 1 | Local: ${currentCount.toLocaleString()}`);
-          }
-        } else {
-          setVisitorCount(`🌍 Global: ${globalCount.toLocaleString()} | Local: ${currentCount.toLocaleString()}`);
-        }
+        // Store global count with timestamp for uniqueness
+        const globalData = {
+          count: globalCount,
+          lastUpdated: Date.now(),
+          sessionId: `refresh_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+        };
+        localStorage.setItem('globalVisitorData', JSON.stringify(globalData));
+      } catch (error) {
+        console.warn('Storage not available:', error);
       }
+      
+      // Animate both counts
+      let displayCount = 500; // Start animation from 500
+      let displayGlobalCount = 0;
+      const target = currentCount;
+      const globalTarget = globalCount;
+      
+      const interval = setInterval(() => {
+        displayCount += Math.ceil((target - displayCount) / 10);
+        displayGlobalCount += Math.ceil((globalTarget - displayGlobalCount) / 10);
+        
+        if (displayCount >= target && displayGlobalCount >= globalTarget) {
+          displayCount = target;
+          displayGlobalCount = globalTarget;
+          clearInterval(interval);
+        }
+        
+        setVisitorCount(`🌍 Global: ${displayGlobalCount.toLocaleString()} | Local: ${displayCount.toLocaleString()}`);
+      }, 50);
+      
     } catch (error) {
       console.error('Visitor counter error:', error);
       setVisitorCount('🌍 Global: 1 | Local: 500');
