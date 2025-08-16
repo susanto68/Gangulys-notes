@@ -66,41 +66,57 @@ export default function Home() {
 
   // Visitor counter effect
   useEffect(() => {
-    // Get or create visitor count from localStorage
-    const getVisitorCount = () => {
-      const stored = localStorage.getItem('visitorCount');
-      if (stored) {
-        return parseInt(stored);
-      }
-      return 0;
-    };
+    // Only run on client side
+    if (typeof window === 'undefined') return;
 
-    // Check if this is a new session
-    const sessionKey = `session_${Date.now()}`;
-    const hasVisited = sessionStorage.getItem('hasVisited');
-    
-    if (!hasVisited) {
-      // This is a new session, increment the count
-      const currentCount = getVisitorCount() + 1;
-      localStorage.setItem('visitorCount', currentCount.toString());
-      sessionStorage.setItem('hasVisited', 'true');
-      
-      // Animate the count
-      let displayCount = 0;
-      const target = currentCount;
-      
-      const interval = setInterval(() => {
-        displayCount += Math.ceil((target - displayCount) / 10);
-        if (displayCount >= target) {
-          displayCount = target;
-          clearInterval(interval);
+    try {
+      // Get or create visitor count from localStorage
+      const getVisitorCount = () => {
+        try {
+          const stored = localStorage.getItem('visitorCount');
+          if (stored) {
+            return parseInt(stored);
+          }
+          return 0;
+        } catch (error) {
+          console.warn('localStorage not available:', error);
+          return 0;
         }
-        setVisitorCount(`Visitors: ${displayCount.toLocaleString()}`);
-      }, 50);
-    } else {
-      // Already visited this session, just display the count
-      const currentCount = getVisitorCount();
-      setVisitorCount(`Visitors: ${currentCount.toLocaleString()}`);
+      };
+
+      // Check if this is a new session
+      const hasVisited = sessionStorage.getItem('hasVisited');
+      
+      if (!hasVisited) {
+        // This is a new session, increment the count
+        const currentCount = getVisitorCount() + 1;
+        try {
+          localStorage.setItem('visitorCount', currentCount.toString());
+          sessionStorage.setItem('hasVisited', 'true');
+        } catch (error) {
+          console.warn('Storage not available:', error);
+        }
+        
+        // Animate the count
+        let displayCount = 0;
+        const target = currentCount;
+        
+        const interval = setInterval(() => {
+          displayCount += Math.ceil((target - displayCount) / 10);
+          if (displayCount >= target) {
+            displayCount = target;
+            clearInterval(interval);
+          }
+          setVisitorCount(`Visitors: ${displayCount.toLocaleString()}`);
+        }, 50);
+      } else {
+        // Already visited this session, just display the count
+        const currentCount = getVisitorCount();
+        setVisitorCount(`Visitors: ${currentCount.toLocaleString()}`);
+      }
+    } catch (error) {
+      console.error('Visitor counter error:', error);
+      setVisitorCount('Visitors: 1');
     }
   }, []);
 
