@@ -66,26 +66,42 @@ export default function Home() {
 
   // Visitor counter effect
   useEffect(() => {
-    fetch('https://api.countapi.xyz/hit/ai-avatar-vercel.vercel.app/visits')
-      .then(res => res.json())
-      .then(data => {
-        let value = 0;
-        const target = data.value;
+    // Get or create visitor count from localStorage
+    const getVisitorCount = () => {
+      const stored = localStorage.getItem('visitorCount');
+      if (stored) {
+        return parseInt(stored);
+      }
+      return 0;
+    };
 
-        // Smooth increment animation
-        const interval = setInterval(() => {
-          value += Math.ceil((target - value) / 10);
-          if(value >= target) {
-            value = target;
-            clearInterval(interval);
-          }
-          setVisitorCount(`Visitors: ${value}`);
-        }, 50);
-      })
-      .catch(err => {
-        console.error("Visitor counter error:", err);
-        setVisitorCount("Visitors: Unable to load");
-      });
+    // Check if this is a new session
+    const sessionKey = `session_${Date.now()}`;
+    const hasVisited = sessionStorage.getItem('hasVisited');
+    
+    if (!hasVisited) {
+      // This is a new session, increment the count
+      const currentCount = getVisitorCount() + 1;
+      localStorage.setItem('visitorCount', currentCount.toString());
+      sessionStorage.setItem('hasVisited', 'true');
+      
+      // Animate the count
+      let displayCount = 0;
+      const target = currentCount;
+      
+      const interval = setInterval(() => {
+        displayCount += Math.ceil((target - displayCount) / 10);
+        if (displayCount >= target) {
+          displayCount = target;
+          clearInterval(interval);
+        }
+        setVisitorCount(`Visitors: ${displayCount.toLocaleString()}`);
+      }, 50);
+    } else {
+      // Already visited this session, just display the count
+      const currentCount = getVisitorCount();
+      setVisitorCount(`Visitors: ${currentCount.toLocaleString()}`);
+    }
   }, []);
 
   if (isLoading) {
