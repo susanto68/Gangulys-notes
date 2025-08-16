@@ -510,3 +510,44 @@
   50% { transform: translateY(-4px); }
   100% { transform: translateY(0px); }
 }
+
+/* Mobile-responsive visitor counter */
+@media (max-width: 768px) {
+  #visitor-counter {
+    top: 8px !important;
+    left: 8px !important;
+    padding: 6px 10px !important;
+    max-width: 160px !important;
+    min-width: 150px !important;
+    font-size: 10px !important;
+    border-radius: 10px !important;
+  }
+  
+  #visitor-counter span:first-child {
+    font-size: 12px !important;
+  }
+  
+  #visitor-count-number {
+    font-size: 9px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  #visitor-counter {
+    top: 6px !important;
+    left: 6px !important;
+    padding: 5px 8px !important;
+    max-width: 140px !important;
+    min-width: 130px !important;
+    font-size: 9px !important;
+    border-radius: 8px !important;
+  }
+  
+  #visitor-counter span:first-child {
+    font-size: 11px !important;
+  }
+  
+  #visitor-count-number {
+    font-size: 8px !important;
+  }
+}

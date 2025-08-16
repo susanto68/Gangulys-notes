@@ -583,28 +583,30 @@ export default function AvatarChat() {
       {/* Global Visitor Counter */}
       <div id="visitor-counter" style={{
         position: 'fixed',
-        top: '15px',
-        left: '15px',
-        fontSize: '16px',
-        fontWeight: 'bold',
+        top: '10px',
+        left: '10px',
+        fontSize: '12px',
+        fontWeight: '600',
         color: '#ff6600',
         background: 'linear-gradient(90deg, #fff8e1, #ffecb3)',
-        padding: '12px 18px',
-        borderRadius: '15px',
-        boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+        padding: '8px 12px',
+        borderRadius: '12px',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
         fontFamily: "'Poppins', sans-serif",
         zIndex: 9999,
         display: 'flex',
         alignItems: 'center',
-        gap: '8px',
+        gap: '6px',
         animation: 'floatCounter 2s infinite alternate',
-        maxWidth: '300px',
-        minWidth: '280px',
+        maxWidth: '200px',
+        minWidth: '180px',
         textAlign: 'center',
-        lineHeight: '1.2'
+        lineHeight: '1.1',
+        backdropFilter: 'blur(10px)',
+        border: '1px solid rgba(255, 255, 255, 0.2)'
       }}>
-        <span>🌸</span>
-        <span id="visitor-count-number" style={{ fontSize: '14px' }}>{visitorCount}</span>
+        <span style={{ fontSize: '14px' }}>🌸</span>
+        <span id="visitor-count-number" style={{ fontSize: '11px' }}>{visitorCount}</span>
       </div>
 
       <Head>
