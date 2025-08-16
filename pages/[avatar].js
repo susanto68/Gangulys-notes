@@ -100,7 +100,7 @@ export default function AvatarChat() {
         }
       };
 
-      // Get global visitor count (stored with timestamp for uniqueness)
+      // Get global visitor count (persistent across all visits)
       const getGlobalVisitorCount = () => {
         try {
           const globalData = localStorage.getItem('globalVisitorData');
@@ -160,10 +160,27 @@ export default function AvatarChat() {
           setVisitorCount(`🌍 Global: ${displayGlobalCount.toLocaleString()} | Local: ${displayCount.toLocaleString()}`);
         }, 50);
       } else {
-        // Already visited this session, just display the counts
+        // Already visited this session, just display the existing counts
         const currentCount = getVisitorCount();
         const globalCount = getGlobalVisitorCount();
-        setVisitorCount(`🌍 Global: ${globalCount.toLocaleString()} | Local: ${currentCount.toLocaleString()}`);
+        
+        // If no global count exists yet, initialize it
+        if (globalCount === 0) {
+          try {
+            const globalData = {
+              count: 1,
+              lastUpdated: Date.now(),
+              sessionId: `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+          };
+            localStorage.setItem('globalVisitorData', JSON.stringify(globalData));
+            setVisitorCount(`🌍 Global: 1 | Local: ${currentCount.toLocaleString()}`);
+          } catch (error) {
+            console.warn('Could not initialize global count:', error);
+            setVisitorCount(`🌍 Global: 1 | Local: ${currentCount.toLocaleString()}`);
+          }
+        } else {
+          setVisitorCount(`🌍 Global: ${globalCount.toLocaleString()} | Local: ${currentCount.toLocaleString()}`);
+        }
       }
     } catch (error) {
       console.error('Visitor counter error:', error);

@@ -84,7 +84,7 @@ export default function Home() {
         }
       };
 
-      // Get global visitor count (stored with timestamp for uniqueness)
+      // Get global visitor count (persistent across all visits)
       const getGlobalVisitorCount = () => {
         try {
           const globalData = localStorage.getItem('globalVisitorData');
@@ -121,6 +121,9 @@ export default function Home() {
           
           // Mark this session as visited
           sessionStorage.setItem('hasVisited', 'true');
+          
+          // Log for debugging
+          console.log('🌍 New visitor! Global count:', globalCount, 'Local count:', currentCount);
         } catch (error) {
           console.warn('Storage not available:', error);
         }
@@ -144,10 +147,29 @@ export default function Home() {
           setVisitorCount(`🌍 Global: ${displayGlobalCount.toLocaleString()} | Local: ${displayCount.toLocaleString()}`);
         }, 50);
       } else {
-        // Already visited this session, just display the counts
+        // Already visited this session, just display the existing counts
         const currentCount = getVisitorCount();
         const globalCount = getGlobalVisitorCount();
-        setVisitorCount(`🌍 Global: ${globalCount.toLocaleString()} | Local: ${currentCount.toLocaleString()}`);
+        
+        // If no global count exists yet, initialize it
+        if (globalCount === 0) {
+          try {
+            const globalData = {
+              count: 1,
+              lastUpdated: Date.now(),
+              sessionId: `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+            };
+            localStorage.setItem('globalVisitorData', JSON.stringify(globalData));
+            setVisitorCount(`🌍 Global: 1 | Local: ${currentCount.toLocaleString()}`);
+            console.log('🌍 Initialized global count to 1');
+          } catch (error) {
+            console.warn('Could not initialize global count:', error);
+            setVisitorCount(`🌍 Global: 1 | Local: ${currentCount.toLocaleString()}`);
+          }
+        } else {
+          setVisitorCount(`🌍 Global: ${globalCount.toLocaleString()} | Local: ${currentCount.toLocaleString()}`);
+          console.log('🌍 Displaying existing counts - Global:', globalCount, 'Local:', currentCount);
+        }
       }
     } catch (error) {
       console.error('Visitor counter error:', error);
