@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visitor Counter Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+        .counter {
+            background: white;
+            padding: 20px;
+            margin: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #0056b3;
+        }
+        .log {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Visitor Counter Test</h1>
+    
+    <div class="counter">
+        <h3>Current Counts</h3>
+        <p>Global: <span id="global-count" data-count="503">503</span></p>
+        <p>India: <span id="india-count" data-count="127">127</span></p>
+        <p>Status: <span id="status">Ready</span></p>
+    </div>
+
+    <div class="counter">
+        <h3>Test Controls</h3>
+        <button class="test-button" onclick="testLocationDetection()">Test Location Detection</button>
+        <button class="test-button" onclick="testCounterUpdate()">Test Counter Update</button>
+        <button class="test-button" onclick="clearSession()">Clear Session</button>
+        <button class="test-button" onclick="resetCounters()">Reset Counters</button>
+        <button class="test-button" onclick="showLocalStorage()">Show LocalStorage</button>
+    </div>
+
+    <div class="counter">
+        <h3>Console Log</h3>
+        <div id="log" class="log"></div>
+    </div>
+
+    <script>
+        function log(message) {
+            const logDiv = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            logDiv.innerHTML += `[${timestamp}] ${message}<br>`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+            console.log(message);
+        }
+
+        function testLocationDetection() {
+            log('🌍 Testing location detection...');
+            fetch("https://ipapi.co/json/")
+                .then(res => res.json())
+                .then(data => {
+                    log(`✅ Location detected: ${data.country_code} - ${data.country_name}`);
+                    log(`📍 Details: ${data.city}, ${data.region}`);
+                    
+                    const isIndia = (data.country_code === "IN");
+                    log(`🇮🇳 Is India: ${isIndia}`);
+                    
+                    // Update status
+                    document.getElementById('status').textContent = 
+                        `${isIndia ? '🇮🇳 Indian' : '🌍 International'} visitor detected`;
+                })
+                .catch(error => {
+                    log(`❌ Location detection failed: ${error.message}`);
+                });
+        }
+
+        function testCounterUpdate() {
+            log('🔢 Testing counter update...');
+            
+            // Get current counts
+            let globalCount = parseInt(localStorage.getItem('globalCount')) || 503;
+            let indiaCount = parseInt(localStorage.getItem('indiaCount')) || 127;
+            
+            log(`📊 Current counts - Global: ${globalCount}, India: ${indiaCount}`);
+            
+            // Simulate visitor increment
+            globalCount++;
+            indiaCount++;
+            
+            // Update localStorage
+            localStorage.setItem('globalCount', globalCount.toString());
+            localStorage.setItem('indiaCount', indiaCount.toString());
+            
+            // Update display
+            document.getElementById('global-count').textContent = globalCount;
+            document.getElementById('india-count').textContent = indiaCount;
+            
+            log(`✅ Counters updated - Global: ${globalCount}, India: ${indiaCount}`);
+        }
+
+        function clearSession() {
+            log('🗑️ Clearing session storage...');
+            sessionStorage.removeItem('visitorCounted');
+            log('✅ Session cleared');
+        }
+
+        function resetCounters() {
+            log('🔄 Resetting counters to defaults...');
+            localStorage.setItem('globalCount', '503');
+            localStorage.setItem('indiaCount', '127');
+            
+            document.getElementById('global-count').textContent = '503';
+            document.getElementById('india-count').textContent = '127';
+            
+            log('✅ Counters reset to defaults');
+        }
+
+        function showLocalStorage() {
+            log('📦 LocalStorage contents:');
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                const value = localStorage.getItem(key);
+                log(`  ${key}: ${value}`);
+            }
+            
+            log('📦 SessionStorage contents:');
+            for (let i = 0; i < sessionStorage.length; i++) {
+                const key = sessionStorage.key(i);
+                const value = sessionStorage.getItem(key);
+                log(`  ${key}: ${value}`);
+            }
+        }
+
+        // Initialize
+        log('🚀 Visitor Counter Test initialized');
+        log('📍 Current URL: ' + window.location.href);
+        log('🌐 User Agent: ' + navigator.userAgent);
+        
+        // Check if counters exist in localStorage
+        const globalCount = localStorage.getItem('globalCount');
+        const indiaCount = localStorage.getItem('indiaCount');
+        
+        if (globalCount) {
+            document.getElementById('global-count').textContent = globalCount;
+            log(`📊 Global count from localStorage: ${globalCount}`);
+        }
+        
+        if (indiaCount) {
+            document.getElementById('india-count').textContent = indiaCount;
+            log(`📊 India count from localStorage: ${indiaCount}`);
+        }
+    </script>
+</body>
+</html>

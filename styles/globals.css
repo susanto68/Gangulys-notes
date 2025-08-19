@@ -99,6 +99,176 @@
     @apply animate-speaking;
   }
   
+  /* Visitor Counter Styles */
+  #visitor-counters {
+    position: fixed;
+    top: 8px;
+    left: 8px;
+    font-size: 9px;
+    font-weight: 500;
+    background: rgba(255, 255, 255, 0.08);
+    padding: 4px 6px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    animation: floatUpDown 3s ease-in-out infinite;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    max-width: 120px;
+    transition: all 0.3s ease;
+    /* Subtle glow effect */
+    box-shadow: 
+      0 2px 8px rgba(0, 0, 0, 0.15),
+      0 0 0 1px rgba(255, 255, 255, 0.1),
+      0 0 20px rgba(255, 255, 255, 0.05);
+  }
+
+  #visitor-counters:hover {
+    background: rgba(255, 255, 255, 0.12);
+    transform: translateY(-1px);
+    box-shadow: 
+      0 4px 12px rgba(0, 0, 0, 0.2),
+      0 0 0 1px rgba(255, 255, 255, 0.2),
+      0 0 30px rgba(255, 255, 255, 0.08);
+  }
+
+  .visitor {
+    margin: 1px 0;
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  }
+
+  .visitor b {
+    color: rgba(255, 255, 255, 0.95);
+    font-weight: 600;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  }
+
+  .visitor.status {
+    color: rgba(255, 255, 255, 0.6);
+    font-style: italic;
+    text-align: center;
+    margin-top: 3px;
+    padding-top: 2px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  }
+
+  @keyframes floatUpDown {
+    0%   { transform: translateY(0); }
+    50%  { transform: translateY(-2px); }
+    100% { transform: translateY(0); }
+  }
+
+  /* Mobile responsive visitor counter */
+  @media (max-width: 768px) {
+    #visitor-counters {
+      top: 6px;
+      left: 6px;
+      font-size: 8px;
+      padding: 3px 5px;
+      max-width: 100px;
+    }
+    
+    .visitor {
+      margin: 0.5px 0;
+    }
+    
+    .visitor.status {
+      margin-top: 2px;
+      padding-top: 1px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    #visitor-counters {
+      top: 4px;
+      left: 4px;
+      font-size: 7px;
+      padding: 2px 4px;
+      max-width: 90px;
+    }
+    
+    .visitor {
+      margin: 0.3px 0;
+    }
+  }
+
+  /* Back Button Styles - Positioned below visitor counter */
+  .back-button-container {
+    position: fixed;
+    top: 120px;
+    left: 8px;
+    z-index: 50;
+  }
+
+  .back-button {
+    @apply flex items-center gap-2 px-4 py-2.5;
+    @apply text-white font-bold text-sm;
+    @apply bg-gradient-to-r from-blue-600/80 to-purple-600/80;
+    @apply hover:from-blue-500/90 hover:to-purple-500/90;
+    @apply rounded-lg;
+    @apply transition-all duration-300 ease-out;
+    @apply backdrop-blur-md border-2 border-white/30;
+    @apply shadow-lg hover:shadow-xl;
+    @apply transform hover:scale-105 active:scale-95;
+    @apply opacity-90 hover:opacity-100;
+    animation: backButtonPulse 3s ease-in-out infinite;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
+    font-weight: 800;
+  }
+
+  @keyframes backButtonPulse {
+    0%, 100% { 
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.3);
+    }
+    50% { 
+      box-shadow: 0 6px 16px rgba(59, 130, 246, 0.5), 0 0 0 2px rgba(255, 255, 255, 0.4);
+    }
+  }
+
+  .back-button:hover {
+    animation: none;
+    box-shadow: 0 8px 20px rgba(59, 130, 246, 0.6), 0 0 0 3px rgba(255, 255, 255, 0.5);
+    transform: scale(1.05);
+    opacity: 1;
+  }
+
+  .back-button:active {
+    transform: scale(0.95);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4), 0 0 0 2px rgba(255, 255, 255, 0.4);
+  }
+
+  /* Mobile responsive back button */
+  @media (max-width: 768px) {
+    .back-button-container {
+      top: 100px;
+      left: 6px;
+    }
+    
+    .back-button {
+      @apply px-3 py-2;
+      @apply text-xs;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .back-button-container {
+      top: 90px;
+      left: 4px;
+    }
+    
+    .back-button {
+      @apply px-2.5 py-1.5;
+      @apply text-xs;
+    }
+  }
+
   /* Button styles - Mobile optimized */
   .btn-primary {
     @apply bg-gradient-to-r from-primary-500 to-primary-600;
@@ -504,50 +674,5 @@
   @apply bg-gray-800/20 border-gray-700/30;
 }
 
-/* Visitor Counter Floating Animation */
-@keyframes floatCounter {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-4px); }
-  100% { transform: translateY(0px); }
-}
 
-/* Mobile-responsive visitor counter */
-@media (max-width: 768px) {
-  #visitor-counter {
-    top: 8px !important;
-    left: 8px !important;
-    padding: 6px 10px !important;
-    max-width: 160px !important;
-    min-width: 150px !important;
-    font-size: 10px !important;
-    border-radius: 10px !important;
-  }
-  
-  #visitor-counter span:first-child {
-    font-size: 12px !important;
-  }
-  
-  #visitor-count-number {
-    font-size: 9px !important;
-  }
-}
 
-@media (max-width: 480px) {
-  #visitor-counter {
-    top: 6px !important;
-    left: 6px !important;
-    padding: 5px 8px !important;
-    max-width: 140px !important;
-    min-width: 130px !important;
-    font-size: 9px !important;
-    border-radius: 8px !important;
-  }
-  
-  #visitor-counter span:first-child {
-    font-size: 11px !important;
-  }
-  
-  #visitor-count-number {
-    font-size: 8px !important;
-  }
-}

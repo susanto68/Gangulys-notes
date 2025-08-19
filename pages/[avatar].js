@@ -33,7 +33,7 @@ export default function AvatarChat() {
   const [relatedVideos, setRelatedVideos] = useState([])
   const [sessionId, setSessionId] = useState('')
   const [isMobile, setIsMobile] = useState(false)
-  const [visitorCount, setVisitorCount] = useState('Loading...')
+  const [visitorCount, setVisitorCount] = useState(0)
   const greetingTimeoutRef = useRef(null)
   const speechTimeoutRef = useRef(null)
   const apiTimeoutRef = useRef(null)
@@ -80,85 +80,221 @@ export default function AvatarChat() {
     }
   }, [avatar, sessionId])
 
-  // Visitor counter effect
+  // Visitor counter functionality
   useEffect(() => {
-    // Only run on client side
-    if (typeof window === 'undefined') return;
-
-    try {
-      // Get or create visitor count from localStorage
-      const getVisitorCount = () => {
-        try {
-          const stored = localStorage.getItem('visitorCount');
-          if (stored) {
-            return parseInt(stored);
-          }
-          // Start local count from 500
-          return 500;
-        } catch (error) {
-          console.warn('localStorage not available:', error);
-          return 500;
-        }
-      };
-
-      // Get global visitor count (persistent across all visits)
-      const getGlobalVisitorCount = () => {
-        try {
-          const globalData = localStorage.getItem('globalVisitorData');
-          if (globalData) {
-            const data = JSON.parse(globalData);
-            return data.count || 0;
-          }
-          return 0;
-        } catch (error) {
-          console.warn('Global visitor data not available:', error);
-          return 0;
-        }
-      };
-
-      // Count on EVERY refresh/reload (not just new sessions)
-      const currentCount = getVisitorCount() + 1;
-      const globalCount = getGlobalVisitorCount() + 1;
+    // Check if visitor already counted in this session
+    const sessionKey = 'visitorCounted';
+    
+    // Reset session on page refresh for testing purposes
+    const isPageRefresh = performance.navigation.type === 1 || 
+                         (window.performance && window.performance.getEntriesByType('navigation')[0]?.type === 'reload');
+    
+    if (isPageRefresh) {
+      console.log('🔄 Page refreshed - resetting visitor session');
+      sessionStorage.removeItem(sessionKey);
       
-      try {
-        // Store local count
-        localStorage.setItem('visitorCount', currentCount.toString());
-        
-        // Store global count with timestamp for uniqueness
-        const globalData = {
-          count: globalCount,
-          lastUpdated: Date.now(),
-          sessionId: `refresh_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-        };
-        localStorage.setItem('globalVisitorData', JSON.stringify(globalData));
-      } catch (error) {
-        console.warn('Storage not available:', error);
+      // Also clear corrupted counter data on refresh
+      const globalCount = parseInt(localStorage.getItem('globalCount')) || 0;
+      const indiaCount = parseInt(localStorage.getItem('indiaCount')) || 0;
+      
+      if (globalCount < 0 || globalCount > 1000000) {
+        console.log('🔄 Clearing corrupted global counter on refresh');
+        localStorage.removeItem('globalCount');
       }
       
-      // Animate both counts
-      let displayCount = 500; // Start animation from 500
-      let displayGlobalCount = 0;
-      const target = currentCount;
-      const globalTarget = globalCount;
+      if (indiaCount < 0 || indiaCount > 1000000) {
+        console.log('🔄 Clearing corrupted Indian counter on refresh');
+        localStorage.removeItem('indiaCount');
+      }
+    }
+    
+    if (sessionStorage.getItem(sessionKey)) {
+      console.log('🔄 Visitor already counted in this session, showing current counts');
+      // Just display current counts without incrementing
+      const globalCount = parseInt(localStorage.getItem('globalCount')) || 503;
+      const indiaCount = parseInt(localStorage.getItem('indiaCount')) || 127;
       
-      const interval = setInterval(() => {
-        displayCount += Math.ceil((target - displayCount) / 10);
-        displayGlobalCount += Math.ceil((globalTarget - displayGlobalCount) / 10);
+      const globalElement = document.getElementById("global-count");
+      const indiaElement = document.getElementById("india-count");
+      
+      if (globalElement) globalElement.innerText = globalCount;
+      if (indiaElement) indiaElement.innerText = indiaCount;
+      
+      // Update status message
+      const statusElement = document.querySelector('.visitor.status');
+      if (statusElement) {
+        statusElement.innerHTML = '🔄 Current counts';
+      }
+      return;
+    }
+
+    // Wait for DOM to be ready
+    const timer = setTimeout(() => {
+      // Smooth count animation
+      const animateCount = (el, newValue) => {
+        if (!el) return;
         
-        if (displayCount >= target && displayGlobalCount >= globalTarget) {
-          displayCount = target;
-          displayGlobalCount = globalTarget;
-          clearInterval(interval);
+        let start = parseInt(el.dataset.count) || 0;
+        let end = newValue;
+        
+        // Prevent negative counting - always count up
+        if (end < start) {
+          end = start; // Don't allow decreasing counts
         }
         
-        setVisitorCount(`🌍 Global: ${displayGlobalCount.toLocaleString()} | Local: ${displayCount.toLocaleString()}`);
-      }, 50);
-      
-    } catch (error) {
-      console.error('Visitor counter error:', error);
-      setVisitorCount('🌍 Global: 1 | Local: 500');
-    }
-  }, []);
+        let duration = 800;
+        let stepTime = Math.abs(Math.floor(duration / (end - start))) || 20;
+        let current = start;
+        let increment = 1; // Always increment, never decrement
+
+        // If start and end are the same, just update the display
+        if (start === end) {
+          el.innerText = end;
+          el.dataset.count = end;
+          return;
+        }
+
+        let timer = setInterval(() => {
+          current += increment;
+          el.innerText = current;
+          if (current >= end) {
+            clearInterval(timer);
+            el.innerText = end;
+            el.dataset.count = end;
+          }
+        }, stepTime);
+      };
+
+      // Get current counts from localStorage or use defaults
+      const getCurrentCounts = () => {
+        let globalCount = parseInt(localStorage.getItem('globalCount')) || 503;
+        let indiaCount = parseInt(localStorage.getItem('indiaCount')) || 127;
+        
+        // Check if counts are corrupted (negative or extremely high)
+        if (globalCount < 0 || globalCount > 1000000) {
+          console.warn('⚠️ Corrupted global count detected, resetting to default');
+          globalCount = 503;
+          localStorage.setItem('globalCount', '503');
+        }
+        
+        if (indiaCount < 0 || indiaCount > 1000000) {
+          console.warn('⚠️ Corrupted Indian count detected, resetting to default');
+          indiaCount = 127;
+          localStorage.setItem('indiaCount', '127');
+        }
+        
+        // Ensure counts are never negative
+        globalCount = Math.max(0, globalCount);
+        indiaCount = Math.max(0, indiaCount);
+        
+        return { globalCount, indiaCount };
+      };
+
+      // Update counter in localStorage and animate
+      const updateCounter = (type, newValue) => {
+        // Ensure the new value is never negative
+        const safeValue = Math.max(0, newValue);
+        localStorage.setItem(`${type}Count`, safeValue.toString());
+        const element = document.getElementById(`${type}-count`);
+        if (element) {
+          animateCount(element, safeValue);
+        }
+      };
+
+      // Detect visitor country and update counters
+      fetch("https://ipapi.co/json/")
+        .then(res => res.json())
+        .then(data => {
+          console.log('🌍 Visitor location detected:', data.country_code, data.country_name);
+          console.log('📍 Location details:', {
+            country: data.country_name,
+            code: data.country_code,
+            city: data.city,
+            region: data.region
+          });
+          
+          let isIndia = (data.country_code === "IN");
+          let { globalCount, indiaCount } = getCurrentCounts();
+
+          if (isIndia) {
+            // Indian visitor - increment Indian counter, show global counter
+            console.log('🇮🇳 Indian visitor detected - updating Indian counter');
+            indiaCount++;
+            updateCounter('india', indiaCount);
+            
+            // Show global counter (read only)
+            updateCounter('global', globalCount);
+            
+          } else {
+            // Non-Indian visitor - increment global counter, show Indian counter
+            console.log('🌍 International visitor detected - updating global counter');
+            globalCount++;
+            updateCounter('global', globalCount);
+            
+            // Show Indian counter (read only)
+            updateCounter('india', indiaCount);
+          }
+
+          // Try to sync with external API if available
+          try {
+            if (isIndia) {
+              // Try to update external Indian counter
+              fetch("https://api.countapi.xyz/hit/mywebsite.com/india")
+                .then(res => res.json())
+                .then(count => {
+                  console.log('✅ External Indian counter updated:', count.value);
+                })
+                .catch(error => {
+                  console.log('⚠️ External Indian counter update failed, using local');
+                });
+            } else {
+              // Try to update external global counter
+              fetch("https://api.countapi.xyz/hit/mywebsite.com/global")
+                .then(res => res.json())
+                .then(count => {
+                  console.log('✅ External global counter updated:', count.value);
+                })
+                .catch(error => {
+                  console.log('⚠️ External global counter update failed, using local');
+                });
+            }
+          } catch (error) {
+            console.log('⚠️ External API not available, using local counters');
+          }
+
+          // Mark this visitor as counted for this session
+          sessionStorage.setItem(sessionKey, 'true');
+          console.log('✅ Visitor counted and session marked');
+          
+          // Update status message
+          const statusElement = document.querySelector('.visitor.status');
+          if (statusElement) {
+            statusElement.innerHTML = `📍 ${isIndia ? '🇮🇳 Indian' : '🌍 International'} visitor counted`;
+          }
+
+        })
+        .catch(error => {
+          console.warn('⚠️ Location detection failed, using default counters:', error);
+          // Fallback to default behavior
+          let { globalCount, indiaCount } = getCurrentCounts();
+          globalCount++; // Assume global visitor
+          updateCounter('global', globalCount);
+          updateCounter('india', indiaCount);
+          
+          // Mark this visitor as counted for this session
+          sessionStorage.setItem(sessionKey, 'true');
+          console.log('✅ Visitor counted (fallback) and session marked');
+          
+          // Update status message
+          const statusElement = document.querySelector('.visitor.status');
+          if (statusElement) {
+            statusElement.innerHTML = '📍 Visitor counted (location unknown)';
+          }
+        });
+    }, 1000); // Wait 1 second for DOM to be ready
+
+    return () => clearTimeout(timer);
+  }, [])
 
   // State for speech synthesis status
   const [isSpeaking, setIsSpeaking] = useState(false)
@@ -551,33 +687,43 @@ export default function AvatarChat() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 relative overflow-hidden break-words overflow-wrap-anywhere">
-      {/* Global Visitor Counter */}
-      <div id="visitor-counter" style={{
-        position: 'fixed',
-        top: '10px',
-        left: '10px',
-        fontSize: '12px',
-        fontWeight: '600',
-        color: '#ff6600',
-        background: 'linear-gradient(90deg, #fff8e1, #ffecb3)',
-        padding: '8px 12px',
-        borderRadius: '12px',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-        fontFamily: "'Poppins', sans-serif",
-        zIndex: 9999,
-        display: 'flex',
-        alignItems: 'center',
-        gap: '6px',
-        animation: 'floatCounter 2s infinite alternate',
-        maxWidth: '200px',
-        minWidth: '180px',
-        textAlign: 'center',
-        lineHeight: '1.1',
-        backdropFilter: 'blur(10px)',
-        border: '1px solid rgba(255, 255, 255, 0.2)'
-      }}>
-        <span style={{ fontSize: '14px' }}>🌸</span>
-        <span id="visitor-count-number" style={{ fontSize: '11px' }}>{visitorCount}</span>
+      {/* Visitor Counters */}
+      <div id="visitor-counters">
+        <div className="visitor global">
+          🌍 <b>Global:</b> <span id="global-count" data-count="503">503</span>
+        </div>
+        <div className="visitor india">
+          🇮🇳 <b>India:</b> <span id="india-count" data-count="127">127</span>
+        </div>
+        <div className="visitor status" style={{fontSize: '8px', opacity: 0.6, marginTop: '2px'}}>
+          📍 Detecting...
+        </div>
+      </div>
+
+      {/* Back Button - Positioned below visitor counter */}
+      <div className="back-button-container">
+        <button
+          onClick={handleBack}
+          className="back-button group"
+        >
+          {/* Back arrow icon */}
+          <svg 
+            width="18" 
+            height="18" 
+            viewBox="0 0 24 24" 
+            fill="none" 
+            stroke="currentColor" 
+            strokeWidth="3"
+            className="transition-transform duration-300 group-hover:-translate-x-1"
+          >
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
+          </svg>
+          
+          {/* Back text */}
+          <span className="font-bold tracking-wide">
+            BACK
+          </span>
+        </button>
       </div>
 
       <Head>
@@ -607,9 +753,6 @@ export default function AvatarChat() {
         isSpeaking={isSpeaking} 
         setIsSpeaking={setIsSpeaking} 
       />
-
-      {/* Floating Back Button */}
-      <BackButton onClick={handleBack} />
 
       {/* Main scrollable content */}
       <div className="container mx-auto px-4 pb-32 flex flex-col min-h-screen break-words overflow-wrap-anywhere overflow-x-hidden">

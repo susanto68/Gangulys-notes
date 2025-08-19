@@ -10,6 +10,7 @@ This application provides an immersive learning experience through:
 - **Voice Interaction**: Speech recognition for questions, speech synthesis for responses
 - **Real-time AI Responses**: Powered by Google's Gemini 2.0 Flash model
 - **Responsive Design**: Modern UI with Tailwind CSS and glass morphism effects
+- **Smart Welcome System**: Intelligent welcome message that plays once per session
 - **Error Handling**: Comprehensive error management for all edge cases
 
 ## 🚀 Features
@@ -21,20 +22,22 @@ This application provides an immersive learning experience through:
 - **Speech Synthesis**: AI responses are spoken aloud for accessibility
 - **Code Display**: Technical content shown in syntax-highlighted code boxes
 - **Real-time Feedback**: Visual indicators for listening, speaking, and processing states
+- **Smart Welcome**: Welcome message plays automatically once per session for better UX
 
 ### Technical Features
-- **Next.js 12+**: React framework with API routes
+- **Next.js 13+**: React framework with API routes and modern features
 - **Speech APIs**: Web Speech Recognition and Synthesis
 - **Gemini AI**: Google's latest AI model for responses
-- **Tailwind CSS**: Utility-first styling
-- **Responsive Design**: Mobile-first approach
+- **Tailwind CSS**: Utility-first styling with custom animations
+- **Responsive Design**: Mobile-first approach with PWA support
+- **Session Management**: Intelligent welcome message handling
 - **Error Handling**: Comprehensive error management
 - **Auto-deployment**: Vercel integration
 
 ## 📋 Prerequisites
 
 ### System Requirements
-- **Node.js**: Version 16.0 or higher
+- **Node.js**: Version 18.17 or higher
 - **npm**: Version 8.0 or higher
 - **Modern Browser**: Chrome, Firefox, Safari, or Edge (for speech APIs)
 
@@ -47,7 +50,7 @@ GEMINI_API_KEY=your_gemini_api_key_here
 
 # Optional: Custom configuration
 NEXT_PUBLIC_APP_NAME="AI Avatar Assistant"
-NEXT_PUBLIC_APP_VERSION="1.0.0"
+NEXT_PUBLIC_APP_VERSION="2.0.0"
 ```
 
 ### Getting Gemini API Key
@@ -68,24 +71,42 @@ Avatar_vercel/
 │   ├── ChatInterface/        # Page 2 components
 │   │   ├── AvatarDisplay.js  # Avatar display with animations
 │   │   ├── TextDisplay.js    # Text and interim transcript display
-│   │   └── CodeBox.js        # Code snippet display
+│   │   ├── CodeBox.js        # Code snippet display
+│   │   ├── ArticleCarousel.js # Related articles display
+│   │   └── YouTubeVideos.js  # Related videos display
 │   ├── Navigation/           # Navigation components
 │   │   └── BackButton.js     # Back navigation button
-│   └── VoiceControls/        # Voice interaction controls
-│       └── VoiceControls.js  # Talk/Stop buttons and status
+│   ├── VoiceControls/        # Voice interaction controls
+│   │   └── VoiceControls.js  # Talk/Stop buttons and status
+│   ├── PWA/                  # Progressive Web App features
+│   │   └── InstallPrompt.js  # App installation prompt
+│   └── ErrorBoundary/        # Error handling
+│       └── ErrorBoundary.js  # Error boundary component
 ├── hooks/                    # Custom React hooks
 │   ├── useSpeechRecognition.js  # Speech recognition logic
-│   └── useSpeechSynthesis.js    # Speech synthesis logic
+│   ├── useSpeechSynthesis.js    # Speech synthesis logic
+│   └── usePWA.js               # PWA functionality
 ├── lib/                      # Utility libraries
-│   └── avatars.js           # Avatar configuration data
+│   ├── avatars.js           # Avatar configuration data
+│   ├── speech.js            # Speech utilities
+│   └── contentSuggestions.js # Content suggestion logic
+├── context/                  # Application context
+│   ├── constant.js          # UI text and constants
+│   └── prompts.js           # AI prompt templates
 ├── pages/                    # Next.js pages
 │   ├── api/                 # API routes
-│   │   └── chat.js          # Gemini AI integration
+│   │   ├── chat.js          # Gemini AI integration
+│   │   └── tts.js           # Text-to-speech API
 │   ├── _app.js              # App wrapper
 │   ├── index.js             # Page 1: Avatar selection
 │   └── [avatar].js          # Page 2: Chat interface
 ├── public/                   # Static assets
-│   └── avatars/             # Avatar images
+│   ├── assets/              # Images, icons, and media
+│   │   ├── avatars/         # Avatar images
+│   │   ├── icons/           # PWA icons
+│   │   └── screenshots/     # App screenshots
+│   ├── manifest.json        # PWA manifest
+│   └── offline.html         # Offline fallback
 ├── styles/                   # Global styles
 │   └── globals.css          # Tailwind and custom CSS
 ├── .env.local               # Environment variables
@@ -187,6 +208,34 @@ vercel --prod
 
 ## 🧪 Testing Instructions
 
+### Welcome Message Testing
+
+#### 1. First Visit
+```bash
+# Test welcome message on first load
+1. Open the application in a new browser session
+2. Wait for loading screen to complete
+3. Verify welcome message plays automatically
+4. Check that status shows "Welcome message completed"
+```
+
+#### 2. Session Persistence
+```bash
+# Test welcome message persistence
+1. Navigate to an avatar chat page
+2. Return to main page using back button
+3. Verify welcome message does NOT play again
+4. Check status shows "Welcome message completed"
+```
+
+#### 3. Page Refresh
+```bash
+# Test welcome message on refresh
+1. Refresh the main page (F5 or Ctrl+R)
+2. Verify welcome message plays again
+3. Check that localStorage is properly reset
+```
+
 ### Speech Recognition Testing
 
 #### 1. Microphone Permissions
@@ -286,7 +335,7 @@ curl -X POST http://localhost:3000/api/chat \
 # Test avatar selection page
 1. Measure initial load time
 2. Test avatar grid responsiveness
-3. Verify welcome audio plays
+3. Verify welcome audio plays once per session
 
 # Test chat interface
 1. Measure API response time
@@ -327,6 +376,19 @@ recognition.lang = 'en-US'  // Language
 recognition.continuous = false  // Single utterance
 ```
 
+### Welcome Message Configuration
+Customize welcome message behavior in `pages/index.js`:
+
+```javascript
+// Welcome message timing
+const WELCOME_DELAY = 500;  // Delay after loading (ms)
+const LOADING_DELAY = 1000; // Loading screen duration (ms)
+
+// Session persistence
+localStorage.setItem('welcomePlayed', 'true');  // Mark as played
+localStorage.removeItem('welcomePlayed');       // Reset on refresh
+```
+
 ### API Configuration
 Adjust API settings in `pages/api/chat.js`:
 
@@ -347,7 +409,21 @@ generationConfig: {
 
 ### Common Issues
 
-#### 1. Speech Recognition Not Working
+#### 1. Welcome Message Not Playing
+```bash
+# Check session state
+- Verify localStorage is working
+- Check browser console for errors
+- Ensure speech synthesis is supported
+
+# Debug steps
+1. Open browser console
+2. Check for speech synthesis errors
+3. Verify welcome message logic
+4. Test with page refresh
+```
+
+#### 2. Speech Recognition Not Working
 ```bash
 # Check browser support
 - Ensure HTTPS in production
@@ -360,7 +436,7 @@ generationConfig: {
 3. Test microphone in browser settings
 ```
 
-#### 2. API Errors
+#### 3. API Errors
 ```bash
 # Check environment variables
 - Verify GEMINI_API_KEY is set
@@ -373,7 +449,7 @@ generationConfig: {
 3. Verify network connectivity
 ```
 
-#### 3. Build Errors
+#### 4. Build Errors
 ```bash
 # Clear cache and reinstall
 rm -rf node_modules
@@ -386,11 +462,45 @@ npm run build
 
 | Error | Cause | Solution |
 |-------|-------|----------|
+| "Welcome message failed" | Speech synthesis error | Check browser support and permissions |
 | "Microphone access denied" | Browser permissions | Allow microphone in browser settings |
 | "No speech detected" | No audio input | Speak louder or check microphone |
 | "Request timeout" | API slow response | Try shorter question or check network |
 | "Avatar not found" | Invalid avatar type | Select valid avatar from list |
 | "AI service unavailable" | Gemini API issue | Check API key and service status |
+
+## 📝 Recent Updates (v2.0.0)
+
+### ✅ Improvements Made
+- **Simple Visitor Counter**: Added a clean, minimal visitor counter at top-left with consistent design across all pages
+- **Smart Welcome System**: Welcome message now plays only once per session for better UX
+- **Session Management**: Intelligent localStorage handling for welcome message state
+- **Responsive Design**: Visitor counter adapts perfectly to both mobile and desktop screens
+- **Performance**: Optimized visitor counting with minimal localStorage operations
+- **Consistent Experience**: Both main page and avatar chat now have the same clean interface and visitor counter
+
+### 🔄 Welcome Message Behavior
+- **First Visit**: Plays automatically after loading
+- **Navigation**: Won't repeat when navigating between pages
+- **Page Refresh**: Plays again on each page refresh/reload
+- **Session Persistence**: Uses localStorage to track play state
+
+### 🎨 UI/UX Enhancements
+- **Clean Visitor Counter**: Small, unobtrusive counter with same background color scheme
+- **Mobile-First Design**: Responsive visitor counter that works perfectly on all screen sizes
+- **Better Mobile Experience**: Optimized spacing and sizing for mobile devices
+- **Improved Performance**: Efficient visitor counting without complex animations
+- **Professional Look**: More polished and focused user interface throughout the app
+- **Unified Design**: Consistent experience between main page and avatar chat screens
+
+### 📱 Visitor Counter Features
+- **Responsive Design**: Automatically adapts to mobile and desktop screen sizes
+- **Consistent Styling**: Matches the app's color scheme and design language
+- **Minimal Footprint**: Small size that doesn't interfere with main content
+- **Real-time Updates**: Shows current visitor count across all pages
+- **Mobile Optimized**: Touch-friendly sizing and positioning on small screens
+- **Custom Format**: Displays "Number of Visitor:- X" with bold red text
+- **Starting Count**: Begins counting from 503 onwards for professional appearance
 
 ## 📝 Contributing
 
@@ -424,4 +534,4 @@ For issues and questions:
 ---
 
 **Created by Sir Ganguly**  
-*AI Avatar Assistant - Interactive Learning Platform*
+*AI Avatar Assistant - Interactive Learning Platform v2.0.0*
