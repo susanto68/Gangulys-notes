@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import Head from 'next/head'
+import Link from 'next/link'
 
 export default function VisitorAnalytics() {
   const [visitorData, setVisitorData] = useState(null)
@@ -81,7 +82,7 @@ export default function VisitorAnalytics() {
                 <ul className="list-disc list-inside ml-4 space-y-1">
                   <li>Go to your Vercel dashboard</li>
                   <li>Select your project</li>
-                  <li>Click on "Functions" tab</li>
+                  <li>Click on &quot;Functions&quot; tab</li>
                   <li>View logs for the visitor-counter API</li>
                   <li>Each visitor will show: country, IP, timestamp, and counts</li>
                 </ul>
@@ -92,12 +93,12 @@ export default function VisitorAnalytics() {
 
         {/* Back to Home */}
         <div className="text-center mt-8">
-          <a 
+          <Link 
             href="/" 
             className="inline-flex items-center gap-2 bg-white/20 hover:bg-white/30 text-white px-6 py-3 rounded-lg transition-colors"
           >
             ← Back to Home
-          </a>
+          </Link>
         </div>
       </div>
     </div>

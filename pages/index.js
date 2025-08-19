@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
+import Link from 'next/link'
 import AvatarGrid from '../components/AvatarSelection/AvatarGrid'
 import LoadingScreen from '../components/AvatarSelection/LoadingScreen'
 import { AVATAR_CONFIG } from '../lib/avatars'
@@ -395,12 +396,12 @@ export default function Home() {
           <p className="text-white/60 text-sm mb-4">
             {UI_TEXT.TITLES.FOOTER}
           </p>
-          <a 
+          <Link 
             href="/admin/visitors" 
             className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white/70 hover:text-white px-4 py-2 rounded-lg transition-colors text-sm"
           >
             📊 View Visitor Analytics
-          </a>
+          </Link>
         </div>
       </div>
     </div>
