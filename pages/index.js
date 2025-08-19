@@ -4,6 +4,7 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 import AvatarGrid from '../components/AvatarSelection/AvatarGrid'
 import LoadingScreen from '../components/AvatarSelection/LoadingScreen'
+import VoiceFallback from '../components/VoiceControls/VoiceFallback'
 import { AVATAR_CONFIG } from '../lib/avatars'
 import { useSpeechSynthesis } from '../hooks/useSpeechSynthesis'
 import { WELCOME_MESSAGES, UI_TEXT } from '../context/constant.js'
@@ -340,20 +341,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900">
-      {/* Visitor Counters */}
-      <div id="visitor-counters">
-        <div className="visitor global">
-          🌍 <b>Global:</b> <span id="global-count" data-count="503">503</span>
-        </div>
-        <div className="visitor india">
-          🇮🇳 <b>India:</b> <span id="india-count" data-count="127">127</span>
-        </div>
-        <div className="visitor status" style={{fontSize: '8px', opacity: 0.6, marginTop: '2px'}}>
-          📍 Detecting...
-        </div>
-      </div>
-
+    <>
       <Head>
         <title>Avatar AI Assistant - Choose Your AI Teacher</title>
         <meta name="description" content="Interactive AI Avatar Assistant Created by Sir Ganguly. Choose from various AI teachers for personalized learning experiences." />
@@ -374,60 +362,77 @@ export default function Home() {
         <link rel="apple-touch-icon" href="/assets/icons/icon-152x152.png" />
         <link rel="manifest" href="/manifest.json" />
       </Head>
-
-      <div className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">
-            {UI_TEXT.TITLES.MAIN_PAGE}
-          </h1>
-          <p className="text-xl text-white/80 mb-2">
-            {UI_TEXT.TITLES.SUBTITLE}
-          </p>
-          <p className="text-sm text-white/60">
-            {UI_TEXT.TITLES.CREATOR}
-          </p>
-        </div>
-
-        {/* Speaking indicator */}
-        {isSpeaking && (
-          <div className="text-center mb-6">
-            <div className="inline-flex items-center gap-2 bg-blue-500/20 text-blue-300 px-4 py-2 rounded-full text-sm animate-pulse">
-              <div className="w-3 h-3 bg-blue-400 rounded-full animate-ping"></div>
-              {UI_TEXT.STATUS.WELCOME_PLAYING}
+      
+      <VoiceFallback onVoiceSupportChange={(supported) => console.log('Voice support:', supported)}>
+        <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900">
+          {/* Visitor Counters */}
+          <div id="visitor-counters">
+            <div className="visitor global">
+              🌍 <b>Global:</b> <span id="global-count" data-count="503">503</span>
+            </div>
+            <div className="visitor india">
+              🇮🇳 <b>India:</b> <span id="india-count" data-count="127">127</span>
+            </div>
+            <div className="visitor status" style={{fontSize: '8px', opacity: 0.6, marginTop: '2px'}}>
+              📍 Detecting...
             </div>
           </div>
-        )}
 
-        {/* Welcome status */}
-        {hasPlayedWelcome && !isSpeaking && (
-          <div className="text-center mb-6">
-            <div className="inline-flex items-center gap-2 bg-green-500/20 text-green-300 px-4 py-2 rounded-full text-sm">
-              <div className="w-3 h-3 bg-green-400 rounded-full"></div>
-              {UI_TEXT.STATUS.WELCOME_COMPLETED}
+          <div className="container mx-auto px-4 py-8">
+            {/* Header */}
+            <div className="text-center mb-8">
+              <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">
+                {UI_TEXT.TITLES.MAIN_PAGE}
+              </h1>
+              <p className="text-xl text-white/80 mb-2">
+                {UI_TEXT.TITLES.SUBTITLE}
+              </p>
+              <p className="text-sm text-white/60">
+                {UI_TEXT.TITLES.CREATOR}
+              </p>
             </div>
+
+            {/* Speaking indicator */}
+            {isSpeaking && (
+              <div className="text-center mb-6">
+                <div className="inline-flex items-center gap-2 bg-blue-500/20 text-blue-300 px-4 py-2 rounded-full text-sm animate-pulse">
+                  <div className="w-3 h-3 bg-blue-400 rounded-full animate-ping"></div>
+                  {UI_TEXT.STATUS.WELCOME_PLAYING}
+                </div>
+              </div>
+            )}
+
+            {/* Welcome status */}
+            {hasPlayedWelcome && !isSpeaking && (
+              <div className="text-center mb-6">
+                <div className="inline-flex items-center gap-2 bg-green-500/20 text-green-300 px-4 py-2 rounded-full text-sm">
+                  <div className="w-3 h-3 bg-green-400 rounded-full"></div>
+                  {UI_TEXT.STATUS.WELCOME_COMPLETED}
+                </div>
+              </div>
+            )}
+
+            {/* Avatar Grid */}
+            <AvatarGrid 
+              avatars={AVATAR_CONFIG} 
+              onAvatarSelect={handleAvatarSelect}
+            />
+
+            {/* Footer */}
+            <div className="text-center mt-8">
+              <p className="text-white/60 text-sm mb-4">
+                {UI_TEXT.TITLES.FOOTER}
+              </p>
+              <Link 
+                href="/admin/visitors" 
+                className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white/70 hover:text-white px-4 py-2 rounded-lg transition-colors text-sm"
+              >
+                📊 View Visitor Analytics
+              </Link>
+                        </div>
           </div>
-        )}
-
-        {/* Avatar Grid */}
-        <AvatarGrid 
-          avatars={AVATAR_CONFIG} 
-          onAvatarSelect={handleAvatarSelect}
-        />
-
-        {/* Footer */}
-        <div className="text-center mt-8">
-          <p className="text-white/60 text-sm mb-4">
-            {UI_TEXT.TITLES.FOOTER}
-          </p>
-          <Link 
-            href="/admin/visitors" 
-            className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white/70 hover:text-white px-4 py-2 rounded-lg transition-colors text-sm"
-          >
-            📊 View Visitor Analytics
-          </Link>
         </div>
-      </div>
-    </div>
+      </VoiceFallback>
+    </>
   )
 }

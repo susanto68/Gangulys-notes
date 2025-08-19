@@ -12,6 +12,7 @@ import CodeBox from '../components/ChatInterface/CodeBox'
 import ArticleCarousel from '../components/ChatInterface/ArticleCarousel'
 import YouTubeVideos from '../components/ChatInterface/YouTubeVideos'
 import VoiceControls from '../components/VoiceControls/VoiceControls'
+import VoiceFallback from '../components/VoiceControls/VoiceFallback'
 import BackButton from '../components/Navigation/BackButton'
 import InstallPrompt from '../components/PWA/InstallPrompt'
 import { ERROR_MESSAGES, UI_TEXT, getAvatarGreeting } from '../context/constant.js'
@@ -686,7 +687,30 @@ export default function AvatarChat() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 relative overflow-hidden break-words overflow-wrap-anywhere">
+    <>
+      <Head>
+        <title>{avatarConfig.name} - AI Avatar Assistant</title>
+        <meta name="description" content={`Chat with ${avatarConfig.name} about ${avatarConfig.domain}`} />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        
+        {/* PWA Meta Tags */}
+        <meta name="theme-color" content="#6366f1" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-title" content="Avatar AI" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="msapplication-TileColor" content="#6366f1" />
+        <meta name="msapplication-tap-highlight" content="no" />
+        
+        {/* PWA Icons */}
+        <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/icon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/icon-16x16.png" />
+        <link rel="apple-touch-icon" href="/assets/icons/icon-152x152.png" />
+        <link rel="manifest" href="/manifest.json" />
+      </Head>
+      
+      <VoiceFallback onVoiceSupportChange={(supported) => console.log('Voice support:', supported)}>
+        <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 relative overflow-hidden break-words overflow-wrap-anywhere">
       {/* Visitor Counters */}
       <div id="visitor-counters">
         <div className="visitor global">
@@ -725,27 +749,6 @@ export default function AvatarChat() {
           </span>
         </button>
       </div>
-
-      <Head>
-        <title>{avatarConfig.name} - AI Avatar Assistant</title>
-        <meta name="description" content={`Chat with ${avatarConfig.name} about ${avatarConfig.domain}`} />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        
-        {/* PWA Meta Tags */}
-        <meta name="theme-color" content="#6366f1" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <meta name="apple-mobile-web-app-title" content="Avatar AI" />
-        <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="msapplication-TileColor" content="#6366f1" />
-        <meta name="msapplication-tap-highlight" content="no" />
-        
-        {/* PWA Icons */}
-        <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/icon-32x32.png" />
-        <link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/icon-16x16.png" />
-        <link rel="apple-touch-icon" href="/assets/icons/icon-152x152.png" />
-        <link rel="manifest" href="/manifest.json" />
-      </Head>
 
       {/* PWA Install Prompt */}
       <InstallPrompt 
@@ -1045,6 +1048,8 @@ export default function AvatarChat() {
           </button>
         )}
       </div>
-    </div>
+        </div>
+    </VoiceFallback>
+    </>
   )
 }
