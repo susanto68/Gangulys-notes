@@ -20,19 +20,34 @@ export default function Home() {
 
   // Auto-greeting audio on load - only once per session
   const playWelcomeGreeting = useCallback(() => {
-    if (hasPlayedWelcome) return
+    // Multiple safety checks to prevent infinite loops
+    if (hasPlayedWelcome) {
+      console.log('🛑 Welcome already played, skipping')
+      return
+    }
+
+    // Check localStorage as additional safety
+    if (typeof window !== 'undefined' && localStorage.getItem('welcomePlayed') === 'true') {
+      console.log('🛑 Welcome already played (localStorage), skipping')
+      setHasPlayedWelcome(true)
+      return
+    }
 
     const welcomeMessage = WELCOME_MESSAGES.MAIN_PAGE
+    console.log('🎤 Starting welcome message...')
 
     try {
+      // Mark as playing immediately to prevent multiple calls
+      setHasPlayedWelcome(true)
+      
       speakText(welcomeMessage, "en", "welcome", () => {
-        setHasPlayedWelcome(true)
         // Store in localStorage to prevent playing again in this session
         if (typeof window !== 'undefined') {
           localStorage.setItem('welcomePlayed', 'true')
         }
-        console.log('✅ Welcome message completed')
+        console.log('✅ Welcome message completed successfully')
       })
+      
       console.log('🎤 Welcome message started')
     } catch (error) {
       console.warn('⚠️ Welcome message failed:', error)
@@ -270,6 +285,8 @@ export default function Home() {
   // Initialize app
   useEffect(() => {
     const initApp = () => {
+      console.log('🚀 Initializing app...')
+      
       // Clear welcome message flag on page refresh to allow it to play again
       if (typeof window !== 'undefined') {
         // Check if this is a page refresh (not a navigation)
@@ -277,12 +294,14 @@ export default function Home() {
                          (window.performance && window.performance.getEntriesByType('navigation')[0]?.type === 'reload');
         
         if (isRefresh) {
+          console.log('🔄 Page refresh detected - clearing welcome flag')
           localStorage.removeItem('welcomePlayed');
           setHasPlayedWelcome(false);
         } else {
           // Check if welcome message has been played in this session
           const welcomePlayed = localStorage.getItem('welcomePlayed')
           if (welcomePlayed === 'true') {
+            console.log('✅ Welcome already played in this session')
             setHasPlayedWelcome(true)
           }
         }
@@ -291,12 +310,16 @@ export default function Home() {
       // Simulate loading time for smooth experience
       setTimeout(() => {
         setIsLoading(false)
+        console.log('📱 Loading complete, checking welcome message...')
 
         // Play welcome greeting after loading only if not played yet
         if (!hasPlayedWelcome) {
+          console.log('🎤 Scheduling welcome message...')
           welcomeTimeoutRef.current = setTimeout(() => {
             playWelcomeGreeting()
           }, 500)
+        } else {
+          console.log('🛑 Welcome already played, skipping')
         }
       }, 1000)
     }
@@ -307,6 +330,7 @@ export default function Home() {
     return () => {
       if (welcomeTimeoutRef.current) {
         clearTimeout(welcomeTimeoutRef.current)
+        console.log('🧹 Cleaned up welcome timeout')
       }
     }
   }, [playWelcomeGreeting]) // Removed hasPlayedWelcome from dependencies to prevent loops
