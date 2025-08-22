@@ -7,7 +7,7 @@ console.log('🧪 PROJECT HEALTH CHECK STARTING...\n');
 async function testServer() {
   console.log('1️⃣ Testing server connectivity...');
   try {
-    const response = await fetch('http://localhost:3000');
+    const response = await fetch('http://localhost:3001');
     if (response.ok) {
       console.log('✅ Server is running and responding');
       return true;
@@ -25,7 +25,7 @@ async function testServer() {
 async function testMainPage() {
   console.log('\n2️⃣ Testing main page...');
   try {
-    const response = await fetch('http://localhost:3000');
+    const response = await fetch('http://localhost:3001');
     const html = await response.text();
     
     if (html.includes('Avatar AI Assistant')) {
@@ -51,7 +51,7 @@ async function testMainPage() {
 async function testAvatarPage() {
   console.log('\n3️⃣ Testing avatar page...');
   try {
-    const response = await fetch('http://localhost:3000/history-teacher');
+    const response = await fetch('http://localhost:3001/history-teacher');
     const html = await response.text();
     
     if (html.includes('History Teacher')) {
