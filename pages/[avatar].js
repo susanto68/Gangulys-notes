@@ -55,6 +55,38 @@ export default function AvatarChat() {
     }
   }, [])
 
+  // Auto-greeting on page load
+  const playAvatarGreeting = useCallback(() => {
+    if (hasPlayedGreeting || !avatarConfig) return
+
+    // Check sessionStorage to prevent greeting on refresh
+    if (typeof window !== 'undefined' && sessionStorage.getItem(`avatarGreeting_${avatar}`) === 'true') {
+      console.log('🛑 Avatar greeting already played in this session, skipping')
+      setHasPlayedGreeting(true)
+      return
+    }
+
+    const greetingMessage = getAvatarGreeting(avatar, avatarConfig)
+    console.log('🎤 Playing avatar greeting:', greetingMessage.substring(0, 100) + '...')
+    
+    // Set flag immediately to prevent multiple greetings
+    setHasPlayedGreeting(true)
+    
+    // Store in sessionStorage to prevent playing again in this session
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem(`avatarGreeting_${avatar}`, 'true')
+    }
+    
+    // Start speaking immediately
+    setIsSpeaking(true)
+    console.log('🎤 Starting avatar greeting speech...')
+    
+    speakText(greetingMessage, () => {
+      console.log('✅ Avatar greeting completed')
+      setIsSpeaking(false)
+    }, { avatarType: avatar })
+  }, [hasPlayedGreeting, avatarConfig, avatar, setHasPlayedGreeting])
+
   // Initialize speech synthesis detection on component mount
   useEffect(() => {
     console.log('🎤 Initializing speech synthesis for avatar:', avatar)
@@ -516,38 +548,6 @@ export default function AvatarChat() {
       clearAllTimeouts()
     }
   }, [avatar, sessionId, clearAllTimeouts, setIsProcessing, setApiError, setCodeContent, setRelatedArticles, setRelatedVideos, setTimeoutError, setIsSpeaking, setCurrentText])
-
-  // Auto-greeting on page load
-  const playAvatarGreeting = useCallback(() => {
-    if (hasPlayedGreeting || !avatarConfig) return
-
-    // Check sessionStorage to prevent greeting on refresh
-    if (typeof window !== 'undefined' && sessionStorage.getItem(`avatarGreeting_${avatar}`) === 'true') {
-      console.log('🛑 Avatar greeting already played in this session, skipping')
-      setHasPlayedGreeting(true)
-      return
-    }
-
-    const greetingMessage = getAvatarGreeting(avatar, avatarConfig)
-    console.log('🎤 Playing avatar greeting:', greetingMessage.substring(0, 100) + '...')
-    
-    // Set flag immediately to prevent multiple greetings
-    setHasPlayedGreeting(true)
-    
-    // Store in sessionStorage to prevent playing again in this session
-    if (typeof window !== 'undefined') {
-      sessionStorage.setItem(`avatarGreeting_${avatar}`, 'true')
-    }
-    
-    // Start speaking immediately
-    setIsSpeaking(true)
-    console.log('🎤 Starting avatar greeting speech...')
-    
-    speakText(greetingMessage, () => {
-      console.log('✅ Avatar greeting completed')
-      setIsSpeaking(false)
-    }, { avatarType: avatar })
-  }, [hasPlayedGreeting, avatarConfig, avatar, setHasPlayedGreeting])
 
   // Handle speech recognition result
   useEffect(() => {
