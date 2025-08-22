@@ -27,9 +27,9 @@ export default function Home() {
       return
     }
 
-    // Check localStorage as additional safety
-    if (typeof window !== 'undefined' && localStorage.getItem('welcomePlayed') === 'true') {
-      console.log('🛑 Welcome already played (localStorage), skipping')
+    // Check sessionStorage as primary safety (persists only for this session)
+    if (typeof window !== 'undefined' && sessionStorage.getItem('welcomePlayed') === 'true') {
+      console.log('🛑 Welcome already played (sessionStorage), skipping')
       setHasPlayedWelcome(true)
       return
     }
@@ -41,11 +41,12 @@ export default function Home() {
       // Mark as playing immediately to prevent multiple calls
       setHasPlayedWelcome(true)
       
+      // Store in sessionStorage to prevent playing again in this session
+      if (typeof window !== 'undefined') {
+        sessionStorage.setItem('welcomePlayed', 'true')
+      }
+      
       speakText(welcomeMessage, "en", "welcome", () => {
-        // Store in localStorage to prevent playing again in this session
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('welcomePlayed', 'true')
-        }
         console.log('✅ Welcome message completed successfully')
       })
       
@@ -55,7 +56,7 @@ export default function Home() {
       // Mark as played even on error to prevent retries
       setHasPlayedWelcome(true)
       if (typeof window !== 'undefined') {
-        localStorage.setItem('welcomePlayed', 'true')
+        sessionStorage.setItem('welcomePlayed', 'true')
       }
     }
   }, [hasPlayedWelcome, speakText])
@@ -288,23 +289,15 @@ export default function Home() {
     const initApp = () => {
       console.log('🚀 Initializing app...')
       
-      // Clear welcome message flag on page refresh to allow it to play again
+      // Check if welcome message has been played in this session
       if (typeof window !== 'undefined') {
-        // Check if this is a page refresh (not a navigation)
-        const isRefresh = performance.navigation.type === 1 || 
-                         (window.performance && window.performance.getEntriesByType('navigation')[0]?.type === 'reload');
-        
-        if (isRefresh) {
-          console.log('🔄 Page refresh detected - clearing welcome flag')
-          localStorage.removeItem('welcomePlayed');
-          setHasPlayedWelcome(false);
+        const welcomePlayed = sessionStorage.getItem('welcomePlayed')
+        if (welcomePlayed === 'true') {
+          console.log('✅ Welcome already played in this session')
+          setHasPlayedWelcome(true)
         } else {
-          // Check if welcome message has been played in this session
-          const welcomePlayed = localStorage.getItem('welcomePlayed')
-          if (welcomePlayed === 'true') {
-            console.log('✅ Welcome already played in this session')
-            setHasPlayedWelcome(true)
-          }
+          console.log('🆕 New session - welcome message will play')
+          setHasPlayedWelcome(false)
         }
       }
 

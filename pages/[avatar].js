@@ -13,6 +13,7 @@ import ArticleCarousel from '../components/ChatInterface/ArticleCarousel'
 import YouTubeVideos from '../components/ChatInterface/YouTubeVideos'
 import VoiceControls from '../components/VoiceControls/VoiceControls'
 import VoiceFallback from '../components/VoiceControls/VoiceFallback'
+import SpeechControl from '../components/VoiceControls/SpeechControl'
 import BackButton from '../components/Navigation/BackButton'
 import InstallPrompt from '../components/PWA/InstallPrompt'
 import { ERROR_MESSAGES, UI_TEXT, getAvatarGreeting } from '../context/constant.js'
@@ -418,14 +419,17 @@ export default function AvatarChat() {
       if (data.part1) {
         setCurrentText(data.part1)
         
-        // Speak the response with a small delay to ensure UI updates first
-        // speechTimeoutRef.current = setTimeout(() => {
+        // Stop any existing speech and start new speech immediately
+        stopSpeaking()
+        
+        // Small delay to ensure clean speech start
+        setTimeout(() => {
           setIsSpeaking(true)
           speakText(data.part1, () => {
             setIsSpeaking(false)
-            console.log('Finished speaking API response')
+            console.log('✅ Finished speaking API response')
           }, { avatarType: avatar })
-        // }, 100)
+        }, 100)
       }
 
       if (data.part2) {
@@ -471,11 +475,17 @@ export default function AvatarChat() {
       
       // Speak fallback response
       speechTimeoutRef.current = setTimeout(() => {
+        // Stop any existing speech first
+        stopSpeaking()
+        
+        // Small delay for clean speech start
+        setTimeout(() => {
           setIsSpeaking(true)
           speakText(userFriendlyMessage, () => {
-          setIsSpeaking(false)
-          console.log('Finished speaking fallback response')
+            setIsSpeaking(false)
+            console.log('✅ Finished speaking fallback response')
           }, { avatarType: avatar })
+        }, 100)
       }, 100)
     } finally {
       setIsProcessing(false)
@@ -487,10 +497,22 @@ export default function AvatarChat() {
   const playAvatarGreeting = useCallback(() => {
     if (hasPlayedGreeting || !avatarConfig) return
 
+    // Check sessionStorage to prevent greeting on refresh
+    if (typeof window !== 'undefined' && sessionStorage.getItem(`avatarGreeting_${avatar}`) === 'true') {
+      console.log('🛑 Avatar greeting already played in this session, skipping')
+      setHasPlayedGreeting(true)
+      return
+    }
+
     const greetingMessage = getAvatarGreeting(avatar, avatarConfig)
     
     // Set flag immediately to prevent multiple greetings
     setHasPlayedGreeting(true)
+    
+    // Store in sessionStorage to prevent playing again in this session
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem(`avatarGreeting_${avatar}`, 'true')
+    }
     
     setIsSpeaking(true)
     speakText(greetingMessage, () => {
@@ -527,23 +549,43 @@ export default function AvatarChat() {
         setNoSpeechDetected(true)
         const noSpeechMessage = ERROR_MESSAGES.SPEECH.NO_SPEECH
         setCurrentText(noSpeechMessage)
-        setIsSpeaking(true)
-        speakText(noSpeechMessage, () => setIsSpeaking(false), { avatarType: avatar })
+        
+        // Stop any existing speech and start new speech cleanly
+        stopSpeaking()
+        setTimeout(() => {
+          setIsSpeaking(true)
+          speakText(noSpeechMessage, () => setIsSpeaking(false), { avatarType: avatar })
+        }, 100)
       } else if (speechError.includes('not-allowed') || speechError.includes('permission')) {
         const permissionMessage = ERROR_MESSAGES.SPEECH.PERMISSION
         setCurrentText(permissionMessage)
-        setIsSpeaking(true)
-        speakText(permissionMessage, () => setIsSpeaking(false), { avatarType: avatar })
+        
+        // Stop any existing speech and start new speech cleanly
+        stopSpeaking()
+        setTimeout(() => {
+          setIsSpeaking(true)
+          speakText(permissionMessage, () => setIsSpeaking(false), { avatarType: avatar })
+        }, 100)
       } else if (speechError.includes('network') || speechError.includes('connection')) {
         const networkMessage = ERROR_MESSAGES.SPEECH.NETWORK
         setCurrentText(networkMessage)
-        setIsSpeaking(true)
-        speakText(networkMessage, () => setIsSpeaking(false), { avatarType: avatar })
+        
+        // Stop any existing speech and start new speech cleanly
+        stopSpeaking()
+        setTimeout(() => {
+          setIsSpeaking(true)
+          speakText(networkMessage, () => setIsSpeaking(false), { avatarType: avatar })
+        }, 100)
       } else {
         const genericMessage = ERROR_MESSAGES.SPEECH.GENERIC
         setCurrentText(genericMessage)
-        setIsSpeaking(true)
-        speakText(genericMessage, () => setIsSpeaking(false), { avatarType: avatar })
+        
+        // Stop any existing speech and start new speech cleanly
+        stopSpeaking()
+        setTimeout(() => {
+          setIsSpeaking(true)
+          speakText(genericMessage, () => setIsSpeaking(false), { avatarType: avatar })
+        }, 100)
       }
       
       // Auto-hide error after 8 seconds for speech errors
@@ -600,8 +642,13 @@ export default function AvatarChat() {
     if (!recognitionSupported) {
       const unsupportedMessage = ERROR_MESSAGES.SPEECH.GENERIC
       setCurrentText(unsupportedMessage)
-      setIsSpeaking(true)
-      speakText(unsupportedMessage, () => setIsSpeaking(false), { avatarType: avatar })
+      
+      // Stop any existing speech and start new speech cleanly
+      stopSpeaking()
+      setTimeout(() => {
+        setIsSpeaking(true)
+        speakText(unsupportedMessage, () => setIsSpeaking(false), { avatarType: avatar })
+      }, 100)
       return
     }
     
@@ -609,8 +656,13 @@ export default function AvatarChat() {
     if (permissionStatus === 'denied') {
       const permissionMessage = ERROR_MESSAGES.SPEECH.PERMISSION
       setCurrentText(permissionMessage)
-      setIsSpeaking(true)
-      speakText(permissionMessage, () => setIsSpeaking(false), { avatarType: avatar })
+      
+      // Stop any existing speech and start new speech cleanly
+      stopSpeaking()
+      setTimeout(() => {
+        setIsSpeaking(true)
+        speakText(permissionMessage, () => setIsSpeaking(false), { avatarType: avatar })
+      }, 100)
       return
     }
     
@@ -619,8 +671,13 @@ export default function AvatarChat() {
       setShowError(true)
       const errorMessage = ERROR_MESSAGES.SPEECH.GENERIC
       setCurrentText(errorMessage)
-      setIsSpeaking(true)
-      speakText(errorMessage, () => setIsSpeaking(false), { avatarType: avatar })
+      
+      // Stop any existing speech and start new speech cleanly
+      stopSpeaking()
+      setTimeout(() => {
+        setIsSpeaking(true)
+        speakText(errorMessage, () => setIsSpeaking(false), { avatarType: avatar })
+      }, 100)
     }
   }, [clearAllTimeouts, setNoSpeechDetected, setApiError, setTimeoutError, recognitionSupported, permissionStatus, avatar, setCurrentText, setIsSpeaking, startListening, setShowError])
 
@@ -633,8 +690,13 @@ export default function AvatarChat() {
       setNoSpeechDetected(true)
       const noSpeechMessage = ERROR_MESSAGES.SPEECH.NO_SPEECH
       setCurrentText(noSpeechMessage)
-      setIsSpeaking(true)
-      speakText(noSpeechMessage, () => setIsSpeaking(false), { avatarType: avatar })
+      
+      // Stop any existing speech and start new speech cleanly
+      stopSpeaking()
+      setTimeout(() => {
+        setIsSpeaking(true)
+        speakText(noSpeechMessage, () => setIsSpeaking(false), { avatarType: avatar })
+      }, 100)
     }
   }, [stopListening, transcript, interimTranscript, setNoSpeechDetected, setCurrentText, setIsSpeaking, avatar])
 
@@ -837,6 +899,19 @@ export default function AvatarChat() {
               isSpeaking={isSpeaking}
             />
           </div>
+        </div>
+
+        {/* Speech Control */}
+        <div className="mb-6 flex justify-center">
+          <SpeechControl
+            isSpeaking={isSpeaking}
+            setIsSpeaking={setIsSpeaking}
+            onStop={() => {
+              stopSpeaking()
+              setIsSpeaking(false)
+            }}
+            size="default"
+          />
         </div>
 
         {/* Content Area - Flex container for text and code */}
