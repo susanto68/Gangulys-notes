@@ -7,6 +7,7 @@ import LoadingScreen from '../components/AvatarSelection/LoadingScreen'
 import VoiceFallback from '../components/VoiceControls/VoiceFallback'
 import { AVATAR_CONFIG } from '../lib/avatars'
 import { useSpeechSynthesis } from '../hooks/useSpeechSynthesis'
+import { speakText, initSynth } from '../lib/speech'
 import { WELCOME_MESSAGES, UI_TEXT } from '../context/constant.js'
 
 export default function Home() {
@@ -283,6 +284,29 @@ export default function Home() {
 
     return () => clearTimeout(timer);
   }, []);
+
+  // Initialize speech synthesis
+  useEffect(() => {
+    console.log('🎤 Initializing speech synthesis for main page')
+    initSynth()
+    
+    // Force re-initialization after a short delay to ensure voices are loaded
+    const timer = setTimeout(() => {
+      if (typeof window !== 'undefined' && window.speechSynthesis) {
+        const voices = window.speechSynthesis.getVoices()
+        console.log('🎤 Voices loaded after delay:', voices?.length || 0)
+        if (voices && voices.length > 0) {
+          console.log('✅ Speech synthesis ready with voices')
+        } else {
+          console.log('⚠️ Still no voices, forcing re-initialization')
+          // Force re-initialization
+          window.speechSynthesis.getVoices()
+        }
+      }
+    }, 2000)
+    
+    return () => clearTimeout(timer)
+  }, [])
 
   // Initialize app
   useEffect(() => {

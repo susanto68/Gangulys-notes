@@ -57,8 +57,26 @@ export default function AvatarChat() {
 
   // Initialize speech synthesis detection on component mount
   useEffect(() => {
+    console.log('🎤 Initializing speech synthesis for avatar:', avatar)
     initSynth()
-  }, [])
+    
+    // Force re-initialization after a short delay to ensure voices are loaded
+    const timer = setTimeout(() => {
+      if (typeof window !== 'undefined' && window.speechSynthesis) {
+        const voices = window.speechSynthesis.getVoices()
+        console.log('🎤 Voices loaded after delay:', voices?.length || 0)
+        if (voices && voices.length > 0) {
+          console.log('✅ Speech synthesis ready with voices')
+        } else {
+          console.log('⚠️ Still no voices, forcing re-initialization')
+          // Force re-initialization
+          window.speechSynthesis.getVoices()
+        }
+      }
+    }, 2000)
+    
+    return () => clearTimeout(timer)
+  }, [avatar])
 
   // Detect mobile device and handle responsive behavior
   useEffect(() => {
@@ -418,16 +436,18 @@ export default function AvatarChat() {
       // Handle the two-part response
       if (data.part1) {
         setCurrentText(data.part1)
+        console.log('🎤 API response received, starting speech synthesis...')
         
         // Stop any existing speech and start new speech immediately
         stopSpeaking()
         
         // Small delay to ensure clean speech start
         setTimeout(() => {
+          console.log('🎤 Starting speech synthesis for avatar:', avatar)
           setIsSpeaking(true)
           speakText(data.part1, () => {
             setIsSpeaking(false)
-            console.log('✅ Finished speaking API response')
+            console.log('✅ Finished speaking API response for avatar:', avatar)
           }, { avatarType: avatar })
         }, 100)
       }
