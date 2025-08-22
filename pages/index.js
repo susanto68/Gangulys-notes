@@ -16,9 +16,7 @@ export default function Home() {
   const [hasPlayedWelcome, setHasPlayedWelcome] = useState(false)
   const welcomeTimeoutRef = useRef(null)
 
-  const { speakText, isSpeaking } = useSpeechSynthesis()
-
-
+  const { speakText: hookSpeakText, isSpeaking } = useSpeechSynthesis()
 
   // Auto-greeting audio on load - only once per session
   const playWelcomeGreeting = useCallback(() => {
@@ -47,6 +45,7 @@ export default function Home() {
         sessionStorage.setItem('welcomePlayed', 'true')
       }
       
+      // Use the imported speakText function, not the hook version
       speakText(welcomeMessage, "en", "welcome", () => {
         console.log('✅ Welcome message completed successfully')
       })
@@ -60,7 +59,7 @@ export default function Home() {
         sessionStorage.setItem('welcomePlayed', 'true')
       }
     }
-  }, [hasPlayedWelcome, speakText])
+  }, [hasPlayedWelcome])
 
   // Handle avatar selection
   const handleAvatarSelect = (avatarType) => {
