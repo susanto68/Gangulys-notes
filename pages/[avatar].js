@@ -322,13 +322,22 @@ export default function AvatarChat() {
     }
   }, [transcript, isListening, handleApiCall, resetTranscript])
 
-  // Handle interim transcript display
-  useEffect(() => {
-    if (isListening && interimTranscript) {
-      setCurrentText(interimTranscript)
-      setNoSpeechDetected(false) // Clear no speech error when speech is detected
-    }
-  }, [interimTranscript, isListening])
+  // Handle copy to clipboard
+  const handleCopyAnswer = (text) => {
+    console.log('📋 Answer copied to clipboard:', text.substring(0, 100) + '...')
+  }
+
+  // Handle start listening
+  const handleStartListening = () => {
+    console.log('🎤 Starting to listen...')
+    setNoSpeechDetected(false)
+    setShowError(false)
+  }
+
+  // Handle stop listening
+  const handleStopListening = () => {
+    console.log('🛑 Stopped listening')
+  }
 
   // Handle speech recognition errors
   useEffect(() => {
@@ -419,77 +428,6 @@ export default function AvatarChat() {
     clearAllTimeouts()
     router.push('/')
   }, [clearAllTimeouts, router])
-
-  // Handle start listening with comprehensive error handling
-  const handleStartListening = useCallback(async () => {
-    // Stop any ongoing speech when starting to listen
-    stopSpeaking()
-    clearAllTimeouts()
-    setNoSpeechDetected(false)
-    setApiError(null)
-    setTimeoutError(false)
-    
-    // Check if speech recognition is supported
-    if (!recognitionSupported) {
-      const unsupportedMessage = ERROR_MESSAGES.SPEECH.GENERIC
-      setCurrentText(unsupportedMessage)
-      
-      // Stop any existing speech and start new speech cleanly
-      stopSpeaking()
-      setTimeout(() => {
-        setIsSpeaking(true)
-        speakText(unsupportedMessage, () => setIsSpeaking(false), { avatarType: avatar })
-      }, 100)
-      return
-    }
-    
-    // Check permissions before starting
-    if (permissionStatus === 'denied') {
-      const permissionMessage = ERROR_MESSAGES.SPEECH.PERMISSION
-      setCurrentText(permissionMessage)
-      
-      // Stop any existing speech and start new speech cleanly
-      stopSpeaking()
-      setTimeout(() => {
-        setIsSpeaking(true)
-        speakText(permissionMessage, () => setIsSpeaking(false), { avatarType: avatar })
-      }, 100)
-      return
-    }
-    
-    const success = await startListening()
-    if (!success) {
-      setShowError(true)
-      const errorMessage = ERROR_MESSAGES.SPEECH.GENERIC
-      setCurrentText(errorMessage)
-      
-      // Stop any existing speech and start new speech cleanly
-      stopSpeaking()
-      setTimeout(() => {
-        setIsSpeaking(true)
-        speakText(errorMessage, () => setIsSpeaking(false), { avatarType: avatar })
-      }, 100)
-    }
-  }, [clearAllTimeouts, setNoSpeechDetected, setApiError, setTimeoutError, recognitionSupported, permissionStatus, avatar, setCurrentText, setIsSpeaking, startListening, setShowError])
-
-  // Handle stop listening
-  const handleStopListening = useCallback(() => {
-    stopListening()
-    
-    // Check if no speech was detected
-    if (!transcript && !interimTranscript) {
-      setNoSpeechDetected(true)
-      const noSpeechMessage = ERROR_MESSAGES.SPEECH.NO_SPEECH
-      setCurrentText(noSpeechMessage)
-      
-      // Stop any existing speech and start new speech cleanly
-      stopSpeaking()
-      setTimeout(() => {
-        setIsSpeaking(true)
-        speakText(noSpeechMessage, () => setIsSpeaking(false), { avatarType: avatar })
-      }, 100)
-    }
-  }, [stopListening, transcript, interimTranscript, setNoSpeechDetected, setCurrentText, setIsSpeaking, avatar])
 
   // Handle stop speaking
   const handleStopSpeaking = useCallback(() => {
@@ -930,6 +868,32 @@ export default function AvatarChat() {
             </span>
           </button>
         )}
+      </div>
+
+      {/* New Voice Controls - Fixed at Bottom Right */}
+      <div className="fixed bottom-4 right-4 z-50">
+        <div className="flex flex-col items-end space-y-4">
+          {/* Speech Control (Play/Pause + Copy) */}
+          <SpeechControl 
+            isSpeaking={isSpeaking}
+            onCopy={handleCopyAnswer}
+            currentText={currentText}
+          />
+          
+          {/* Voice Controls (Talk Button) */}
+          <VoiceControls
+            onTranscript={(text) => {
+              setCurrentText(text)
+              handleApiCall(text)
+            }}
+            onError={(error) => {
+              console.error('Speech recognition error:', error)
+              setShowError(true)
+            }}
+            onStartListening={handleStartListening}
+            onStopListening={handleStopListening}
+          />
+        </div>
       </div>
         </div>
     </VoiceFallback>

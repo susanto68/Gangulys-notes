@@ -1,20 +1,9 @@
 import { useState, useEffect } from 'react'
-import { getSpeakingState, pauseSpeaking, resumeSpeaking, stopSpeaking } from '../../lib/speech'
+import { getSpeakingState, pauseSpeaking, resumeSpeaking } from '../../lib/speech'
 
-export default function SpeechControl({ 
-  isSpeaking, 
-  setIsSpeaking, 
-  onStop, 
-  className = "",
-  size = "default" // "small", "default", "large"
-}) {
-  const [speechState, setSpeechState] = useState({
-    isSpeaking: false,
-    isPaused: false,
-    canPause: false,
-    canResume: false,
-    canStop: false
-  })
+export default function SpeechControl({ isSpeaking, onCopy, currentText }) {
+  const [speechState, setSpeechState] = useState({})
+  const [copyStatus, setCopyStatus] = useState('')
 
   // Update speech state from the library and sync with props
   useEffect(() => {
@@ -31,10 +20,9 @@ export default function SpeechControl({
       
       setSpeechState(state)
     }
-
-    // Update immediately
+    
     updateSpeechState()
-
+    
     // Update more frequently to catch state changes
     const interval = setInterval(updateSpeechState, 50)
     
@@ -50,7 +38,6 @@ export default function SpeechControl({
       console.log('⏸️ Pausing speech...')
       const success = pauseSpeaking()
       if (success) {
-        setIsSpeaking(false)
         console.log('✅ Speech paused successfully')
       } else {
         console.log('❌ Failed to pause speech')
@@ -60,7 +47,6 @@ export default function SpeechControl({
       console.log('▶️ Resuming speech...')
       const success = resumeSpeaking()
       if (success) {
-        setIsSpeaking(true)
         console.log('✅ Speech resumed successfully')
       } else {
         console.log('❌ Failed to resume speech')
@@ -68,11 +54,28 @@ export default function SpeechControl({
     }
   }
 
-  // Handle stop
-  const handleStop = () => {
-    stopSpeaking()
-    setIsSpeaking(false)
-    if (onStop) onStop()
+  // Handle copy to clipboard
+  const handleCopy = async () => {
+    if (!currentText || currentText.trim() === '') {
+      setCopyStatus('❌ No text to copy')
+      setTimeout(() => setCopyStatus(''), 2000)
+      return
+    }
+
+    try {
+      await navigator.clipboard.writeText(currentText)
+      setCopyStatus('✅ Answer copied!')
+      setTimeout(() => setCopyStatus(''), 2000)
+      
+      // Notify parent component
+      if (onCopy) {
+        onCopy(currentText)
+      }
+    } catch (error) {
+      console.error('Copy failed:', error)
+      setCopyStatus('❌ Copy failed')
+      setTimeout(() => setCopyStatus(''), 2000)
+    }
   }
 
   // Determine button state and appearance
@@ -82,78 +85,59 @@ export default function SpeechControl({
       return {
         icon: "⏸",
         text: "Pause",
-        action: "pause",
-        className: "bg-orange-500 hover:bg-orange-600 border-orange-400/30"
+        className: "bg-blue-500 hover:bg-blue-600 border-blue-400/30"
       }
     } else if (speechState.isPaused || speechState.canResume) {
       return {
         icon: "▶",
         text: "Play",
-        action: "resume",
-        className: "bg-green-500 hover:bg-green-600 border-green-400/30"
+        className: "bg-blue-500 hover:bg-blue-600 border-blue-400/30"
       }
     } else {
       return {
-        icon: "🔇",
-        text: "No Speech",
-        action: "none",
-        className: "bg-gray-500 border-gray-400/30 cursor-not-allowed opacity-50"
+        icon: "▶",
+        text: "Play",
+        className: "bg-blue-400 hover:bg-blue-500 border-blue-300/30"
       }
     }
   }
 
   const buttonState = getButtonState()
-  const canInteract = buttonState.action !== "none"
-
-  // Size classes
-  const sizeClasses = {
-    small: "px-3 py-2 text-sm",
-    default: "px-4 py-2 text-base",
-    large: "px-6 py-3 text-lg"
-  }
-
-  const iconSize = {
-    small: "w-4 h-4",
-    default: "w-5 h-5",
-    large: "w-6 h-6"
-  }
 
   return (
-    <div className={`flex items-center gap-2 ${className}`}>
+    <div className="flex flex-col items-center space-y-3">
       {/* Play/Pause Button */}
       <button
         onClick={handlePlayPause}
-        disabled={!canInteract}
-        className={`flex items-center gap-2 ${sizeClasses[size]} font-semibold rounded-full shadow-lg transform transition-all duration-200 backdrop-blur-md border ${
-          canInteract 
-            ? `${buttonState.className} text-white hover:scale-105 active:scale-95` 
-            : buttonState.className
-        }`}
-        title={buttonState.text}
+        className={`${buttonState.className} text-white px-6 py-3 rounded-lg font-semibold text-lg shadow-lg border-2 transition-all duration-200 transform hover:scale-105 hover:shadow-xl opacity-90`}
+        title={`${buttonState.text} speech`}
       >
-        <span className={`${iconSize[size]}`}>
-          {buttonState.icon}
-        </span>
-        <span className="hidden sm:inline">
-          {buttonState.text}
-        </span>
+        <span className="text-2xl mr-2">{buttonState.icon}</span>
+        {buttonState.text}
       </button>
 
-      {/* Stop Button - Only show when speaking or paused */}
-      {(speechState.canStop || isSpeaking || speechState.isSpeaking || speechState.isPaused) && (
-        <button
-          onClick={handleStop}
-          className={`flex items-center gap-2 ${sizeClasses[size]} font-semibold bg-red-500 hover:bg-red-600 text-white rounded-full shadow-lg transform transition-all duration-200 hover:scale-105 active:scale-95 backdrop-blur-md border border-red-400/30`}
-          title="Stop Speech"
-        >
-          <span className={`${iconSize[size]}`}>
-            ⏹
-          </span>
-          <span className="hidden sm:inline">
-            Stop
-          </span>
-        </button>
+      {/* Copy Button */}
+      <button
+        onClick={handleCopy}
+        className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold text-lg shadow-lg border-2 border-blue-400/30 transition-all duration-200 transform hover:scale-105 hover:shadow-xl opacity-90"
+        title="Copy answer to clipboard"
+      >
+        📋 Copy Answer
+      </button>
+
+      {/* Copy Status */}
+      {copyStatus && (
+        <div className={`text-sm font-medium px-3 py-1 rounded-full ${
+          copyStatus.includes('✅') ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+        }`}>
+          {copyStatus}
+        </div>
       )}
+
+      {/* Speech Status Indicator */}
+      <div className="text-xs text-gray-500 text-center">
+        {isSpeaking ? '🔊 Speaking...' : speechState.isPaused ? '⏸️ Paused' : '🔇 Ready'}
+      </div>
     </div>
   )
 }
