@@ -317,7 +317,7 @@ export default function AvatarChat() {
                   }
                 }}
                 disabled={!currentText}
-                className={`flex items-center gap-2 px-4 py-3 rounded-xl font-semibold transition-all duration-200 shadow-lg hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base ${
+                className={`flex items-center gap-2 px-4 py-3 rounded-xl font-bold transition-all duration-200 shadow-lg hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base ${
                   isSpeaking && !isPaused
                     ? 'bg-blue-600 hover:bg-blue-700 text-white'
                     : 'bg-green-600 hover:bg-green-700 text-white'
@@ -325,18 +325,18 @@ export default function AvatarChat() {
                 title={isSpeaking && !isPaused ? 'Pause speech' : 'Play speech'}
               >
                 <span className="text-lg">{isSpeaking && !isPaused ? '⏸' : '▶️'}</span>
-                <span className="hidden sm:inline">{isSpeaking && !isPaused ? 'Pause' : 'Play'}</span>
+                <span className="font-bold">{isSpeaking && !isPaused ? 'PAUSE' : 'PLAY'}</span>
               </button>
 
               {/* Copy Answer Button */}
               <button
                 onClick={handleCopyAnswer}
                 disabled={!currentText}
-                className="flex items-center gap-2 px-4 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-xl font-semibold transition-all duration-200 shadow-lg hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
+                className="flex items-center gap-2 px-4 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-xl font-bold transition-all duration-200 shadow-lg hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
                 title="Copy answer to clipboard"
               >
                 <span className="text-lg">📋</span>
-                <span className="hidden sm:inline">Copy</span>
+                <span className="font-bold">COPY</span>
               </button>
 
               {/* Talk Button - More Prominent */}
@@ -356,15 +356,37 @@ export default function AvatarChat() {
                 title={isListening ? 'Stop listening' : 'Click to ask a question'}
               >
                 <span className="text-xl">🎤</span>
-                <span className="hidden sm:inline">{isListening ? 'Stop' : 'Ask Question'}</span>
+                <span className="font-bold">{isListening ? 'STOP' : 'ASK QUESTION'}</span>
               </button>
             </div>
 
             {/* User Instruction */}
             <div className="text-center mb-6">
-              <p className="text-white/80 text-base sm:text-lg font-medium">
-                {isListening ? "🎤 Listening... Speak now!" : "Tap the 🎤 button above to ask a question"}
+              <p className="text-white text-base sm:text-lg font-bold">
+                {isListening ? "🎤 LISTENING... SPEAK NOW!" : "🎯 TAP THE 🎤 BUTTON ABOVE TO ASK A QUESTION"}
               </p>
+            </div>
+
+            {/* Button Legend - Help Users Understand */}
+            <div className="text-center mb-4">
+              <div className="inline-flex flex-wrap justify-center gap-4 text-xs text-white/70">
+                <div className="flex items-center gap-1">
+                  <span className="w-3 h-3 bg-green-600 rounded-full"></span>
+                  <span>PLAY: Resume speech</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <span className="w-3 h-3 bg-blue-600 rounded-full"></span>
+                  <span>PAUSE: Stop speech</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <span className="w-3 h-3 bg-purple-600 rounded-full"></span>
+                  <span>COPY: Save answer</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <span className="w-3 h-3 bg-gradient-to-r from-orange-500 to-red-500 rounded-full"></span>
+                  <span>ASK: Voice question</span>
+                </div>
+              </div>
             </div>
 
             {/* Status Messages */}
