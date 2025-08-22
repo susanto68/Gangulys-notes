@@ -1,9 +1,22 @@
 import { useState, useEffect } from 'react'
-import { startListening, stopListening, isListening, transcript, resetTranscript, error: speechError, clearError: clearSpeechError, permissionStatus, checkPermission, isSupported: recognitionSupported } from '../hooks/useSpeechRecognition'
+import { useSpeechRecognition } from '../../hooks/useSpeechRecognition'
 
 export default function VoiceControls({ onTranscript, onError, onStartListening, onStopListening, className = "" }) {
   const [isActive, setIsActive] = useState(false)
   const [permissionGranted, setPermissionGranted] = useState(false)
+  
+  const {
+    startListening,
+    stopListening,
+    isListening,
+    transcript,
+    resetTranscript,
+    error: speechError,
+    clearError: clearSpeechError,
+    permissionStatus,
+    checkPermission,
+    isSupported: recognitionSupported
+  } = useSpeechRecognition()
 
   useEffect(() => {
     // Check permission status on mount
