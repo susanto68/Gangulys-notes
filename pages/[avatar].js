@@ -26,11 +26,11 @@ export default function AvatarChat() {
   const { isPWASupported, isInstalled, updateAvailable, updateApp, isOnline } = usePWA()
   
   // Speech Recognition Hook
-  const {
-    startListening,
-    stopListening,
-    isListening,
-    transcript,
+  const { 
+    startListening, 
+    stopListening, 
+    isListening, 
+    transcript, 
     resetTranscript,
     error: speechError,
     clearError: clearSpeechError,
@@ -42,6 +42,7 @@ export default function AvatarChat() {
   // State variables
   const [currentText, setCurrentText] = useState('')
   const [isSpeaking, setIsSpeaking] = useState(false)
+  const [isPaused, setIsPaused] = useState(false)
   const [isProcessing, setApiProcessing] = useState(false)
   const [apiError, setApiError] = useState(null)
   const [codeContent, setCodeContent] = useState('')
@@ -86,8 +87,10 @@ export default function AvatarChat() {
     console.log('🎤 Playing avatar greeting:', greeting)
     
     setIsSpeaking(true)
+    setIsPaused(false)
     speakText(greeting, () => {
       setIsSpeaking(false)
+      setIsPaused(false)
       setHasPlayedGreeting(true)
     }, { avatarType: avatar })
   }, [avatarConfig, hasPlayedGreeting, avatar])
@@ -121,7 +124,7 @@ export default function AvatarChat() {
       alert('No text to copy')
       return
     }
-
+    
     try {
       await navigator.clipboard.writeText(currentText)
       alert('✅ Answer copied to clipboard!')
@@ -161,8 +164,8 @@ export default function AvatarChat() {
       setNoSpeechDetected(true)
       
       const timer = setTimeout(() => {
-        setShowError(false)
-        clearSpeechError()
+    setShowError(false)
+    clearSpeechError()
         setNoSpeechDetected(false)
       }, 8000)
       return () => clearTimeout(timer)
@@ -208,11 +211,13 @@ export default function AvatarChat() {
        if (responseText && responseText !== 'No response received') {
          console.log('🎤 Starting to speak answer:', responseText.substring(0, 100) + '...')
          stopSpeaking()
+         setIsPaused(false)
          setTimeout(() => {
            setIsSpeaking(true)
            speakText(responseText, () => {
              console.log('✅ Finished speaking answer')
              setIsSpeaking(false)
+             setIsPaused(false)
            }, { avatarType: avatar })
          }, 100)
        }
@@ -263,12 +268,12 @@ export default function AvatarChat() {
         <meta name="description" content={`Chat with ${avatarConfig.name} about ${avatarConfig.domain}`} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
-      
+
       <VoiceFallback onVoiceSupportChange={(supported) => console.log('Voice support:', supported)}>
         <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 relative overflow-hidden">
           {/* Back Button */}
           <div className="absolute top-4 left-4 z-10">
-            <button
+              <button
               onClick={handleBack}
               className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-all duration-200 backdrop-blur-md border border-white/20 hover:scale-105"
             >
@@ -287,63 +292,54 @@ export default function AvatarChat() {
               <p className="text-lg opacity-80">{avatarConfig.domain}</p>
             </div>
 
-            {/* Avatar Display */}
+        {/* Avatar Display */}
             <div className="flex justify-center mb-8">
-              <div className="transform transition-all duration-300 hover:scale-105">
-                <AvatarDisplay 
-                  avatar={avatar} 
-                  config={avatarConfig} 
-                  isSpeaking={isSpeaking}
-                />
-              </div>
-            </div>
+          <div className="transform transition-all duration-300 hover:scale-105">
+            <AvatarDisplay 
+              avatar={avatar} 
+              config={avatarConfig} 
+              isSpeaking={isSpeaking}
+            />
+          </div>
+        </div>
 
-            {/* User Message */}
-            <div className="text-center mb-6">
-              <p className="text-white/80 text-lg font-medium">
-                Tap the button below to ask a question
-              </p>
-            </div>
-
-            {/* Control Buttons */}
-            <div className="flex flex-col sm:flex-row items-center gap-4 justify-center mb-8">
+            {/* Control Buttons - All Side by Side Below Avatar */}
+            <div className="flex flex-wrap justify-center items-center gap-3 mb-6 px-4">
               {/* Play/Pause Button */}
               <button
                 onClick={() => {
-                  if (isSpeaking) {
+                  if (isSpeaking && !isPaused) {
                     const success = pauseSpeaking()
-                    if (success) setIsSpeaking(false)
-                  } else {
+                    if (success) setIsPaused(true)
+                  } else if (isPaused) {
                     const success = resumeSpeaking()
-                    if (success) setIsSpeaking(true)
+                    if (success) setIsPaused(false)
                   }
                 }}
-                className={`flex-1 max-w-xs flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-semibold text-lg shadow-lg border-2 transition-all duration-200 transform hover:scale-105 hover:shadow-xl opacity-90 ${
-                  isSpeaking 
-                    ? 'bg-blue-500 hover:bg-blue-600 border-blue-400/30 text-white' 
-                    : 'bg-blue-400 hover:bg-blue-500 border-blue-300/30 text-white'
+                disabled={!currentText}
+                className={`flex items-center gap-2 px-4 py-3 rounded-xl font-semibold transition-all duration-200 shadow-lg hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base ${
+                  isSpeaking && !isPaused
+                    ? 'bg-blue-600 hover:bg-blue-700 text-white'
+                    : 'bg-green-600 hover:bg-green-700 text-white'
                 }`}
-                title={isSpeaking ? 'Pause speech' : 'Play speech'}
+                title={isSpeaking && !isPaused ? 'Pause speech' : 'Play speech'}
               >
-                <span className="text-2xl">
-                  {isSpeaking ? '⏸' : '▶'}
-                </span>
-                <span className="hidden sm:inline">
-                  {isSpeaking ? 'Pause' : 'Play'}
-                </span>
+                <span className="text-lg">{isSpeaking && !isPaused ? '⏸' : '▶️'}</span>
+                <span className="hidden sm:inline">{isSpeaking && !isPaused ? 'Pause' : 'Play'}</span>
               </button>
 
               {/* Copy Answer Button */}
               <button
                 onClick={handleCopyAnswer}
-                className="flex-1 max-w-xs flex items-center justify-center gap-2 px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-semibold text-lg shadow-lg border-2 border-blue-400/30 transition-all duration-200 transform hover:scale-105 hover:shadow-xl opacity-90"
+                disabled={!currentText}
+                className="flex items-center gap-2 px-4 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-xl font-semibold transition-all duration-200 shadow-lg hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
                 title="Copy answer to clipboard"
               >
-                <span className="text-2xl">📋</span>
+                <span className="text-lg">📋</span>
                 <span className="hidden sm:inline">Copy</span>
               </button>
 
-              {/* Talk Button */}
+              {/* Talk Button - More Prominent */}
               <button
                 onClick={() => {
                   if (isListening) {
@@ -352,18 +348,23 @@ export default function AvatarChat() {
                     handleStartListening()
                   }
                 }}
-                className={`flex-1 max-w-xs flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-semibold text-lg shadow-lg border-2 transition-all duration-200 transform hover:scale-105 hover:shadow-xl opacity-90 ${
-                  isListening 
-                    ? 'bg-red-500 hover:bg-red-600 border-red-400/30 text-white' 
-                    : 'bg-blue-500 hover:bg-blue-600 border-blue-400/30 text-white'
+                className={`flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-base sm:text-lg transition-all duration-200 shadow-lg hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed ${
+                  isListening
+                    ? 'bg-red-600 hover:bg-red-700 text-white'
+                    : 'bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white shadow-xl'
                 }`}
-                title={isListening ? 'Stop listening' : 'Start talking'}
+                title={isListening ? 'Stop listening' : 'Click to ask a question'}
               >
-                <span className="text-2xl">🎤</span>
-                <span className="hidden sm:inline">
-                  {isListening ? 'Stop' : 'Talk'}
-                </span>
+                <span className="text-xl">🎤</span>
+                <span className="hidden sm:inline">{isListening ? 'Stop' : 'Ask Question'}</span>
               </button>
+            </div>
+
+            {/* User Instruction */}
+            <div className="text-center mb-6">
+              <p className="text-white/80 text-base sm:text-lg font-medium">
+                {isListening ? "🎤 Listening... Speak now!" : "Tap the 🎤 button above to ask a question"}
+              </p>
             </div>
 
             {/* Status Messages */}
@@ -372,9 +373,9 @@ export default function AvatarChat() {
                 <div className="inline-flex items-center gap-3 bg-green-500/30 text-green-100 px-6 py-3 rounded-full text-base font-semibold animate-pulse shadow-lg backdrop-blur-md border border-green-400/30">
                   <div className="w-4 h-4 bg-green-300 rounded-full animate-ping"></div>
                   <span>🎤 Listening... Speak now!</span>
-                </div>
-              )}
-              
+          </div>
+        )}
+
               {isSpeaking && (
                 <div className="inline-flex items-center gap-3 bg-blue-500/30 text-blue-100 px-6 py-3 rounded-full text-base font-semibold animate-pulse shadow-lg backdrop-blur-md border border-blue-400/30">
                   <div className="w-4 h-4 bg-blue-300 rounded-full animate-ping"></div>
@@ -388,7 +389,7 @@ export default function AvatarChat() {
                   <span>🤔 Processing your question...</span>
                 </div>
               )}
-
+              
               {showError && (
                 <div className="inline-flex items-center gap-3 bg-red-500/30 text-red-100 px-6 py-3 rounded-full text-base font-semibold shadow-lg backdrop-blur-md border border-red-400/30">
                   <span>❌ {apiError || speechError || 'An error occurred'}</span>
@@ -409,31 +410,31 @@ export default function AvatarChat() {
                       isListening={isListening}
                     />
                   </ErrorBoundary>
-                </div>
-              )}
-
+            </div>
+          )}
+          
               {/* Code Box */}
               {codeContent && (
                 <div className="animate-fadeIn">
                   <CodeBox code={codeContent} />
-                </div>
-              )}
-
+            </div>
+          )}
+          
               {/* Related Articles */}
               {relatedArticles.length > 0 && (
                 <div className="animate-fadeIn">
                   <ArticleCarousel articles={relatedArticles} />
-                </div>
-              )}
-              
+            </div>
+          )}
+
               {/* Related Videos */}
               {relatedVideos.length > 0 && (
                 <div className="animate-fadeIn">
                   <YouTubeVideos videos={relatedVideos} />
-                </div>
-              )}
             </div>
-          </div>
+          )}
+            </div>
+            </div>
         </div>
       </VoiceFallback>
     </>

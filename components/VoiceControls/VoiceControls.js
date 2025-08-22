@@ -8,12 +8,12 @@ export default function VoiceControls({ onTranscript, onError, onStartListening,
   const {
     startListening,
     stopListening,
-    isListening,
+  isListening, 
     transcript,
     resetTranscript,
     error: speechError,
     clearError: clearSpeechError,
-    permissionStatus,
+  permissionStatus,
     checkPermission,
     isSupported: recognitionSupported
   } = useSpeechRecognition()
@@ -145,7 +145,7 @@ export default function VoiceControls({ onTranscript, onError, onStartListening,
             ⚠️ Microphone permission needed
           </div>
         )}
-
+        
         {/* Support Status */}
         {!recognitionSupported && (
           <div className="text-sm text-red-600 font-medium">
@@ -159,14 +159,14 @@ export default function VoiceControls({ onTranscript, onError, onStartListening,
         <div className="bg-red-100 border border-red-300 text-red-700 px-4 py-2 rounded-lg text-sm max-w-xs text-center">
           <div className="flex items-center justify-between">
             <span>{speechError}</span>
-            <button
+          <button
               onClick={clearSpeechError}
               className="ml-2 text-red-500 hover:text-red-700"
               title="Clear error"
             >
               ×
-            </button>
-          </div>
+          </button>
+        </div>
         </div>
       )}
     </div>
