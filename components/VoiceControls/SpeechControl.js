@@ -16,35 +16,54 @@ export default function SpeechControl({
     canStop: false
   })
 
-  // Update speech state from the library
+  // Update speech state from the library and sync with props
   useEffect(() => {
     const updateSpeechState = () => {
       const state = getSpeakingState()
+      
+      // Sync with the avatar's speaking state
+      if (isSpeaking && !state.isSpeaking && !state.isPaused) {
+        // Avatar is speaking but library doesn't know - update library state
+        state.isSpeaking = true
+        state.canPause = true
+        state.canStop = true
+      }
+      
       setSpeechState(state)
     }
 
     // Update immediately
     updateSpeechState()
 
-    // Update periodically to catch state changes
-    const interval = setInterval(updateSpeechState, 100)
+    // Update more frequently to catch state changes
+    const interval = setInterval(updateSpeechState, 50)
     
     return () => clearInterval(interval)
   }, [isSpeaking])
 
   // Handle play/pause toggle
   const handlePlayPause = () => {
-    if (speechState.canPause) {
+    console.log('🎮 Play/Pause clicked, current state:', speechState)
+    
+    if (speechState.canPause || isSpeaking) {
       // Currently speaking, pause it
+      console.log('⏸️ Pausing speech...')
       const success = pauseSpeaking()
       if (success) {
         setIsSpeaking(false)
+        console.log('✅ Speech paused successfully')
+      } else {
+        console.log('❌ Failed to pause speech')
       }
-    } else if (speechState.canResume) {
+    } else if (speechState.canResume || speechState.isPaused) {
       // Currently paused, resume it
+      console.log('▶️ Resuming speech...')
       const success = resumeSpeaking()
       if (success) {
         setIsSpeaking(true)
+        console.log('✅ Speech resumed successfully')
+      } else {
+        console.log('❌ Failed to resume speech')
       }
     }
   }
@@ -58,14 +77,15 @@ export default function SpeechControl({
 
   // Determine button state and appearance
   const getButtonState = () => {
-    if (speechState.canPause) {
+    // Check if avatar is currently speaking
+    if (isSpeaking || speechState.isSpeaking) {
       return {
         icon: "⏸",
         text: "Pause",
         action: "pause",
         className: "bg-orange-500 hover:bg-orange-600 border-orange-400/30"
       }
-    } else if (speechState.canResume) {
+    } else if (speechState.isPaused || speechState.canResume) {
       return {
         icon: "▶",
         text: "Play",
@@ -120,7 +140,7 @@ export default function SpeechControl({
       </button>
 
       {/* Stop Button - Only show when speaking or paused */}
-      {(speechState.canStop) && (
+      {(speechState.canStop || isSpeaking || speechState.isSpeaking || speechState.isPaused) && (
         <button
           onClick={handleStop}
           className={`flex items-center gap-2 ${sizeClasses[size]} font-semibold bg-red-500 hover:bg-red-600 text-white rounded-full shadow-lg transform transition-all duration-200 hover:scale-105 active:scale-95 backdrop-blur-md border border-red-400/30`}

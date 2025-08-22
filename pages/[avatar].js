@@ -441,15 +441,14 @@ export default function AvatarChat() {
         // Stop any existing speech and start new speech immediately
         stopSpeaking()
         
-        // Small delay to ensure clean speech start
-        setTimeout(() => {
-          console.log('🎤 Starting speech synthesis for avatar:', avatar)
-          setIsSpeaking(true)
-          speakText(data.part1, () => {
-            setIsSpeaking(false)
-            console.log('✅ Finished speaking API response for avatar:', avatar)
-          }, { avatarType: avatar })
-        }, 100)
+        // Start speaking the answer immediately
+        console.log('🎤 Starting speech synthesis for avatar answer:', avatar)
+        setIsSpeaking(true)
+        
+        speakText(data.part1, () => {
+          console.log('✅ Finished speaking API response for avatar:', avatar)
+          setIsSpeaking(false)
+        }, { avatarType: avatar })
       }
 
       if (data.part2) {
@@ -525,6 +524,7 @@ export default function AvatarChat() {
     }
 
     const greetingMessage = getAvatarGreeting(avatar, avatarConfig)
+    console.log('🎤 Playing avatar greeting:', greetingMessage.substring(0, 100) + '...')
     
     // Set flag immediately to prevent multiple greetings
     setHasPlayedGreeting(true)
@@ -534,8 +534,12 @@ export default function AvatarChat() {
       sessionStorage.setItem(`avatarGreeting_${avatar}`, 'true')
     }
     
+    // Start speaking immediately
     setIsSpeaking(true)
+    console.log('🎤 Starting avatar greeting speech...')
+    
     speakText(greetingMessage, () => {
+      console.log('✅ Avatar greeting completed')
       setIsSpeaking(false)
     }, { avatarType: avatar })
   }, [hasPlayedGreeting, avatarConfig, avatar, setHasPlayedGreeting])
