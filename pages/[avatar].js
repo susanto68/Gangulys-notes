@@ -134,6 +134,20 @@ export default function AvatarChat() {
     }
   }
 
+  // Test speech function for mobile debugging
+  const testSpeech = () => {
+    if (currentText) {
+      console.log('🧪 Testing speech with text:', currentText.substring(0, 50) + '...')
+      setIsSpeaking(true)
+      setIsPaused(false)
+      speakText(currentText.substring(0, 100), () => {
+        console.log('✅ Test speech finished')
+        setIsSpeaking(false)
+        setIsPaused(false)
+      }, { avatarType: avatar })
+    }
+  }
+
   // Handle start listening
   const handleStartListening = async () => {
     try {
@@ -219,7 +233,7 @@ export default function AvatarChat() {
              setIsSpeaking(false)
              setIsPaused(false)
            }, { avatarType: avatar })
-         }, 100)
+         }, 200) // Increased delay for mobile compatibility
        }
 
     } catch (error) {
@@ -309,11 +323,19 @@ export default function AvatarChat() {
               <button
                 onClick={() => {
                   if (isSpeaking && !isPaused) {
+                    // Pause speech
                     const success = pauseSpeaking()
-                    if (success) setIsPaused(true)
+                    if (success) {
+                      setIsPaused(true)
+                      console.log('🎤 Speech paused')
+                    }
                   } else if (isPaused) {
+                    // Resume speech
                     const success = resumeSpeaking()
-                    if (success) setIsPaused(false)
+                    if (success) {
+                      setIsPaused(false)
+                      console.log('🎤 Speech resumed')
+                    }
                   }
                 }}
                 disabled={!currentText}
@@ -388,6 +410,28 @@ export default function AvatarChat() {
                 </div>
               </div>
             </div>
+
+            {/* Debug Info for Mobile */}
+            <div className="text-center mb-4">
+              <div className="inline-flex flex-wrap justify-center gap-2 text-xs text-white/50">
+                <span>🎤 Speaking: {isSpeaking ? 'Yes' : 'No'}</span>
+                <span>⏸ Paused: {isPaused ? 'Yes' : 'No'}</span>
+                <span>📝 Text: {currentText ? 'Available' : 'None'}</span>
+              </div>
+            </div>
+
+            {/* Test Speech Button for Mobile Debugging */}
+            {currentText && (
+              <div className="text-center mb-4">
+                <button
+                  onClick={testSpeech}
+                  className="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg font-semibold text-sm transition-all duration-200"
+                  title="Test speech synthesis on mobile"
+                >
+                  🧪 Test Speech
+                </button>
+              </div>
+            )}
 
             {/* Status Messages */}
             <div className="text-center mb-6">
