@@ -446,7 +446,14 @@ export default function Home() {
               >
                 📊 View Visitor Analytics
               </Link>
-                        </div>
+              
+              <Link 
+                href="/test-speech" 
+                className="inline-flex items-center gap-2 bg-green-500/20 hover:bg-green-500/30 text-green-300 hover:text-green-200 px-4 py-2 rounded-lg transition-colors text-sm"
+              >
+                🧪 Test Speech
+              </Link>
+            </div>
           </div>
         </div>
       </VoiceFallback>
