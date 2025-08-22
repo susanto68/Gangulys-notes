@@ -46,6 +46,22 @@ export default function AvatarChat() {
   // Get avatar configuration - moved to top to fix initialization error
   const avatarConfig = avatar ? AVATAR_CONFIG[avatar] : null
 
+  // State for speech synthesis status
+  const [isSpeaking, setIsSpeaking] = useState(false)
+  const { 
+    startListening, 
+    stopListening, 
+    isListening, 
+    transcript, 
+    interimTranscript,
+    resetTranscript,
+    error: speechError,
+    clearError: clearSpeechError,
+    permissionStatus,
+    checkPermission,
+    isSupported: recognitionSupported
+  } = useSpeechRecognition()
+
   // Cleanup function for timeouts
   const clearAllTimeouts = useCallback(() => {
     if (speechTimeoutRef.current) {
@@ -57,6 +73,66 @@ export default function AvatarChat() {
       apiTimeoutRef.current = null
     }
   }, [])
+
+  // Auto-greeting on page load
+  const playAvatarGreeting = useCallback(() => {
+    if (hasPlayedGreeting || !avatarConfig) return
+
+    // Check sessionStorage to prevent greeting on refresh
+    if (typeof window !== 'undefined' && sessionStorage.getItem(`avatarGreeting_${avatar}`) === 'true') {
+      console.log('🛑 Avatar greeting already played in this session, skipping')
+      setHasPlayedGreeting(true)
+      return
+    }
+
+    const greetingMessage = getAvatarGreeting(avatar, avatarConfig)
+    console.log('🎤 Playing avatar greeting:', greetingMessage.substring(0, 100) + '...')
+    
+    // Set flag immediately to prevent multiple greetings
+    setHasPlayedGreeting(true)
+    
+    // Store in sessionStorage to prevent playing again in this session
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem(`avatarGreeting_${avatar}`, 'true')
+    }
+    
+    // Start speaking immediately
+    setIsSpeaking(true)
+    console.log('🎤 Starting avatar greeting speech...')
+    
+    speakText(greetingMessage, () => {
+      console.log('✅ Avatar greeting completed')
+      setIsSpeaking(false)
+    }, { avatarType: avatar })
+  }, [hasPlayedGreeting, avatarConfig, avatar, setHasPlayedGreeting])
+
+  // Initialize speech synthesis detection on component mount
+  useEffect(() => {
+    console.log('🎤 Initializing speech synthesis for avatar:', avatar)
+    initSynth()
+    
+    // Force re-initialization after a short delay to ensure voices are loaded
+    const timer = setTimeout(() => {
+      if (typeof window !== 'undefined' && window.speechSynthesis) {
+        const voices = window.speechSynthesis.getVoices()
+        console.log('🎤 Voices loaded after delay:', voices?.length || 0)
+        if (voices && voices.length > 0) {
+          console.log('✅ Speech synthesis ready with voices')
+          // If we have voices and haven't played greeting yet, play it now
+          if (!hasPlayedGreeting) {
+            console.log('🎤 Playing delayed greeting due to voice loading...')
+            playAvatarGreeting()
+          }
+        } else {
+          console.log('⚠️ Still no voices, forcing re-initialization')
+          // Force re-initialization
+          window.speechSynthesis.getVoices()
+        }
+      }
+    }, 2000)
+    
+    return () => clearTimeout(timer)
+  }, [avatar, hasPlayedGreeting, playAvatarGreeting])
 
   // Real API call function with comprehensive error handling
   const handleApiCall = useCallback(async (message) => {
