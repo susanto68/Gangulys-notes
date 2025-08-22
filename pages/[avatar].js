@@ -67,6 +67,11 @@ export default function AvatarChat() {
         console.log('🎤 Voices loaded after delay:', voices?.length || 0)
         if (voices && voices.length > 0) {
           console.log('✅ Speech synthesis ready with voices')
+          // If we have voices and haven't played greeting yet, play it now
+          if (!hasPlayedGreeting) {
+            console.log('🎤 Playing delayed greeting due to voice loading...')
+            playAvatarGreeting()
+          }
         } else {
           console.log('⚠️ Still no voices, forcing re-initialization')
           // Force re-initialization
@@ -76,7 +81,7 @@ export default function AvatarChat() {
     }, 2000)
     
     return () => clearTimeout(timer)
-  }, [avatar])
+  }, [avatar, hasPlayedGreeting, playAvatarGreeting])
 
   // Detect mobile device and handle responsive behavior
   useEffect(() => {
@@ -936,6 +941,23 @@ export default function AvatarChat() {
             }}
             size="default"
           />
+          
+          {/* Debug Test Button */}
+          <button
+            onClick={() => {
+              console.log('🧪 Manual speech test clicked')
+              const testText = `Hello, I am ${avatarConfig?.name || 'your AI assistant'}. This is a test of the speech system.`
+              setIsSpeaking(true)
+              speakText(testText, () => {
+                console.log('✅ Manual test completed')
+                setIsSpeaking(false)
+              }, { avatarType: avatar })
+            }}
+            className="ml-4 px-4 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-lg font-semibold text-sm"
+            title="Test Speech System"
+          >
+            🧪 Test Speech
+          </button>
         </div>
 
         {/* Content Area - Flex container for text and code */}
