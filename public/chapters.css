@@ -86,6 +86,60 @@
   transform: translateY(2px);
 }
 
+/* Coming Soon Styling */
+.coming-soon {
+  display: inline-block;
+  animation: pulse 2s infinite;
+  font-weight: bold;
+  color: #ffeb3b;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Coming Soon Page Styling */
+.chapters-grid .coming-soon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2rem;
+  text-align: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.coming-soon i {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.8;
+}
+
+.coming-soon h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.coming-soon p {
+  font-size: 1.1rem;
+  opacity: 0.9;
+  max-width: 400px;
+  line-height: 1.6;
+}
+
 @media screen and (max-width: 768px) {
   .chapters-grid {
     grid-template-columns: 1fr;
@@ -112,5 +166,21 @@
   .back-btn {
     padding: 0.4rem 0.8rem;
     font-size: 0.9rem;
+  }
+
+  .chapters-grid .coming-soon {
+    padding: 2rem 1rem;
+  }
+
+  .coming-soon i {
+    font-size: 2.5rem;
+  }
+
+  .coming-soon h2 {
+    font-size: 1.5rem;
+  }
+
+  .coming-soon p {
+    font-size: 1rem;
   }
 }
