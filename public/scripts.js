@@ -47,6 +47,13 @@ function closeErrorModal() {
     errorModal.style.display = 'none';
 }
 
+function showError(message) {
+    const errorModal = document.getElementById('errorModal');
+    const errorMessage = document.getElementById('errorMessage');
+    errorMessage.textContent = message;
+    errorModal.style.display = 'flex';
+}
+
 function toggleSubmenu(submenuId) {
     const submenu = document.getElementById(submenuId);
     const container = submenu.previousElementSibling;
