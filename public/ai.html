@@ -22,6 +22,12 @@
     h1 img { width:28px; }
 
     #avatar { width:100px; height:100px; margin:0 auto; border-radius:50%; transition:transform .2s ease; }
+    
+    /* WhatsApp Feedback Button */
+    .whatsapp-feedback { margin: 12px 0; }
+    .whatsapp-btn { display: inline-flex; align-items: center; gap: 6px; background: #25D366; color: white; padding: 8px 16px; border-radius: 20px; text-decoration: none; font-weight: 600; font-size: 14px; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(37, 211, 102, 0.3); }
+    .whatsapp-btn:hover { background: #128C7E; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4); }
+    .whatsapp-btn i { font-size: 16px; }
     @keyframes float {0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);} }
 
     #responseBox { background:#f1f5f9; padding:12px; border-radius:12px; margin-top:12px; font-size:.9rem; min-height:60px; text-align:left; line-height:1.4; white-space:pre-wrap; flex-grow:1; }
@@ -53,6 +59,11 @@
   <div class="app">
     <div class="container">
       <h1>🎤 AI Voice Assistant <img src="https://img.icons8.com/color/48/000000/robot-2.png" alt="Bot"/></h1>
+      <div class="whatsapp-feedback">
+        <a href="https://wa.me/919835379900?text=Hi! I have feedback about the AI Assistant." class="whatsapp-btn" target="_blank" rel="noopener noreferrer">
+          <i class="fab fa-whatsapp"></i> Share Feedback via WhatsApp
+        </a>
+      </div>
       <img id="avatar" src="sirganguly.png" alt="Avatar" />
       <div id="responseBox">Ask me anything about computer science…</div>
       <div id="status"></div>
