@@ -783,12 +783,23 @@ const getCachedSystemPrompt = (avatarType) => {
 }
 
 export default async function handler(req, res) {
+  // Set CORS headers for Vercel deployment
+  res.setHeader('Access-Control-Allow-Origin', '*')
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS')
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+  
+  // Handle preflight requests
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end()
+  }
+
   // Enhanced logging for debugging
   console.log('=== API REQUEST DEBUG ===')
   console.log('Method:', req.method)
   console.log('URL:', req.url)
   console.log('Content-Type:', req.headers['content-type'])
   console.log('Environment check - GEMINI_API_KEY exists:', !!process.env.GEMINI_API_KEY)
+  console.log('Vercel Environment:', process.env.VERCEL_ENV || 'local')
   console.log('========================')
 
   // Only allow POST requests
@@ -885,8 +896,21 @@ export default async function handler(req, res) {
     // Check for Gemini API key
     if (!process.env.GEMINI_API_KEY) {
       console.error('❌ No Gemini API key found. Please set GEMINI_API_KEY environment variable')
-      return res.status(500).json({ 
-        error: 'AI service configuration error. Please set up Gemini API key.',
+      
+      // Generate intelligent fallback response
+      const fallbackResponse = generateIntelligentFallback(avatarType, prompt)
+      const relatedArticles = generateFallbackArticles(avatarType)
+      const relatedVideos = generateFallbackVideos(avatarType)
+      
+      return res.status(200).json({
+        part1: `I apologize, but I'm currently unable to access my AI capabilities. ${fallbackResponse}`,
+        part2: '',
+        avatarType,
+        sessionId,
+        relatedArticles,
+        relatedVideos,
+        success: false,
+        error: 'AI service configuration error - API key missing',
         fallback: true
       })
     }
@@ -1021,16 +1045,22 @@ Please provide a comprehensive, educational response with examples and step-by-s
 
   } catch (error) {
     console.error('❌ API Error:', error)
+    console.error('Error details:', {
+      message: error.message,
+      stack: error.stack,
+      name: error.name
+    })
     
-    // Return fallback response for errors
-    const { avatarType, sessionId } = req.body || {}
+    // Parse request body for fallback
+    const parsedBody = parseBody(req)
+    const { avatarType, sessionId, prompt } = parsedBody || {}
     const avatarConfig = avatarType ? AVATAR_CONFIG[avatarType] : null
     
     let fallbackResponse = ''
     let errorType = 'Service temporarily unavailable'
     
     // Check for specific error types and provide better responses
-    if (error.message && error.message.includes('429')) {
+    if (error.message && (error.message.includes('429') || error.message.includes('quota'))) {
       // Quota exceeded - provide helpful information
       errorType = 'API quota exceeded'
       const quotaInfo = getQuotaStatus()
@@ -1044,18 +1074,22 @@ However, I can still help you with educational resources! Here are some relevant
 ${quotaInfo.alternatives[0]}
 ${quotaInfo.alternatives[1]}
 ${quotaInfo.alternatives[2]}`
-    } else if (error.message && error.message.includes('timeout')) {
+    } else if (error.message && (error.message.includes('timeout') || error.message.includes('TIMEOUT'))) {
       // API timeout
       errorType = 'Request timeout'
       fallbackResponse = `I apologize, but the request took too long to process. This might be due to high demand or network issues.
 
 Please try asking your question again in a moment, or explore the suggested resources below for immediate learning.`
-    } else if (error.message && error.message.includes('network') || error.message.includes('fetch')) {
+    } else if (error.message && (error.message.includes('network') || error.message.includes('fetch') || error.message.includes('ECONNREFUSED') || error.message.includes('ENOTFOUND'))) {
       // Network error
       errorType = 'Network error'
       fallbackResponse = `I apologize, but there seems to be a network connection issue. Please check your internet connection and try again.
 
 In the meantime, you can explore the suggested resources below to continue learning.`
+    } else if (error.message && error.message.includes('API key')) {
+      // API key error
+      errorType = 'API configuration error'
+      fallbackResponse = `I apologize, but there's a configuration issue with my AI service. Please try again later or explore the suggested resources below.`
     } else {
       // Generic error - use intelligent fallback
       errorType = 'Service temporarily unavailable'
@@ -1069,12 +1103,13 @@ In the meantime, you can explore the suggested resources below to continue learn
     return res.status(200).json({
       part1: fallbackResponse,
       part2: '',
-      avatarType,
-      sessionId,
+      avatarType: avatarType || 'unknown',
+      sessionId: sessionId || 'fallback',
       relatedArticles,
       relatedVideos,
       success: false,
-      error: errorType
+      error: errorType,
+      fallback: true
     })
   }
 } 

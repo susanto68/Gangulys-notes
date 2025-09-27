@@ -192,11 +192,17 @@ export default function AvatarChat() {
     
     setApiProcessing(true)
     setApiError(null)
+    setShowError(false)
     
     try {
+      console.log('🚀 Making API call to /api/chat with:', { prompt: prompt.substring(0, 50) + '...', avatarType: avatar, sessionId })
+      
       const response = await fetch('/api/chat', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
         body: JSON.stringify({
           prompt,
           avatarType: avatar,
@@ -204,42 +210,70 @@ export default function AvatarChat() {
         })
       })
 
+      console.log('📡 API Response status:', response.status, response.statusText)
+
       if (!response.ok) {
-        throw new Error(`API error: ${response.status}`)
+        const errorText = await response.text()
+        console.error('❌ API Error Response:', errorText)
+        throw new Error(`API error: ${response.status} - ${response.statusText}`)
       }
 
       const data = await response.json()
+      console.log('📦 API Response data:', { 
+        success: data.success, 
+        hasPart1: !!data.part1, 
+        hasPart2: !!data.part2,
+        articlesCount: data.relatedArticles?.length || 0,
+        videosCount: data.relatedVideos?.length || 0,
+        error: data.error
+      })
       
-      if (data.error) {
-        throw new Error(data.error)
+      // Update state with response (API returns part1 and part2)
+      const responseText = data.part1 || data.response || 'No response received'
+      setCurrentText(responseText)
+      setCodeContent(data.part2 || data.codeContent || '')
+      setRelatedArticles(data.relatedArticles || [])
+      setRelatedVideos(data.relatedVideos || [])
+
+      // Handle API errors gracefully
+      if (data.error && !data.fallback) {
+        console.warn('⚠️ API returned error but provided fallback content:', data.error)
+        setApiError(data.error)
+        setShowError(true)
+      } else if (data.error && data.fallback) {
+        console.log('✅ API provided fallback response due to:', data.error)
+        // Don't show error for fallback responses, they're still useful
       }
 
-             // Update state with response (API returns part1 and part2)
-       const responseText = data.part1 || data.response || 'No response received'
-       setCurrentText(responseText)
-       setCodeContent(data.part2 || data.codeContent || '')
-       setRelatedArticles(data.relatedArticles || [])
-       setRelatedVideos(data.relatedVideos || [])
-
-       // Start speaking the response
-       if (responseText && responseText !== 'No response received') {
-         console.log('🎤 Starting to speak answer:', responseText.substring(0, 100) + '...')
-         stopSpeaking()
-         setIsPaused(false)
-         setTimeout(() => {
-           setIsSpeaking(true)
-           speakText(responseText, () => {
-             console.log('✅ Finished speaking answer')
-             setIsSpeaking(false)
-             setIsPaused(false)
-           }, { avatarType: avatar })
-         }, 200) // Increased delay for mobile compatibility
-       }
+      // Start speaking the response
+      if (responseText && responseText !== 'No response received') {
+        console.log('🎤 Starting to speak answer:', responseText.substring(0, 100) + '...')
+        stopSpeaking()
+        setIsPaused(false)
+        setTimeout(() => {
+          setIsSpeaking(true)
+          speakText(responseText, () => {
+            console.log('✅ Finished speaking answer')
+            setIsSpeaking(false)
+            setIsPaused(false)
+          }, { avatarType: avatar })
+        }, 200) // Increased delay for mobile compatibility
+      }
 
     } catch (error) {
-      console.error('API call failed:', error)
+      console.error('❌ API call failed:', error)
       setApiError(error.message)
       setShowError(true)
+      
+      // Provide a helpful fallback message
+      const fallbackMessage = `I apologize, but I'm having trouble connecting to my AI service right now. This might be due to network issues or high demand.
+
+Please try asking your question again in a moment, or check your internet connection.`
+      
+      setCurrentText(fallbackMessage)
+      setRelatedArticles(generateFallbackArticles(avatar))
+      setRelatedVideos(generateFallbackVideos(avatar))
+      
     } finally {
       setApiProcessing(false)
     }
