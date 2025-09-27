@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Basic Java Programs - Ganguly's</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="chapters.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  </head>
+  <body>
+    <header>
+      <h1>Basic Java Programs</h1>
+      <a href="Java_program.html" class="nav-item back-btn"><i class="fas fa-arrow-left"></i> Back to Java Programs</a>
+    </header>
+
+    <main class="container">
+      <div class="chapters-grid">
+        <a
+          href="../pdf/java%20for%20beginners/Getting%20Started%20with%20Java%20Programming.pdf"
+          class="chapter-btn"
+          onclick="handlePDFClick(event, '../pdf/java%20for%20beginners/Getting%20Started%20with%20Java%20Programming.pdf')"
+        >
+          <i class="fas fa-file-pdf"></i>
+          <h3>Getting Started with Java Programming</h3>
+          <p>Introduction to Java programming basics and fundamentals</p>
+        </a>
+
+        <a
+          href="../pdf/java%20for%20beginners/How%20to%20Write%20first%20Java%20program%20on%20Mobile.pdf"
+          class="chapter-btn"
+          onclick="handlePDFClick(event, '../pdf/java%20for%20beginners/How%20to%20Write%20first%20Java%20program%20on%20Mobile.pdf')"
+        >
+          <i class="fas fa-file-pdf"></i>
+          <h3>How to Write First Java Program on Mobile</h3>
+          <p>Learn to write Java programs on mobile devices</p>
+        </a>
+
+        <a
+          href="../pdf/java%20for%20beginners/Instructions%20for%20Students%20java%20grginners.pdf"
+          class="chapter-btn"
+          onclick="handlePDFClick(event, '../pdf/java%20for%20beginners/Instructions%20for%20Students%20java%20grginners.pdf')"
+        >
+          <i class="fas fa-file-pdf"></i>
+          <h3>Instructions for Students - Java Beginners</h3>
+          <p>Essential instructions and guidelines for Java beginners</p>
+        </a>
+
+        <a
+          href="../pdf/java%20for%20beginners/Java%20Learning%20Plan%20with%20Programs.pdf"
+          class="chapter-btn"
+          onclick="handlePDFClick(event, '../pdf/java%20for%20beginners/Java%20Learning%20Plan%20with%20Programs.pdf')"
+        >
+          <i class="fas fa-file-pdf"></i>
+          <h3>Java Learning Plan with Programs</h3>
+          <p>Structured learning plan with practical programs</p>
+        </a>
+
+        <a
+          href="../pdf/java%20for%20beginners/Step-by-Step%20Java%20Learning%20Guide%20with%20Programs.pdf"
+          class="chapter-btn"
+          onclick="handlePDFClick(event, '../pdf/java%20for%20beginners/Step-by-Step%20Java%20Learning%20Guide%20with%20Programs.pdf')"
+        >
+          <i class="fas fa-file-pdf"></i>
+          <h3>Step-by-Step Java Learning Guide</h3>
+          <p>Comprehensive step-by-step learning guide with examples</p>
+        </a>
+
+        <a
+          href="../pdf/java%20for%20beginners/Weekly%20Java%20Question%20Bank%20for%20Students.pdf"
+          class="chapter-btn"
+          onclick="handlePDFClick(event, '../pdf/java%20for%20beginners/Weekly%20Java%20Question%20Bank%20for%20Students.pdf')"
+        >
+          <i class="fas fa-file-pdf"></i>
+          <h3>Weekly Java Question Bank</h3>
+          <p>Practice questions and exercises for Java students</p>
+        </a>
+      </div>
+    </main>
+
+    <footer style="font-size: 12px; padding: 5px; text-align: center">
+      <p>&copy; 2024 Ganguly's Educational Notes. All rights reserved.</p>
+    </footer>
+
+    <div id="errorModal" class="error-modal">
+      <div class="error-modal-content">
+        <p id="errorMessage" class="error-message"></p>
+        <button onclick="closeErrorModal()" class="close-button">Close</button>
+      </div>
+    </div>
+    <script src="scripts.js"></script>
+  </body>
+</html>
