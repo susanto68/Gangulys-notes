@@ -744,7 +744,7 @@ const addToConversationHistory = (avatarType, sessionId, role, content) => {
 const getSessionContext = (avatarType, sessionId) => {
   const key = `${avatarType}-${sessionId}`
   if (!sessionContexts.has(key)) {
-    sessionContexts.set(key, genAI.getGenerativeModel({ model: 'gemini-1.5-flash' }).startChat({
+    sessionContexts.set(key, genAI.getGenerativeModel({ model: 'gemini-2.0-flash-exp' }).startChat({
       history: [],
       generationConfig: {
         maxOutputTokens: 2048, // Reduced from 4096 for faster responses

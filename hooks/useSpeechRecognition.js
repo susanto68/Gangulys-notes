@@ -18,10 +18,10 @@ export const useSpeechRecognition = () => {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
       recognitionRef.current = new SpeechRecognition()
       
-      // Configure recognition settings
+      // Configure recognition settings - simplified like working example
       recognitionRef.current.continuous = false
-      recognitionRef.current.interimResults = true
-      recognitionRef.current.lang = 'en-US'
+      recognitionRef.current.interimResults = false
+      recognitionRef.current.lang = 'en-IN'
       recognitionRef.current.maxAlternatives = 1
 
       // Event handlers
@@ -33,27 +33,11 @@ export const useSpeechRecognition = () => {
       }
 
       recognitionRef.current.onresult = (event) => {
-        let finalTranscript = ''
-        let interimTranscript = ''
-
-        for (let i = event.resultIndex; i < event.results.length; i++) {
-          const transcript = event.results[i][0].transcript
-          if (event.results[i].isFinal) {
-            finalTranscript += transcript
-          } else {
-            interimTranscript += transcript
-          }
-        }
-
-        if (finalTranscript) {
-          setTranscript(finalTranscript)
-          setInterimTranscript('')
-        } else {
-          setInterimTranscript(interimTranscript)
-        }
-
-        console.log('Final transcript:', finalTranscript)
-        console.log('Interim transcript:', interimTranscript)
+        // Simplified like working example - only process final results
+        const transcript = event.results[0][0].transcript
+        setTranscript(transcript)
+        setInterimTranscript('')
+        console.log('Speech recognized:', transcript)
       }
 
       recognitionRef.current.onerror = (event) => {

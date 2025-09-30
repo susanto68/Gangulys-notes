@@ -459,6 +459,13 @@ export default function Home() {
               >
                 🐛 Debug Speech
               </Link>
+              
+              <Link 
+                href="/test-voice-simple" 
+                className="inline-flex items-center gap-2 bg-orange-500/20 hover:bg-orange-500/30 text-orange-300 hover:text-orange-200 px-4 py-2 rounded-lg transition-colors text-sm"
+              >
+                🎤 Simple Voice Test
+              </Link>
             </div>
           </div>
         </div>
