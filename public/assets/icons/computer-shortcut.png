@@ -1,0 +1,22 @@
+# Placeholder for computer-shortcut.png
+# This is a placeholder file for computer-shortcut.png
+# Size: 96x96px
+# 
+# To create actual PNG files:
+# 1. Use the generate-icons.html tool in your browser
+# 2. Or use online tools like PWA Builder
+# 3. Or install sharp: npm install sharp
+#
+# SVG content for reference:
+
+<svg width="96" height="96" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="96" height="96" rx="9.600000000000001" fill="url(#grad)"/>
+  <text x="50%" y="50%" text-anchor="middle" dy=".3em" font-family="Arial" font-size="38.400000000000006" fill="white" font-weight="bold">🎓</text>
+  <rect width="86.4" height="86.4" x="4.800000000000001" y="4.800000000000001" rx="7.68" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1.92"/>
+</svg>
