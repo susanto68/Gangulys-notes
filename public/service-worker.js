@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sir-ganguly-v1';
+const CACHE_NAME = 'sir-ganguly-v2';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -39,7 +39,22 @@ self.addEventListener('fetch', function(event) {
   event.respondWith(
     caches.match(event.request)
       .then(function(response) {
-        // Return cached version or fetch from network
+        // Always try network first for HTML files to get latest content
+        if (event.request.url.includes('.html') || event.request.url.includes('class10')) {
+          return fetch(event.request)
+            .then(function(networkResponse) {
+              // Update cache with fresh content
+              caches.open(CACHE_NAME).then(function(cache) {
+                cache.put(event.request, networkResponse.clone());
+              });
+              return networkResponse;
+            })
+            .catch(function() {
+              // If network fails, return cached version
+              return response;
+            });
+        }
+        // For other files, return cached version or fetch from network
         if (response) {
           return response;
         }
