@@ -195,13 +195,7 @@ function updateCounterDisplay(globalCount, indiaCount) {
 function initMobileCounter() {
     const counterContainer = document.querySelector('.visitor-counter');
     if (counterContainer) {
-        // Always hide the external image and show our custom counter
-        const img = counterContainer.querySelector('img');
-        if (img) {
-            img.style.display = 'none';
-        }
-        
-        // Show our custom counter with default values
+        // Always show our custom counter immediately
         updateCounterDisplay(503, 127); // Default values until API loads
     }
 }

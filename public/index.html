@@ -9,7 +9,7 @@
     <meta http-equiv="Expires" content="0">
     <title>Educational Notes - Ganguly's</title>
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" onerror="this.onerror=null; this.href='https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css';">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" onerror="this.onerror=null; this.href='https://use.fontawesome.com/releases/v6.4.0/css/all.css';">
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
     
     <!-- Mobile-friendly visitor counter styles -->
@@ -104,6 +104,22 @@
             pointer-events: none !important;
         }
         
+        /* Fallback icons if Font Awesome fails to load */
+        .fa-whatsapp::before {
+            content: "📱";
+            font-family: Arial, sans-serif;
+        }
+        
+        .fa-download::before {
+            content: "⬇️";
+            font-family: Arial, sans-serif;
+        }
+        
+        .fa-external-link-alt::before {
+            content: "🔗";
+            font-family: Arial, sans-serif;
+        }
+        
         /* Very small screens */
         @media (max-width: 480px) {
             .visitor-counter {
@@ -168,12 +184,7 @@
         <div style="text-align: center;">
             <h3 style="color: #000; margin: 0 0 3px 0; font-size: 10px; font-weight: bold; line-height: 1;">No Of Visitors</h3>
             <div class="visitor-counter-display" style="display: inline-block; text-decoration: none; cursor: default;">
-                <img src="https://counter1.optistats.ovh/private/freecounterstat.php?c=39r6espucml7h4sesyx8f8j2cplpfr41" 
-                     border="0" 
-                     title="page hit counter" 
-                     alt="page hit counter"
-                     style="height: auto; width: auto; max-width: 100%; border-radius: 3px; transition: transform 0.2s ease;"
-                     onerror="this.onerror=null; this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjIwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMjAiIGZpbGw9IiM2NkE2RkYiLz48dGV4dCB4PSI1MCIgeT0iMTQiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxMiIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkNvdW50ZXI8L3RleHQ+PC9zdmc+';">
+                <!-- Custom counter will be inserted here by JavaScript -->
             </div>
         </div>
     </div>
