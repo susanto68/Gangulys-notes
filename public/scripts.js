@@ -135,12 +135,61 @@ function initVisitorCounter() {
                     counterImg.style.transform = 'scale(1)';
                 }, 200);
             }
+            
+            // Update counter display with actual count
+            updateCounterDisplay(data.globalCount, data.indiaCount);
         })
         .catch(error => {
             console.error('❌ Visitor counter error:', error);
             // Still mark as counted to avoid retries
             sessionStorage.setItem(sessionKey, 'true');
         });
+}
+
+// Function to update counter display with actual numbers
+function updateCounterDisplay(globalCount, indiaCount) {
+    // Create a fallback counter display if the external image fails
+    const counterContainer = document.querySelector('.visitor-counter');
+    if (counterContainer) {
+        let fallbackCounter = counterContainer.querySelector('.fallback-counter');
+        
+        if (!fallbackCounter) {
+            // Create fallback counter element
+            fallbackCounter = document.createElement('div');
+            fallbackCounter.className = 'fallback-counter';
+            fallbackCounter.style.cssText = `
+                display: flex;
+                gap: 2px;
+                justify-content: center;
+                align-items: center;
+                margin-top: 4px;
+            `;
+            
+            // Add it after the image
+            const img = counterContainer.querySelector('img');
+            if (img) {
+                img.parentNode.appendChild(fallbackCounter);
+            }
+        }
+        
+        // Update with actual count
+        if (globalCount) {
+            const countStr = globalCount.toString();
+            fallbackCounter.innerHTML = countStr.split('').map(digit => 
+                `<span style="
+                    background: #66a6ff; 
+                    color: white; 
+                    padding: 2px 4px; 
+                    border-radius: 3px; 
+                    font-size: 12px; 
+                    font-weight: bold;
+                    min-width: 16px;
+                    text-align: center;
+                    display: inline-block;
+                ">${digit}</span>`
+            ).join('');
+        }
+    }
 }
 
 // Run counter when page loads
