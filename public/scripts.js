@@ -148,56 +148,15 @@ function initVisitorCounter() {
 
 // Function to update counter display with actual numbers
 function updateCounterDisplay(globalCount, indiaCount) {
-    const counterContainer = document.querySelector('.visitor-counter');
-    if (counterContainer) {
-        let fallbackCounter = counterContainer.querySelector('.fallback-counter');
-        
-        if (!fallbackCounter) {
-            // Create fallback counter element
-            fallbackCounter = document.createElement('div');
-            fallbackCounter.className = 'fallback-counter';
-            fallbackCounter.style.cssText = `
-                display: flex;
-                gap: 2px;
-                justify-content: center;
-                align-items: center;
-                margin-top: 4px;
-            `;
-            
-            // Add it after the image
-            const img = counterContainer.querySelector('img');
-            if (img) {
-                img.parentNode.appendChild(fallbackCounter);
-            }
-        }
-        
-        // Update with actual count
-        if (globalCount) {
-            const countStr = globalCount.toString();
-            fallbackCounter.innerHTML = countStr.split('').map(digit => 
-                `<span style="
-                    background: #66a6ff; 
-                    color: white; 
-                    padding: 2px 4px; 
-                    border-radius: 3px; 
-                    font-size: 12px; 
-                    font-weight: bold;
-                    min-width: 16px;
-                    text-align: center;
-                    display: inline-block;
-                ">${digit}</span>`
-            ).join('');
-        }
-    }
+    // No-op: we no longer render local numeric fallback.
+    // The site should display ONLY the FreeCounterStat image counter.
+    return;
 }
 
 // Function to initialize mobile-friendly counter
 function initMobileCounter() {
-    const counterContainer = document.querySelector('.visitor-counter');
-    if (counterContainer) {
-        // Always show our custom counter immediately
-        updateCounterDisplay(503, 127); // Default values until API loads
-    }
+    // No-op for numeric fallback. The external image is injected by
+    // loadFreeCounterStatImage() on every page load.
 }
 
 // Function to fetch and display real visitor count
@@ -273,4 +232,51 @@ if (typeof window !== 'undefined') {
             setTimeout(initVisitorCounter, 1000);
         }
     });
+}
+
+// Inject FreeCounterStat counter image dynamically with cache-busting
+function loadFreeCounterStatImage() {
+    const container = document.querySelector('.visitor-counter-display');
+    if (!container) return;
+
+    // Clear previous content to avoid duplicates
+    container.innerHTML = '';
+
+    const img = document.createElement('img');
+    img.alt = 'page hit counter';
+    img.style.height = 'auto';
+    img.style.width = 'auto';
+    img.style.maxWidth = '100%';
+    img.style.borderRadius = '3px';
+
+    // Your counter code id from freecounterstat
+    const counterId = '39r6espucml7h4sesyx8f8j2cplpfr41';
+
+    // Try primary domain first, then fallback
+    const srcs = [
+        `https://counter1.optistats.ovh/private/freecounterstat.php?c=${counterId}&_=${Date.now()}`,
+        `https://counter2.optistats.ovh/private/freecounterstat.php?c=${counterId}&_=${Date.now()}`,
+        `https://counter3.optistats.ovh/private/freecounterstat.php?c=${counterId}&_=${Date.now()}`
+    ];
+
+    let idx = 0;
+    function tryNext() {
+        if (idx >= srcs.length) {
+            // If all fail, fall back to local custom counter (already handled by updateCounterDisplay)
+            return;
+        }
+        img.src = srcs[idx++];
+    }
+
+    img.onerror = () => tryNext();
+
+    // Start loading
+    tryNext();
+
+    container.appendChild(img);
+}
+
+// Ensure the external counter loads each time a page opens
+if (typeof window !== 'undefined') {
+    window.addEventListener('load', loadFreeCounterStatImage);
 }

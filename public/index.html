@@ -19,8 +19,8 @@
         /* Base counter styles */
         .visitor-counter {
             transition: all 0.3s ease !important;
-            background: rgba(255,255,255,0.95) !important;
-            border: 1px solid rgba(0,0,0,0.1) !important;
+            background: transparent !important;
+            border: none !important;
         }
         
         .visitor-counter h3 {
@@ -33,15 +33,15 @@
             .visitor-counter {
                 top: 10px !important;
                 left: 10px !important;
-                padding: 8px 12px !important;
-                min-width: 120px !important;
-                max-width: 160px !important;
+                padding: 0 !important;
+                min-width: 0 !important;
+                max-width: 180px !important;
                 font-size: 12px !important;
             }
             
             .visitor-counter:hover {
-                transform: scale(1.02);
-                box-shadow: 0 6px 20px rgba(0,0,0,0.2) !important;
+                transform: none;
+                box-shadow: none !important;
             }
         }
         
@@ -66,32 +66,6 @@
             .visitor-counter img {
                 max-height: 12px !important;
                 max-width: 100% !important;
-            }
-            
-            /* Hide the counter image and show only our custom counter */
-            .visitor-counter img {
-                display: none !important;
-            }
-            
-            .fallback-counter {
-                display: flex !important;
-                gap: 1px !important;
-                justify-content: center !important;
-                align-items: center !important;
-                margin-top: 2px !important;
-            }
-            
-            .fallback-counter span {
-                background: #66a6ff !important;
-                color: white !important;
-                padding: 1px 2px !important;
-                border-radius: 2px !important;
-                font-size: 9px !important;
-                font-weight: bold !important;
-                min-width: 10px !important;
-                text-align: center !important;
-                display: inline-block !important;
-                line-height: 1 !important;
             }
         }
         
@@ -199,12 +173,10 @@
 </head>
 <body>
     <!-- Visitor Counter - Mobile Friendly -->
-    <div class="visitor-counter" style="position: fixed; top: 8px; left: 8px; z-index: 1000; background: rgba(255,255,255,0.95); padding: 6px 8px; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border: 1px solid rgba(0,0,0,0.1); min-width: 80px; max-width: 100px;">
+    <div class="visitor-counter" style="position: fixed; top: 8px; left: 8px; z-index: 1000; padding: 0;">
         <div style="text-align: center;">
             <h3 style="color: #000; margin: 0 0 3px 0; font-size: 10px; font-weight: bold; line-height: 1;">No Of Visitors</h3>
-            <div class="visitor-counter-display" style="display: inline-block; text-decoration: none; cursor: default;">
-                <!-- Custom counter will be inserted here by JavaScript -->
-            </div>
+            <div class="visitor-counter-display" style="display: inline-block; text-decoration: none; cursor: default;"></div>
         </div>
     </div>
     
