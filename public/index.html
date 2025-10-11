@@ -93,6 +93,17 @@
             }
         }
         
+        /* Remove any link styling from counter display */
+        .visitor-counter-display {
+            cursor: default !important;
+            pointer-events: none !important;
+        }
+        
+        .visitor-counter-display * {
+            cursor: default !important;
+            pointer-events: none !important;
+        }
+        
         /* Very small screens */
         @media (max-width: 480px) {
             .visitor-counter {
@@ -156,14 +167,14 @@
     <div class="visitor-counter" style="position: fixed; top: 8px; left: 8px; z-index: 1000; background: rgba(255,255,255,0.95); padding: 6px 8px; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border: 1px solid rgba(0,0,0,0.1); min-width: 80px; max-width: 100px;">
         <div style="text-align: center;">
             <h3 style="color: #000; margin: 0 0 3px 0; font-size: 10px; font-weight: bold; line-height: 1;">No Of Visitors</h3>
-            <a href="https://www.freecounterstat.com" title="page hit counter" style="display: inline-block; text-decoration: none;">
+            <div class="visitor-counter-display" style="display: inline-block; text-decoration: none; cursor: default;">
                 <img src="https://counter1.optistats.ovh/private/freecounterstat.php?c=39r6espucml7h4sesyx8f8j2cplpfr41" 
                      border="0" 
                      title="page hit counter" 
                      alt="page hit counter"
                      style="height: auto; width: auto; max-width: 100%; border-radius: 3px; transition: transform 0.2s ease;"
                      onerror="this.onerror=null; this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjIwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMjAiIGZpbGw9IiM2NkE2RkYiLz48dGV4dCB4PSI1MCIgeT0iMTQiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxMiIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkNvdW50ZXI8L3RleHQ+PC9zdmc+';">
-            </a>
+            </div>
         </div>
     </div>
     

@@ -195,25 +195,48 @@ function updateCounterDisplay(globalCount, indiaCount) {
 function initMobileCounter() {
     const counterContainer = document.querySelector('.visitor-counter');
     if (counterContainer) {
-        // Check if we're on mobile
-        const isMobile = window.innerWidth <= 768;
-        
-        if (isMobile) {
-            // Hide the external image on mobile
-            const img = counterContainer.querySelector('img');
-            if (img) {
-                img.style.display = 'none';
-            }
-            
-            // Show our custom counter
-            updateCounterDisplay(503, 127); // Default values until API loads
+        // Always hide the external image and show our custom counter
+        const img = counterContainer.querySelector('img');
+        if (img) {
+            img.style.display = 'none';
         }
+        
+        // Show our custom counter with default values
+        updateCounterDisplay(503, 127); // Default values until API loads
+    }
+}
+
+// Function to fetch and display real visitor count
+async function fetchVisitorCount() {
+    try {
+        const response = await fetch('/api/visitor-counter', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                countryCode: 'FETCH',
+                ipAddress: '0.0.0.0',
+                userAgent: 'Counter Display'
+            })
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            updateCounterDisplay(data.globalCount, data.indiaCount);
+            console.log('✅ Visitor count updated:', data);
+        }
+    } catch (error) {
+        console.log('ℹ️ Using default visitor count');
     }
 }
 
 // Initialize mobile counter on load
 if (typeof window !== 'undefined') {
-    window.addEventListener('load', initMobileCounter);
+    window.addEventListener('load', function() {
+        initMobileCounter();
+        fetchVisitorCount(); // Fetch real visitor count
+    });
     window.addEventListener('resize', initMobileCounter);
 }
 
