@@ -92,3 +92,36 @@ function handleVideoClick(event, videoPath) {
         }
     }
 }
+
+// Initialize visitor counter with text display
+function initVisitorCounter() {
+    // Get visitor's country using a free IP geolocation service
+    fetch('https://ipapi.co/json/')
+        .then(response => response.json())
+        .then(data => {
+            // Send visitor data to our counter API
+            return fetch('/api/visitor-counter', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    countryCode: data.country_code || 'Unknown',
+                    ipAddress: data.ip || 'Unknown',
+                    userAgent: navigator.userAgent
+                })
+            });
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('✅ Visitor counted:', data);
+        })
+        .catch(error => {
+            console.error('❌ Visitor counter error:', error);
+        });
+}
+
+// Run counter when page loads
+if (typeof window !== 'undefined') {
+    window.addEventListener('load', initVisitorCounter);
+}
