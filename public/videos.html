@@ -18,6 +18,44 @@
     <link rel="apple-touch-icon" href="icon-192.png">
     <link rel="apple-touch-icon" sizes="192x192" href="icon-192.png">
     <link rel="apple-touch-icon" sizes="512x512" href="icon-512.png">
+
+    <!-- Videos page improvements: responsive grid, click-to-play, lazy thumbnails -->
+    <style>
+      .video-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 16px;
+        align-items: start;
+      }
+      .video-wrapper {
+        position: relative;
+        aspect-ratio: 16 / 9;
+        background: #000;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+        cursor: pointer;
+      }
+      .video-wrapper iframe {
+        position: absolute; inset: 0; width: 100%; height: 100%; border: 0; display: none;
+      }
+      .video-thumb { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+      .video-overlay {
+        position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0.0), rgba(0,0,0,0.35));
+      }
+      .play-btn {
+        position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+        width: 58px; height: 58px; border-radius: 50%;
+        background: rgba(255,255,255,0.92);
+        box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+        display: flex; align-items: center; justify-content: center; color: #1f2937;
+        font-size: 26px; line-height: 1;
+      }
+      .video-title { position: absolute; left: 10px; bottom: 10px; right: 10px; color: #fff; font-size: 13px; font-weight: 600; text-shadow: 0 1px 2px rgba(0,0,0,.5); }
+      @media (max-width: 420px) {
+        .play-btn { width: 48px; height: 48px; font-size: 22px; }
+      }
+    </style>
   </head>
   <body>
     <header>
@@ -39,160 +77,95 @@
     </header>
 
     <main class="container">
-      <div class="video-grid">
-        <!-- Original videos -->
-        <div class="video-wrapper">
-          <iframe
-            src="https://drive.google.com/file/d/17Cc7Ag2Jr6JuoQ5vh7zzm16V8b_xvs0X/preview"
-            title="Video 1"
-            allowfullscreen
-          ></iframe>
-        </div>
-        <div class="video-wrapper">
-          <iframe
-            src="https://drive.google.com/file/d/1wGujQSioTHsdRHiogKnkTOn2qY4Vk_Bg/preview"
-            title="Video 2"
-            allowfullscreen
-          ></iframe>
-        </div>
-        <div class="video-wrapper">
-          <iframe
-            src="https://drive.google.com/file/d/1P6uwmad6bmmIbAm0DytzpdyjCHwBINTQ/preview"
-            title="Video 3"
-            allowfullscreen
-          ></iframe>
-        </div>
-        <div class="video-wrapper">
-          <iframe
-            src="https://drive.google.com/file/d/1etr0vOHdeVuZIMFJi48-yhVU2u0soYvI/preview"
-            title="Video 4"
-            allowfullscreen
-          ></iframe>
-        </div>
-        <div class="video-wrapper">
-          <iframe
-            src="https://drive.google.com/file/d/1uWe6CLx_pjX-iH0Fn9cO2w_zx46GcH8g/preview"
-            title="Video 5"
-            allowfullscreen
-          ></iframe>
-        </div>
-        <div class="video-wrapper">
-          <iframe
-            src="https://drive.google.com/file/d/1uwXS3IwS_L2nO29dA9mv4HUcovZERYyX/preview"
-            title="Video 6"
-            allowfullscreen
-          ></iframe>
-        </div>
-        <div class="video-wrapper">
-          <iframe
-            src="https://drive.google.com/file/d/1TqsCgp_vBTtkdxveuG7xozN-94ji7FB5/preview"
-            title="Video 7"
-            allowfullscreen
-          ></iframe>
-        </div>
-        <div class="video-wrapper">
-          <iframe
-            src="https://drive.google.com/file/d/1jQrEglPehtpSY3YBVZLPPsxTyjeOic3_/preview"
-            title="Video 8"
-            allowfullscreen
-          ></iframe>
-        </div>
-        <div class="video-wrapper">
-          <iframe
-            src="https://drive.google.com/file/d/1ektapnJ4a97NXzxrafWMlWaEeLCOhToF/preview"
-            title="Video 9"
-            allowfullscreen
-          ></iframe>
-        </div>
-        <div class="video-wrapper">
-          <iframe
-            src="https://drive.google.com/file/d/1ZUCzvdtNCZg_fKT1h6iDDaVTvyNYhmVW/preview"
-            title="Video 10"
-            allowfullscreen
-          ></iframe>
-        </div>
-        <div class="video-wrapper">
-          <iframe
-            src="https://drive.google.com/file/d/10aVdyBxq7l4vEyYU3a4_w5RmoMmLq57f/preview"
-            title="Video 11"
-            allowfullscreen
-          ></iframe>
-        </div>
-        <div class="video-wrapper">
-          <iframe
-            src="https://www.youtube.com/embed/BXyK73PyhHk"
-            title="Video 12"
-            allowfullscreen
-          ></iframe>
-        </div>
-        <div class="video-wrapper">
-          <iframe
-            src="https://www.youtube.com/embed/ROSxCIXsqlQ"
-            title="Video 13"
-            allowfullscreen
-          ></iframe>
-        </div>
-        <div class="video-wrapper">
-          <iframe
-            src="https://www.youtube.com/embed/ROSxCIXsqlQ"
-            title="Video 14"
-            allowfullscreen
-          ></iframe>
-        </div>
-        <div class="video-wrapper">
-          <iframe
-            src="https://www.youtube.com/embed/0NAUGcp3uGc"
-            title="Video 15"
-            allowfullscreen
-          ></iframe>
-        </div>
-        <div class="video-wrapper">
-          <iframe
-            src="https://www.youtube.com/embed/83QrG3G51Ls"
-            title="Video 16"
-            allowfullscreen
-          ></iframe>
-        </div>
-        <div class="video-wrapper">
-          <iframe
-            src="https://www.youtube.com/embed/md3lbs-VMzs"
-            title="Video 17 searching in the array"
-            allowfullscreen
-          ></iframe>
-        </div>
-        <div class="video-wrapper">
-          <iframe
-            src="https://www.youtube.com/embed/NG7M_SJqJhM"
-            title="Video 18 Linear Search in Arrays"
-            allowfullscreen
-          ></iframe>
-        </div>
-        <div class="video-wrapper">
-          <iframe
-            src="https://www.youtube.com/embed/LuuI1j_g7fk"
-            title="Video 19 Binary Search in Arrays"
-            allowfullscreen
-          ></iframe>
-        </div>
-        <div class="video-wrapper">
-          <iframe
-            src="https://www.youtube.com/embed/CTqKGxx7LtE"
-            title="Video 20 Binary Search in Arrays"
-            allowfullscreen
-          ></iframe>
-        </div>
-        <div class="video-wrapper">
-          <iframe
-            src="https://www.youtube.com/embed/8uO662LA98o"
-            title="Video 21 Binary Search in Arrays"
-            allowfullscreen
-          ></iframe>
-        </div>
+      <div class="video-grid" id="videoGrid">
+        <!-- Cards are rendered by script below for better performance -->
       </div>
     </main>
 
     <footer style="font-size: 12px; padding: 5px; text-align: center">
       <p>&copy; 2024 Ganguly's Educational Notes. All rights reserved.</p>
     </footer>
+
+    <script>
+      // Define your videos: use id + type and a title
+      const videos = [
+        { type: 'drive', id: '17Cc7Ag2Jr6JuoQ5vh7zzm16V8b_xvs0X', title: 'Video 1' },
+        { type: 'drive', id: '1wGujQSioTHsdRHiogKnkTOn2qY4Vk_Bg', title: 'Video 2' },
+        { type: 'drive', id: '1P6uwmad6bmmIbAm0DytzpdyjCHwBINTQ', title: 'Video 3' },
+        { type: 'drive', id: '1etr0vOHdeVuZIMFJi48-yhVU2u0soYvI', title: 'Video 4' },
+        { type: 'drive', id: '1uWe6CLx_pjX-iH0Fn9cO2w_zx46GcH8g', title: 'Video 5' },
+        { type: 'drive', id: '1uwXS3IwS_L2nO29dA9mv4HUcovZERYyX', title: 'Video 6' },
+        { type: 'drive', id: '1TqsCgp_vBTtkdxveuG7xozN-94ji7FB5', title: 'Video 7' },
+        { type: 'drive', id: '1jQrEglPehtpSY3YBVZLPPsxTyjeOic3_', title: 'Video 8' },
+        { type: 'drive', id: '1ektapnJ4a97NXzxrafWMlWaEeLCOhToF', title: 'Video 9' },
+        { type: 'drive', id: '1ZUCzvdtNCZg_fKT1h6iDDaVTvyNYhmVW', title: 'Video 10' },
+        { type: 'drive', id: '10aVdyBxq7l4vEyYU3a4_w5RmoMmLq57f', title: 'Video 11' },
+        { type: 'yt', id: 'BXyK73PyhHk', title: 'Video 12' },
+        { type: 'yt', id: 'ROSxCIXsqlQ', title: 'Video 13' },
+        { type: 'yt', id: 'ROSxCIXsqlQ', title: 'Video 14' },
+        { type: 'yt', id: '0NAUGcp3uGc', title: 'Video 15' },
+        { type: 'yt', id: '83QrG3G51Ls', title: 'Video 16' },
+        { type: 'yt', id: 'md3lbs-VMzs', title: 'Searching in the Array' },
+        { type: 'yt', id: 'NG7M_SJqJhM', title: 'Linear Search in Arrays' },
+        { type: 'yt', id: 'LuuI1j_g7fk', title: 'Binary Search in Arrays' },
+        { type: 'yt', id: 'CTqKGxx7LtE', title: 'Binary Search in Arrays (2)' },
+        { type: 'yt', id: '8uO662LA98o', title: 'Binary Search in Arrays (3)' }
+      ];
+
+      const grid = document.getElementById('videoGrid');
+
+      function getThumb(v) {
+        if (v.type === 'drive') return `https://drive.google.com/thumbnail?id=${v.id}&sz=w640`;
+        return `https://i.ytimg.com/vi/${v.id}/hqdefault.jpg`;
+      }
+      function getEmbed(v) {
+        if (v.type === 'drive') return `https://drive.google.com/file/d/${v.id}/preview`;
+        return `https://www.youtube.com/embed/${v.id}`;
+      }
+
+      function makeCard(v) {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'video-wrapper';
+        wrapper.innerHTML = `
+          <img class="video-thumb" loading="lazy" src="${getThumb(v)}" alt="${v.title}">
+          <div class="video-overlay"></div>
+          <div class="play-btn">▶</div>
+          <div class="video-title">${v.title}</div>
+          <iframe title="${v.title}" allowfullscreen data-src="${getEmbed(v)}"></iframe>
+        `;
+        wrapper.addEventListener('click', () => {
+          const iframe = wrapper.querySelector('iframe');
+          if (!iframe.getAttribute('src')) {
+            iframe.setAttribute('src', iframe.getAttribute('data-src'));
+            iframe.style.display = 'block';
+            wrapper.querySelector('.video-thumb')?.remove();
+            wrapper.querySelector('.play-btn')?.remove();
+            wrapper.querySelector('.video-overlay')?.remove();
+          }
+        });
+        return wrapper;
+      }
+
+      // Render cards
+      videos.forEach(v => grid.appendChild(makeCard(v)));
+
+      // IntersectionObserver to pre-connect when near viewport (smooth start)
+      if ('IntersectionObserver' in window) {
+        const io = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              const w = entry.target; io.unobserve(w);
+              const iframe = w.querySelector('iframe');
+              // preconnect for smoother start
+              const link = document.createElement('link');
+              link.rel = 'preconnect';
+              link.href = (iframe.dataset.src || '').includes('youtube') ? 'https://www.youtube.com' : 'https://drive.google.com';
+              document.head.appendChild(link);
+            }
+          });
+        }, { rootMargin: '200px' });
+        document.querySelectorAll('.video-wrapper').forEach(w => io.observe(w));
+      }
+    </script>
   </body>
 </html>
