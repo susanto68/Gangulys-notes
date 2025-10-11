@@ -95,6 +95,13 @@ function handleVideoClick(event, videoPath) {
 
 // Initialize visitor counter with text display
 function initVisitorCounter() {
+    // Check if we've already counted this session to avoid double counting
+    const sessionKey = 'visitor_counted_' + window.location.pathname;
+    if (sessionStorage.getItem(sessionKey)) {
+        console.log('✅ Visitor already counted for this page in this session');
+        return;
+    }
+
     // Get visitor's country using a free IP geolocation service
     fetch('https://ipapi.co/json/')
         .then(response => response.json())
@@ -108,20 +115,44 @@ function initVisitorCounter() {
                 body: JSON.stringify({
                     countryCode: data.country_code || 'Unknown',
                     ipAddress: data.ip || 'Unknown',
-                    userAgent: navigator.userAgent
+                    userAgent: navigator.userAgent,
+                    pageUrl: window.location.href,
+                    timestamp: new Date().toISOString()
                 })
             });
         })
         .then(response => response.json())
         .then(data => {
             console.log('✅ Visitor counted:', data);
+            // Mark this page as counted in this session
+            sessionStorage.setItem(sessionKey, 'true');
+            
+            // Add a subtle animation to the counter
+            const counterImg = document.querySelector('img[alt="page hit counter"]');
+            if (counterImg) {
+                counterImg.style.transform = 'scale(1.05)';
+                setTimeout(() => {
+                    counterImg.style.transform = 'scale(1)';
+                }, 200);
+            }
         })
         .catch(error => {
             console.error('❌ Visitor counter error:', error);
+            // Still mark as counted to avoid retries
+            sessionStorage.setItem(sessionKey, 'true');
         });
 }
 
 // Run counter when page loads
 if (typeof window !== 'undefined') {
-    window.addEventListener('load', initVisitorCounter);
+    // Count visitor immediately
+    initVisitorCounter();
+    
+    // Also count when page becomes visible (for mobile apps, tabs, etc.)
+    document.addEventListener('visibilitychange', function() {
+        if (!document.hidden) {
+            // Small delay to ensure page is fully loaded
+            setTimeout(initVisitorCounter, 1000);
+        }
+    });
 }
