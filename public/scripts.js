@@ -225,11 +225,38 @@ async function fetchVisitorCount() {
     }
 }
 
+// Check if Font Awesome loaded and apply fallbacks if needed
+function checkFontAwesome() {
+    // Wait a bit for Font Awesome to load
+    setTimeout(() => {
+        const testIcon = document.createElement('i');
+        testIcon.className = 'fa fa-whatsapp';
+        testIcon.style.position = 'absolute';
+        testIcon.style.left = '-9999px';
+        document.body.appendChild(testIcon);
+        
+        const computedStyle = window.getComputedStyle(testIcon, '::before');
+        const content = computedStyle.content;
+        
+        // If Font Awesome didn't load, the content will be empty or not a Font Awesome icon
+        if (!content || content === 'none' || content === '""' || content === "''") {
+            console.log('📱 Font Awesome not loaded, using emoji fallbacks');
+            // Add a class to indicate fallbacks are active
+            document.body.classList.add('fontawesome-fallback');
+        } else {
+            console.log('✅ Font Awesome loaded successfully');
+        }
+        
+        document.body.removeChild(testIcon);
+    }, 1000);
+}
+
 // Initialize mobile counter on load
 if (typeof window !== 'undefined') {
     window.addEventListener('load', function() {
         initMobileCounter();
         fetchVisitorCount(); // Fetch real visitor count
+        checkFontAwesome(); // Check Font Awesome loading
     });
     window.addEventListener('resize', initMobileCounter);
 }

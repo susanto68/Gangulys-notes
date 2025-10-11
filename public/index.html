@@ -9,7 +9,9 @@
     <meta http-equiv="Expires" content="0">
     <title>Educational Notes - Ganguly's</title>
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" onerror="this.onerror=null; this.href='https://use.fontawesome.com/releases/v6.4.0/css/all.css';">
+    <!-- Font Awesome with fallbacks -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" 
+          onerror="this.onerror=null; this.href='https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css';">
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
     
     <!-- Mobile-friendly visitor counter styles -->
@@ -105,19 +107,36 @@
         }
         
         /* Fallback icons if Font Awesome fails to load */
-        .fa-whatsapp::before {
+        .fa-whatsapp::before,
+        .fa-whatsapp-square::before {
             content: "📱";
-            font-family: Arial, sans-serif;
+            font-family: Arial, sans-serif !important;
+            font-size: 1.2em !important;
         }
         
         .fa-download::before {
             content: "⬇️";
-            font-family: Arial, sans-serif;
+            font-family: Arial, sans-serif !important;
+            font-size: 1.2em !important;
         }
         
-        .fa-external-link-alt::before {
+        .fa-external-link-alt::before,
+        .fa-external-link::before {
             content: "🔗";
-            font-family: Arial, sans-serif;
+            font-family: Arial, sans-serif !important;
+            font-size: 1.2em !important;
+        }
+        
+        .fa-file-pdf::before {
+            content: "📄";
+            font-family: Arial, sans-serif !important;
+            font-size: 1.2em !important;
+        }
+        
+        .fa-home::before {
+            content: "🏠";
+            font-family: Arial, sans-serif !important;
+            font-size: 1.2em !important;
         }
         
         /* Very small screens */
