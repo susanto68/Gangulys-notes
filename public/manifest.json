@@ -1,7 +1,7 @@
 {
-  "name": "Sir Ganguly",
-  "short_name": "SG",
-  "description": "Educational Notes Portal by Sir Ganguly",
+  "name": "Ganguly's Educational Notes",
+  "short_name": "Sir Ganguly",
+  "description": "ICSE and ISC Computer Science Notes by Sir Ganguly - Class 6 to 12",
   "start_url": "/",
   "display": "standalone",
   "theme_color": "#66a6ff",
@@ -11,13 +11,13 @@
   "lang": "en",
   "icons": [
     {
-      "src": "icon-192.png",
+      "src": "/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "icon-512.png",
+      "src": "/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
@@ -26,9 +26,16 @@
   "categories": ["education", "learning", "study"],
   "screenshots": [
     {
-      "src": "icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png"
+      "src": "/assets/screenshots/mobile-1.png",
+      "sizes": "540x720",
+      "type": "image/png",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "/assets/screenshots/desktop-1.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide"
     }
   ]
 }
