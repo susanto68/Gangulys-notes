@@ -148,7 +148,6 @@ function initVisitorCounter() {
 
 // Function to update counter display with actual numbers
 function updateCounterDisplay(globalCount, indiaCount) {
-    // Create a fallback counter display if the external image fails
     const counterContainer = document.querySelector('.visitor-counter');
     if (counterContainer) {
         let fallbackCounter = counterContainer.querySelector('.fallback-counter');
@@ -190,6 +189,32 @@ function updateCounterDisplay(globalCount, indiaCount) {
             ).join('');
         }
     }
+}
+
+// Function to initialize mobile-friendly counter
+function initMobileCounter() {
+    const counterContainer = document.querySelector('.visitor-counter');
+    if (counterContainer) {
+        // Check if we're on mobile
+        const isMobile = window.innerWidth <= 768;
+        
+        if (isMobile) {
+            // Hide the external image on mobile
+            const img = counterContainer.querySelector('img');
+            if (img) {
+                img.style.display = 'none';
+            }
+            
+            // Show our custom counter
+            updateCounterDisplay(503, 127); // Default values until API loads
+        }
+    }
+}
+
+// Initialize mobile counter on load
+if (typeof window !== 'undefined') {
+    window.addEventListener('load', initMobileCounter);
+    window.addEventListener('resize', initMobileCounter);
 }
 
 // Run counter when page loads

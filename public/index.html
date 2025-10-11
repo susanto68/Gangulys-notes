@@ -14,45 +14,105 @@
     
     <!-- Mobile-friendly visitor counter styles -->
     <style>
-        @media (max-width: 768px) {
-            /* Make counter smaller on mobile */
-            .visitor-counter {
-                top: 5px !important;
-                left: 5px !important;
-                padding: 6px 8px !important;
-                min-width: 100px !important;
-                max-width: 130px !important;
-            }
-            
-            .visitor-counter h3 {
-                font-size: 10px !important;
-                margin: 0 0 4px 0 !important;
-            }
-            
-            .visitor-counter img {
-                max-height: 16px !important;
-            }
+        /* Base counter styles */
+        .visitor-counter {
+            transition: all 0.3s ease !important;
+            background: rgba(255,255,255,0.95) !important;
+            border: 1px solid rgba(0,0,0,0.1) !important;
         }
         
-        @media (max-width: 480px) {
-            /* Even smaller for very small screens */
-            .visitor-counter {
-                min-width: 90px !important;
-                max-width: 110px !important;
-            }
+        .visitor-counter h3 {
+            color: #000 !important;
+            font-weight: bold !important;
         }
         
-        /* Add hover effect for desktop */
+        /* Desktop styles */
         @media (min-width: 769px) {
+            .visitor-counter {
+                top: 10px !important;
+                left: 10px !important;
+                padding: 8px 12px !important;
+                min-width: 120px !important;
+                max-width: 160px !important;
+                font-size: 12px !important;
+            }
+            
             .visitor-counter:hover {
                 transform: scale(1.02);
                 box-shadow: 0 6px 20px rgba(0,0,0,0.2) !important;
             }
         }
         
-        /* Smooth transitions */
-        .visitor-counter {
-            transition: all 0.3s ease !important;
+        /* Mobile styles - much smaller and positioned to not overlap */
+        @media (max-width: 768px) {
+            .visitor-counter {
+                top: 5px !important;
+                left: 5px !important;
+                padding: 4px 6px !important;
+                min-width: 80px !important;
+                max-width: 100px !important;
+                font-size: 10px !important;
+                z-index: 1001 !important;
+            }
+            
+            .visitor-counter h3 {
+                font-size: 9px !important;
+                margin: 0 0 2px 0 !important;
+                line-height: 1 !important;
+            }
+            
+            .visitor-counter img {
+                max-height: 12px !important;
+                max-width: 100% !important;
+            }
+            
+            /* Hide the counter image and show only our custom counter */
+            .visitor-counter img {
+                display: none !important;
+            }
+            
+            .fallback-counter {
+                display: flex !important;
+                gap: 1px !important;
+                justify-content: center !important;
+                align-items: center !important;
+                margin-top: 2px !important;
+            }
+            
+            .fallback-counter span {
+                background: #66a6ff !important;
+                color: white !important;
+                padding: 1px 2px !important;
+                border-radius: 2px !important;
+                font-size: 9px !important;
+                font-weight: bold !important;
+                min-width: 10px !important;
+                text-align: center !important;
+                display: inline-block !important;
+                line-height: 1 !important;
+            }
+        }
+        
+        /* Very small screens */
+        @media (max-width: 480px) {
+            .visitor-counter {
+                top: 3px !important;
+                left: 3px !important;
+                padding: 3px 5px !important;
+                min-width: 70px !important;
+                max-width: 85px !important;
+            }
+            
+            .visitor-counter h3 {
+                font-size: 8px !important;
+                margin: 0 0 1px 0 !important;
+            }
+            
+            .fallback-counter span {
+                font-size: 8px !important;
+                padding: 1px !important;
+                min-width: 8px !important;
+            }
         }
     </style>
 
@@ -93,9 +153,9 @@
 </head>
 <body>
     <!-- Visitor Counter - Mobile Friendly -->
-    <div class="visitor-counter" style="position: fixed; top: 8px; left: 8px; z-index: 1000; background: rgba(255,255,255,0.98); padding: 8px 10px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); min-width: 120px; max-width: 160px;">
+    <div class="visitor-counter" style="position: fixed; top: 8px; left: 8px; z-index: 1000; background: rgba(255,255,255,0.95); padding: 6px 8px; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border: 1px solid rgba(0,0,0,0.1); min-width: 80px; max-width: 100px;">
         <div style="text-align: center;">
-            <h3 style="color: #333; margin: 0 0 6px 0; font-size: 12px; font-weight: 600; line-height: 1.2;">No Of Visitors</h3>
+            <h3 style="color: #000; margin: 0 0 3px 0; font-size: 10px; font-weight: bold; line-height: 1;">No Of Visitors</h3>
             <a href="https://www.freecounterstat.com" title="page hit counter" style="display: inline-block; text-decoration: none;">
                 <img src="https://counter1.optistats.ovh/private/freecounterstat.php?c=39r6espucml7h4sesyx8f8j2cplpfr41" 
                      border="0" 
