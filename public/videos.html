@@ -55,6 +55,9 @@
       @media (max-width: 420px) {
         .play-btn { width: 48px; height: 48px; font-size: 22px; }
       }
+      /* Categories */
+      .category-section { margin: 28px 0; }
+      .category-title { margin: 0 0 12px 4px; font-size: 18px; font-weight: 700; color: #1f2937; }
     </style>
   </head>
   <body>
@@ -77,9 +80,21 @@
     </header>
 
     <main class="container">
-      <div class="video-grid" id="videoGrid">
-        <!-- Cards are rendered by script below for better performance -->
+      <section class="intro-banner" role="region" aria-label="Tutorial videos information">
+        <h2 class="intro-title">Tutorial Videos</h2>
+        <p class="intro-sub">Browse by category. Click a category row to expand and play videos. Use search to quickly find any video.</p>
+      </section>
+      <div class="video-controls" role="region" aria-label="Videos controls">
+        <input type="search" id="videoSearch" placeholder="Search videos..." aria-label="Search videos" />
+        <div class="control-buttons">
+          <button id="expandAll" class="btn" type="button">Expand all</button>
+          <button id="collapseAll" class="btn" type="button">Collapse all</button>
+          <button id="clearSearch" class="btn btn-secondary" type="button" title="Clear search">Clear</button>
+          <span id="matchCount" class="match-count" aria-live="polite"></span>
+        </div>
       </div>
+      <div id="categoryList"></div>
+      <p id="emptyState" class="empty-state" hidden>No videos match your search. Try a different query.</p>
     </main>
 
     <footer style="font-size: 12px; padding: 5px; text-align: center">
@@ -87,40 +102,52 @@
     </footer>
 
     <script>
-      // Define your videos: use id + type and a title
-      const videos = [
-        { type: 'drive', id: '17Cc7Ag2Jr6JuoQ5vh7zzm16V8b_xvs0X', title: 'Video 1' },
-        { type: 'drive', id: '1wGujQSioTHsdRHiogKnkTOn2qY4Vk_Bg', title: 'Video 2' },
-        { type: 'drive', id: '1P6uwmad6bmmIbAm0DytzpdyjCHwBINTQ', title: 'Video 3' },
-        { type: 'drive', id: '1etr0vOHdeVuZIMFJi48-yhVU2u0soYvI', title: 'Video 4' },
-        { type: 'drive', id: '1uWe6CLx_pjX-iH0Fn9cO2w_zx46GcH8g', title: 'Video 5' },
-        { type: 'drive', id: '1uwXS3IwS_L2nO29dA9mv4HUcovZERYyX', title: 'Video 6' },
-        { type: 'drive', id: '1TqsCgp_vBTtkdxveuG7xozN-94ji7FB5', title: 'Video 7' },
-        { type: 'drive', id: '1jQrEglPehtpSY3YBVZLPPsxTyjeOic3_', title: 'Video 8' },
-        { type: 'drive', id: '1ektapnJ4a97NXzxrafWMlWaEeLCOhToF', title: 'Video 9' },
-        { type: 'drive', id: '1ZUCzvdtNCZg_fKT1h6iDDaVTvyNYhmVW', title: 'Video 10' },
-        { type: 'drive', id: '10aVdyBxq7l4vEyYU3a4_w5RmoMmLq57f', title: 'Video 11' },
-        { type: 'yt', id: 'BXyK73PyhHk', title: 'Video 12' },
-        { type: 'yt', id: 'ROSxCIXsqlQ', title: 'Video 13' },
-        { type: 'yt', id: 'ROSxCIXsqlQ', title: 'Video 14' },
-        { type: 'yt', id: '0NAUGcp3uGc', title: 'Video 15' },
-        { type: 'yt', id: '83QrG3G51Ls', title: 'Video 16' },
-        { type: 'yt', id: 'md3lbs-VMzs', title: 'Searching in the Array' },
-        { type: 'yt', id: 'NG7M_SJqJhM', title: 'Linear Search in Arrays' },
-        { type: 'yt', id: 'LuuI1j_g7fk', title: 'Binary Search in Arrays' },
-        { type: 'yt', id: 'CTqKGxx7LtE', title: 'Binary Search in Arrays (2)' },
-        { type: 'yt', id: '8uO662LA98o', title: 'Binary Search in Arrays (3)' }
-      ];
+      // Basic styles for controls (kept inline with page-specific CSS)
+      (function injectStyles(){
+        const css = `
+          .intro-banner { background: #f8fafc; border: 1px solid #e5e7eb; padding: 12px 14px; border-radius: 12px; margin: 10px 4px 14px; }
+          .intro-title { margin: 0 0 6px 0; font-size: 20px; color: #111827; }
+          .intro-sub { margin: 0; font-size: 13px; color: #4b5563; }
+          .video-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 8px 4px 16px; }
+          .video-controls input[type="search"] { flex: 1 1 260px; padding: 8px 10px; border: 1px solid #d1d5db; border-radius: 8px; }
+          .video-controls { position: sticky; top: 8px; z-index: 5; background: rgba(255,255,255,0.85); backdrop-filter: blur(4px); padding: 8px; border-radius: 10px; border: 1px solid #e5e7eb; }
+          .control-buttons { display: flex; align-items: center; gap: 8px; }
+          .btn { padding: 8px 10px; background: #2563eb; color: #fff; border: 0; border-radius: 8px; cursor: pointer; }
+          .btn:hover { background: #1d4ed8; }
+          .btn-secondary { background: #6b7280; }
+          .btn-secondary:hover { background: #4b5563; }
+          .match-count { color: #6b7280; font-size: 12px; }
+          .category-section { margin: 10px 0; }
+          .category-section details { background: #fff; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.06); padding: 8px; border: 1px solid #eef2f7; }
+          .category-section summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 10px; padding: 6px 2px; }
+          .category-section summary::-webkit-details-marker { display: none; }
+          .category-title { margin: 0; font-size: 16px; font-weight: 700; color: #1f2937; }
+          .badge { background: #eef2ff; color: #3730a3; padding: 2px 8px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+          .summary-help { color: #6b7280; font-size: 12px; margin-left: auto; }
+          .chev { display: inline-block; width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 8px solid #6b7280; transition: transform .2s ease; margin-right: 2px; }
+          details[open] .chev { transform: rotate(180deg); }
+          .category-body { margin-top: 10px; }
+          .empty-state { text-align: center; color: #6b7280; margin: 16px 0; }
+        `;
+        const style = document.createElement('style'); style.textContent = css; document.head.appendChild(style);
+      })();
 
-      const grid = document.getElementById('videoGrid');
+      const categoryList = document.getElementById('categoryList');
+      const searchInput = document.getElementById('videoSearch');
+      const expandAllBtn = document.getElementById('expandAll');
+      const collapseAllBtn = document.getElementById('collapseAll');
+      const matchCountEl = document.getElementById('matchCount');
+      const clearBtn = document.getElementById('clearSearch');
+      const emptyState = document.getElementById('emptyState');
+
+      let catalog = null;
+      let currentQuery = '';
 
       function getThumb(v) {
-        if (v.type === 'drive') return `https://drive.google.com/thumbnail?id=${v.id}&sz=w640`;
-        return `https://i.ytimg.com/vi/${v.id}/hqdefault.jpg`;
+        return v.thumbnail || `https://i.ytimg.com/vi/${v.id}/hqdefault.jpg`;
       }
       function getEmbed(v) {
-        if (v.type === 'drive') return `https://drive.google.com/file/d/${v.id}/preview`;
-        return `https://www.youtube.com/embed/${v.id}`;
+        return `https://www.youtube.com/embed/${v.id}?autoplay=1&rel=0`;
       }
 
       function makeCard(v) {
@@ -138,34 +165,103 @@
           if (!iframe.getAttribute('src')) {
             iframe.setAttribute('src', iframe.getAttribute('data-src'));
             iframe.style.display = 'block';
-            wrapper.querySelector('.video-thumb')?.remove();
-            wrapper.querySelector('.play-btn')?.remove();
-            wrapper.querySelector('.video-overlay')?.remove();
+            const thumb = wrapper.querySelector('.video-thumb'); if (thumb) thumb.remove();
+            const btn = wrapper.querySelector('.play-btn'); if (btn) btn.remove();
+            const overlay = wrapper.querySelector('.video-overlay'); if (overlay) overlay.remove();
           }
         });
         return wrapper;
       }
 
-      // Render cards
-      videos.forEach(v => grid.appendChild(makeCard(v)));
+      function makeCategorySection(cat, videos, opts) {
+        const section = document.createElement('section');
+        section.className = 'category-section';
 
-      // IntersectionObserver to pre-connect when near viewport (smooth start)
-      if ('IntersectionObserver' in window) {
-        const io = new IntersectionObserver((entries) => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting) {
-              const w = entry.target; io.unobserve(w);
-              const iframe = w.querySelector('iframe');
-              // preconnect for smoother start
-              const link = document.createElement('link');
-              link.rel = 'preconnect';
-              link.href = (iframe.dataset.src || '').includes('youtube') ? 'https://www.youtube.com' : 'https://drive.google.com';
-              document.head.appendChild(link);
-            }
-          });
-        }, { rootMargin: '200px' });
-        document.querySelectorAll('.video-wrapper').forEach(w => io.observe(w));
+        const details = document.createElement('details');
+        if (opts && opts.open) { details.setAttribute('open', ''); }
+
+        const summary = document.createElement('summary');
+        const chev = document.createElement('span');
+        chev.className = 'chev';
+        const titleEl = document.createElement('h2');
+        titleEl.className = 'category-title';
+        titleEl.textContent = cat.title || 'Untitled Category';
+        const badge = document.createElement('span');
+        badge.className = 'badge';
+        badge.textContent = String(videos.length);
+        const help = document.createElement('span');
+        help.className = 'summary-help';
+        help.textContent = 'Click to expand';
+        summary.appendChild(chev);
+        summary.appendChild(titleEl);
+        summary.appendChild(badge);
+        summary.appendChild(help);
+
+        const body = document.createElement('div');
+        body.className = 'category-body';
+        const grid = document.createElement('div');
+        grid.className = 'video-grid';
+        videos.forEach(v => grid.appendChild(makeCard(v)));
+        body.appendChild(grid);
+
+        details.appendChild(summary);
+        details.appendChild(body);
+        section.appendChild(details);
+        return section;
       }
+
+      function normalize(s) { return (s || '').toLowerCase(); }
+
+      function render() {
+        if (!catalog) return;
+        const q = normalize(currentQuery);
+        categoryList.innerHTML = '';
+        let totalMatches = 0;
+        const categories = catalog.categories || [];
+        categories.forEach((cat, idx) => {
+          const vids = (cat.videos || []).filter(v => normalize(v.title).includes(q));
+          if (!vids.length) return;
+          totalMatches += vids.length;
+          const shouldOpen = q ? true : idx === 0; // open all on search; else only first category
+          categoryList.appendChild(makeCategorySection(cat, vids, { open: shouldOpen }));
+        });
+        matchCountEl.textContent = totalMatches ? `${totalMatches} matches` : '';
+        emptyState.hidden = totalMatches > 0;
+
+        if ('IntersectionObserver' in window) {
+          const io = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+              if (entry.isIntersecting) {
+                const w = entry.target; io.unobserve(w);
+                const link = document.createElement('link');
+                link.rel = 'preconnect';
+                link.href = 'https://www.youtube.com';
+                document.head.appendChild(link);
+              }
+            });
+          }, { rootMargin: '200px' });
+          document.querySelectorAll('.video-wrapper').forEach(w => io.observe(w));
+        }
+      }
+
+      function debounce(fn, ms) {
+        let t; return function(...args){ clearTimeout(t); t = setTimeout(() => fn.apply(this, args), ms); };
+      }
+
+      const onSearch = debounce(() => { currentQuery = searchInput.value || ''; render(); }, 150);
+      searchInput.addEventListener('input', onSearch);
+      expandAllBtn.addEventListener('click', () => {
+        document.querySelectorAll('.category-section details').forEach(d => d.setAttribute('open', ''));
+      });
+      collapseAllBtn.addEventListener('click', () => {
+        document.querySelectorAll('.category-section details').forEach(d => d.removeAttribute('open'));
+      });
+      clearBtn.addEventListener('click', () => { searchInput.value = ''; currentQuery = ''; render(); });
+
+      fetch('videos.json')
+        .then(r => r.json())
+        .then(data => { catalog = data; render(); })
+        .catch(err => { console.error('Failed to load videos.json', err); });
     </script>
   </body>
 </html>
