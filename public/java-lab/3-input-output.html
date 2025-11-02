@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BlueJ Lab — Input and Output (Scanner)</title>
+  <link rel="stylesheet" href="lab.css">
+</head>
+<body>
+  <div class="lab-container">
+    <header>
+      <h1>3) Input and Output (Scanner)</h1>
+      <p>Read a line from standard input and print a welcome message.</p>
+      <a class="back-link" href="index.html">← All Topics</a>
+    </header>
+
+    <div class="card editor">
+      <div class="controls">
+        <button id="runBtn" class="run-btn">▶ Run Program</button>
+      </div>
+
+      <label for="code">Java Code</label>
+      <textarea id="code" class="code-area">import java.util.Scanner;
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter your name: ");
+        String name = sc.nextLine();
+        System.out.println("Welcome, " + name + "!");
+    }
+}
+</textarea>
+
+      <label for="stdin">Program Input (optional)</label>
+      <textarea id="stdin" class="stdin-area" placeholder="Type your input here, e.g. Riya">Riya</textarea>
+
+      <label for="output">Output</label>
+      <pre id="output" class="output"></pre>
+    </div>
+  </div>
+
+  <script src="lab.js"></script>
+</body>
+</html>
+
+

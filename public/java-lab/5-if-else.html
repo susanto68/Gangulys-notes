@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BlueJ Lab — Conditional Statements</title>
+  <link rel="stylesheet" href="lab.css">
+</head>
+<body>
+  <div class="lab-container">
+    <header>
+      <h1>5) Conditional Statements</h1>
+      <p>Use if-else and switch to control the program flow.</p>
+      <a class="back-link" href="index.html">← All Topics</a>
+    </header>
+
+    <div class="card editor">
+      <div class="controls">
+        <button id="runBtn" class="run-btn">▶ Run Program</button>
+      </div>
+
+      <label for="code">Java Code</label>
+      <textarea id="code" class="code-area">public class Main {
+    public static void main(String[] args) {
+        int marks = 85;
+        if (marks >= 90) System.out.println("Excellent!");
+        else if (marks >= 60) System.out.println("Good!");
+        else System.out.println("Needs Improvement.");
+
+        int day = 2;
+        switch(day) {
+            case 1: System.out.println("Monday"); break;
+            case 2: System.out.println("Tuesday"); break;
+            default: System.out.println("Other Day");
+        }
+    }
+}
+</textarea>
+
+      <label for="stdin">Program Input (optional)</label>
+      <textarea id="stdin" class="stdin-area" placeholder="Input passed to the program via standard input (stdin)"></textarea>
+
+      <label for="output">Output</label>
+      <pre id="output" class="output"></pre>
+    </div>
+  </div>
+
+  <script src="lab.js"></script>
+</body>
+</html>
+
+
