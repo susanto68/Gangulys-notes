@@ -170,7 +170,7 @@ export default function AvatarChat() {
       handleApiCall(transcript)
       resetTranscript()
     }
-  }, [transcript, isListening, resetTranscript])
+  }, [transcript, isListening, resetTranscript, handleApiCall])
 
   // Handle speech recognition errors
   useEffect(() => {
@@ -188,7 +188,7 @@ export default function AvatarChat() {
   }, [speechError, clearSpeechError])
 
   // API call function - simplified like the working example
-  const handleApiCall = async (prompt) => {
+  const handleApiCall = useCallback(async (prompt) => {
     if (!prompt || !avatarConfig) return
     
     setApiProcessing(true)
@@ -260,7 +260,7 @@ export default function AvatarChat() {
     } finally {
       setApiProcessing(false)
     }
-  }
+  }, [avatarConfig, avatar, sessionId])
 
   // Cleanup on component unmount
   useEffect(() => {

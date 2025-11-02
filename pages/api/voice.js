@@ -14,7 +14,7 @@ async function callGemini(question) {
 Speak in simple, friendly English without markdown or special characters.
 Students ask questions about computer science following the ICSE curriculum.
 
-For programming language questions (Java, Python, etc.), return a code snippet enclosed in triple backticks (```).
+For programming language questions (Java, Python, etc.), return a code snippet enclosed in triple backticks (\`\`\`).
 For conceptual questions (HTTPS, Server, Networking, Peripheral devices), return:
 
 Question:

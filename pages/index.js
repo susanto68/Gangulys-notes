@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { useState, useEffect, useRef, useCallback } from 'react'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
@@ -67,6 +68,7 @@ export default function Home() {
   }
 
   // Visitor counter functionality
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     // Check if visitor already counted in this session
     const sessionKey = 'visitorCounted';
@@ -408,25 +410,25 @@ export default function Home() {
               </p>
             {/* Quick Links to Portal and Java Lab */}
             <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 px-4">
-              <a
+              <Link
                 href="/ai-voice-assistant.html"
                 className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-semibold text-white shadow-lg bg-gradient-to-b from-sky-400 to-indigo-900 hover:from-sky-300 hover:to-indigo-800 transition"
               >
                 <img src="/assets/icons/icon-72x72.png" alt="AI" className="w-7 h-7 rounded" />
                 Talk to my AI Avatar
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/Java_program.html"
                 className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-semibold text-white shadow-lg bg-gradient-to-b from-blue-400 to-blue-900 hover:from-blue-300 hover:to-blue-800 transition"
               >
                 <span className="text-lg">💻</span> Java Programs
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/java-lab/index.html"
                 className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-semibold text-white shadow-lg bg-gradient-to-b from-emerald-400 to-emerald-900 hover:from-emerald-300 hover:to-emerald-800 transition"
               >
                 <span className="text-lg">▶</span> Run Java Program Lab
-              </a>
+              </Link>
             </div>
             </div>
 
