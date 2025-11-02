@@ -107,7 +107,7 @@
         const transcript = e.results[0][0].transcript;
         responseBox.textContent = transcript; statusEl.textContent = '🤔 Thinking…'; cleanupView2();
         try {
-          const res = await fetch(VOICE_API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ question: transcript, voice: 'verse' }) });
+          const res = await fetch(VOICE_API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ question: transcript, voice: 'alloy' }) });
           const data = await res.json();
           if (!res.ok) throw new Error(data.error || 'Server error');
           processReply(data.reply || '');

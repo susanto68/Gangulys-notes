@@ -63,7 +63,8 @@ async function callOpenAItTS(text, voice = 'verse') {
     body: JSON.stringify({
       model: 'gpt-4o-mini-tts',
       voice: voice || 'verse',
-      input: text
+      input: text,
+      format: 'mp3'
     })
   });
 
