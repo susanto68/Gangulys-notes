@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 export default function AvatarDisplay({ avatar, config, isSpeaking }) {
   return (
     <div className="text-center">

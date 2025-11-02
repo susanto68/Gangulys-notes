@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import Head from 'next/head'
+import Link from 'next/link'
 
 export default function HomeSimple() {
   const [isLoaded, setIsLoaded] = useState(false)
@@ -105,19 +106,19 @@ export default function HomeSimple() {
 
           {/* Navigation */}
           <div className="text-center mt-8">
-            <a 
+            <Link 
               href="/" 
               className="inline-flex items-center gap-2 bg-white/20 hover:bg-white/30 text-white px-6 py-3 rounded-lg transition-colors mr-4"
             >
               ← Back to Full Version
-            </a>
+            </Link>
             
-            <a 
+            <Link 
               href="/index-debug" 
               className="inline-flex items-center gap-2 bg-green-500/20 hover:bg-green-500/30 text-green-300 hover:text-green-200 px-6 py-3 rounded-lg transition-colors"
             >
               🧪 Debug Test
-            </a>
+            </Link>
           </div>
         </div>
       </div>

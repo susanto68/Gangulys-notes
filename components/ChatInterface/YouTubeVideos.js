@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 const YouTubeVideos = ({ videos = [], title = "Related Videos" }) => {
   if (!videos || videos.length === 0) {
     return null

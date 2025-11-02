@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import Link from 'next/link'
 
 export default function TestMinimal() {
   const [isLoaded, setIsLoaded] = useState(false)
@@ -41,12 +42,12 @@ export default function TestMinimal() {
           </button>
           
           <div className="mt-4">
-            <a 
+            <Link 
               href="/" 
               className="px-6 py-3 bg-blue-500 hover:bg-blue-600 rounded-lg font-semibold inline-block"
             >
               Back to Main Page
-            </a>
+            </Link>
           </div>
         </div>
       </div>

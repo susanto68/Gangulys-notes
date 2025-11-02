@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import Link from 'next/link'
 import { initSynth, speakText, stopSpeaking, getSpeakingState, getSpeechStatus, reinitSynth } from '../lib/speech'
 
 export default function DebugSpeech() {
@@ -212,19 +213,19 @@ export default function DebugSpeech() {
         
         {/* Navigation */}
         <div className="text-center">
-          <a
+          <Link
             href="/"
             className="inline-flex items-center gap-2 bg-white/20 hover:bg-white/30 text-white px-6 py-3 rounded-lg transition-colors mr-4"
           >
             ← Back to Home
-          </a>
+          </Link>
           
-          <a
+          <Link
             href="/test-speech"
             className="inline-flex items-center gap-2 bg-green-500/20 hover:bg-green-500/30 text-green-300 hover:text-green-200 px-6 py-3 rounded-lg transition-colors"
           >
             🧪 Simple Test
-          </a>
+          </Link>
         </div>
       </div>
     </div>

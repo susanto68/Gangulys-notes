@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { useState } from 'react'
 
 const ArticleCarousel = ({ articles = [], title = "Related Articles" }) => {

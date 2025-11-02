@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import Head from 'next/head'
+import Link from 'next/link'
 
 export default function TestVoiceSimple() {
   const [isListening, setIsListening] = useState(false)
@@ -13,6 +14,7 @@ export default function TestVoiceSimple() {
   const utteranceRef = useRef(null)
 
   // Initialize speech recognition like the working example
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
@@ -211,12 +213,12 @@ export default function TestVoiceSimple() {
           
           {/* Navigation */}
           <div className="mt-8 text-center">
-            <a
+            <Link
               href="/"
               className="inline-flex items-center gap-2 bg-white/20 hover:bg-white/30 text-white px-6 py-3 rounded-lg transition-colors"
             >
               ← Back to Home
-            </a>
+            </Link>
           </div>
         </div>
       </div>

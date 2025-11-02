@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import Head from 'next/head'
+import Link from 'next/link'
 
 export default function HomeDebug() {
   const [step, setStep] = useState(0)
@@ -108,12 +109,12 @@ export default function HomeDebug() {
             Restart Test
           </button>
           
-          <a 
+          <Link 
             href="/" 
             className="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold inline-block"
           >
             Try Main Page
-          </a>
+          </Link>
         </div>
       </div>
     </div>
