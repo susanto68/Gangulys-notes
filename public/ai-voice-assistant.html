@@ -67,7 +67,7 @@
 <body>
   <div class="app">
     <div class="container">
-      <h1>🎤 AI Voice Assistant <img src="https://img.icons8.com/color/48/000000/robot-2.png" alt="Bot"/></h1>
+      <h1>🎤 AI Voice Assistant <img src="/assets/icons/icon-72x72.png" alt="Bot"/></h1>
       <div class="whatsapp-feedback">
         <a href="https://wa.me/919835379900?text=Hi! I have feedback about the AI Assistant." class="whatsapp-btn" target="_blank" rel="noopener noreferrer">
           <i class="fab fa-whatsapp"></i> Share Feedback via WhatsApp
@@ -77,8 +77,8 @@
       <div id="responseBox">Ask me anything about computer science…</div>
       <div id="status"></div>
       <div id="controls">
-        <button id="talkBtn" disabled><img src="https://img.icons8.com/ios-filled/24/ffffff/microphone.png" alt="Talk" />Talk</button>
-        <button id="stopBtn" disabled><img src="https://img.icons8.com/ios-filled/24/ffffff/stop.png" alt="Stop" />Stop</button>
+        <button id="talkBtn" disabled><img src="/assets/icons/icon-16x16.png" alt="Talk" />Talk</button>
+        <button id="stopBtn" disabled><img src="/assets/icons/icon-32x32.png" alt="Stop" />Stop</button>
       </div>
     </div>
     <div class="view2" id="view2"></div>
@@ -99,8 +99,20 @@
 
     function initRecognition() {
       const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-      if (!SR) { statusEl.textContent = 'Speech Recognition not supported.'; return; }
-      recognition = new SR(); recognition.lang = 'en-IN'; recognition.interimResults = false; recognition.maxAlternatives = 1;
+      if (!SR) {
+        statusEl.textContent = 'Speech Recognition not supported in this browser. Please use Chrome or Edge.';
+        talkBtn.disabled = true;
+        stopBtn.disabled = true;
+        return;
+      }
+
+      recognition = new SR();
+      recognition.lang = 'en-IN';
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+
+      // Enable Talk button now that recognition is available
+      talkBtn.disabled = false;
       recognition.onstart = () => { isListening = true; statusEl.textContent = '🎧 Listening…'; talkBtn.disabled = true; stopBtn.disabled = false; };
       recognition.onresult = async e => {
         stopPlayback();

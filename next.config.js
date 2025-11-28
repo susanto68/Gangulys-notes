@@ -25,6 +25,16 @@ const nextConfig = {
       },
     ]
   },
+  // Make local / behave like the deployed site root by serving the static portal
+  async redirects() {
+    return [
+      {
+        source: '/',
+        destination: '/index.html',
+        permanent: false,
+      },
+    ]
+  },
 }
 
 module.exports = nextConfig
