@@ -2,7 +2,7 @@ function handlePDFClick(event, pdfPath) {
     event.preventDefault();
     
     // Check if it's a local PDF file or external link
-    if (pdfPath.startsWith('../pdf/') || pdfPath.startsWith('pdfs/') || pdfPath.startsWith('pdf/')) {
+    if (pdfPath.startsWith('../pdf/') || pdfPath.startsWith('/pdf/') || pdfPath.startsWith('pdfs/') || pdfPath.startsWith('pdf/')) {
         // For local PDF files, try multiple approaches
         try {
             // First try: Direct file access

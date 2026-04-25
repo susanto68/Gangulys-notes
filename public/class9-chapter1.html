@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Class 9 — Chapter 1 - Ganguly's</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="chapters.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
+
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#66a6ff">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Sir Ganguly">
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="icon-192.png">
+    <link rel="apple-touch-icon" sizes="512x512" href="icon-512.png">
+  </head>
+  <body>
+    <div class="visitor-counter" style="position: fixed; top: 8px; left: 8px; z-index: 1000; padding: 0;">
+      <div style="text-align: center;">
+        <h3 style="color: #000; margin: 0 0 3px 0; font-size: 10px; font-weight: bold; line-height: 1;">No Of Visitors</h3>
+        <div class="visitor-counter-display" style="display: inline-block; text-decoration: none; cursor: default;"></div>
+      </div>
+    </div>
+
+    <header>
+      <h1>Chapter 1</h1>
+      <p style="margin: 0.25rem 0 0; font-size: 1.05rem; opacity: 0.95;">Principles of Object-Oriented Programming</p>
+      <div class="whatsapp-feedback">
+        <a href="https://wa.me/919835379900?text=Hi! I have feedback about Class 9 Chapter 1 notes." class="whatsapp-btn" target="_blank" rel="noopener noreferrer">
+          <i class="fab fa-whatsapp"></i> Share Feedback via WhatsApp
+        </a>
+      </div>
+      <div class="header-buttons">
+        <a href="class9.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Class 9</a>
+        <a href="index.html" class="back-btn" style="margin-left: 0.5rem;"><i class="fas fa-home"></i> Home</a>
+      </div>
+    </header>
+
+    <main class="container">
+      <div class="chapter-pdf-page">
+        <p class="chapter-pdf-page-intro">Choose a PDF to open:</p>
+        <div class="chapter-pdf-options chapter-pdf-options--page">
+          <a
+            href="/pdf/class%209/Class%209%20ch-1%20_%20Principles%20of%20object%20oriented%20programming%282025-26%29.pdf"
+            class="chapter-btn chapter-btn--pdf-choice"
+            onclick="handlePDFClick(event, '/pdf/class%209/Class%209%20ch-1%20_%20Principles%20of%20object%20oriented%20programming%282025-26%29.pdf')"
+            >Class 9 ch-1 _ Principles of object oriented programming(2025-26)</a>
+          <a
+            href="/pdf/class%209/Class%209%20ch-1%20_%20Principles%20of%20object%20oriented%20programming%282026-27%29.pdf"
+            class="chapter-btn chapter-btn--pdf-choice"
+            onclick="handlePDFClick(event, '/pdf/class%209/Class%209%20ch-1%20_%20Principles%20of%20object%20oriented%20programming%282026-27%29.pdf')"
+            >Class 9 ch-1 _ Principles of object oriented programming(2026-27)</a>
+        </div>
+      </div>
+    </main>
+
+    <div id="errorModal" class="error-modal">
+      <div class="error-modal-content">
+        <p id="errorMessage" class="error-message"></p>
+        <button onclick="closeErrorModal()" class="close-button">Close</button>
+      </div>
+    </div>
+
+    <footer style="font-size: 12px; padding: 5px; text-align: center">
+      <p>&copy; 2024 Ganguly's Educational Notes. All rights reserved.</p>
+    </footer>
+
+    <script src="scripts.js"></script>
+  </body>
+</html>

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sir-ganguly-v2';
+const CACHE_NAME = 'sir-ganguly-v4';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -13,6 +13,7 @@ const urlsToCache = [
   '/class7.html',
   '/class8.html',
   '/class9.html',
+  '/class9-chapter1.html',
   '/class10.html',
   '/class12.html',
   '/Java_program.html',

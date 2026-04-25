@@ -1,9 +1,9 @@
 // Service Worker for Avatar AI Assistant PWA
 // Created by Susanto Ganguly (Sir Ganguly)
 
-const CACHE_NAME = 'avatar-ai-v1.0.0';
-const STATIC_CACHE = 'avatar-ai-static-v1.0.0';
-const DYNAMIC_CACHE = 'avatar-ai-dynamic-v1.0.0';
+const CACHE_NAME = 'avatar-ai-v1.0.1';
+const STATIC_CACHE = 'avatar-ai-static-v1.0.1';
+const DYNAMIC_CACHE = 'avatar-ai-dynamic-v1.0.1';
 
 // Files to cache immediately
 const STATIC_FILES = [
@@ -82,6 +82,14 @@ self.addEventListener('fetch', (event) => {
 
   // Skip API calls (they should always go to network)
   if (url.pathname.startsWith('/api/')) {
+    return;
+  }
+
+  // Never show the offline HTML page for PDFs. If a PDF can't be fetched,
+  // allow the request to fail naturally (browser will show its own error),
+  // instead of confusing users with the app's offline screen.
+  if (url.pathname.toLowerCase().endsWith('.pdf')) {
+    event.respondWith(fetch(request));
     return;
   }
 

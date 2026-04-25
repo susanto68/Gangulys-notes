@@ -224,6 +224,49 @@
   line-height: 1.6;
 }
 
+/* Dedicated chapter page with PDF choice buttons (e.g. Class 9 Ch.1) */
+.chapter-pdf-page {
+  max-width: min(560px, 100%);
+  margin: 2rem auto 3rem;
+  padding: 1.5rem 1.25rem 2rem;
+  background: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
+}
+
+.chapter-pdf-page-intro {
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1a237e;
+  margin: 0 0 0.75rem;
+}
+
+.chapter-pdf-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.chapter-pdf-options--page {
+  margin-top: 0;
+  gap: 1.25rem;
+}
+
+/* Same gradient “chapter card” style as Class 9 grid; both PDF buttons match */
+.chapter-pdf-options--page .chapter-btn--pdf-choice {
+  width: 100%;
+  min-height: 6.5rem;
+  padding: 1.75rem 1.25rem;
+  font-size: 1rem;
+  line-height: 1.45;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.35);
+  word-break: break-word;
+  hyphens: auto;
+}
+
 @media screen and (max-width: 768px) {
   .chapters-grid {
     grid-template-columns: 1fr;
@@ -266,5 +309,11 @@
 
   .coming-soon p {
     font-size: 1rem;
+  }
+
+  .chapter-pdf-options--page .chapter-btn--pdf-choice {
+    min-height: 5.75rem;
+    font-size: 0.92rem;
+    padding: 1.35rem 1rem;
   }
 }
