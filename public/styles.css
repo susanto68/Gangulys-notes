@@ -225,8 +225,9 @@ footer {
   gap: 10px;
   width: 100%;
   max-width: 300px;
-  padding: 1.2rem 2rem;
-  font-size: 1.2rem;
+  height: 96px;
+  padding: 1rem 1.4rem;
+  font-size: 1.15rem;
   font-weight: 700;
   color: #ffffff;
   text-decoration: none;
@@ -237,6 +238,45 @@ footer {
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   position: relative;
   overflow: hidden;
+}
+
+.class-btn i,
+.class-btn img,
+.class-btn span {
+  position: relative;
+  z-index: 1;
+}
+
+.class-btn i {
+  flex: 0 0 auto;
+}
+
+.class-btn-label {
+  display: block;
+  max-width: 12ch;
+  font-size: 1.12rem;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.holiday-btn .class-btn-label {
+  max-width: 13ch;
+  font-size: 1.12rem;
+  line-height: 1.25;
+}
+
+.class-btn-image {
+  flex: 0 0 auto;
+  width: 30px !important;
+  height: 30px !important;
+  max-width: 30px !important;
+  max-height: 30px !important;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.featured-ai {
+  padding-inline: 1.2rem;
 }
 
 .class-btn::before {
@@ -274,7 +314,18 @@ footer {
 
   .class-btn {
     font-size: 1rem;
-    padding: 0.8rem 1.5rem;
+    height: 92px;
+    padding: 0.85rem 1rem;
+  }
+
+  .class-btn-label {
+    max-width: 11ch;
+    font-size: 1rem;
+  }
+
+  .holiday-btn .class-btn-label {
+    max-width: 12ch;
+    font-size: 1rem;
   }
 }
 

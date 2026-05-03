@@ -331,8 +331,11 @@ export default function Home() {
         setIsLoading(false)
         console.log('📱 Loading complete, checking welcome message...')
 
+        const welcomePlayed = typeof window !== 'undefined' &&
+          sessionStorage.getItem('welcomePlayed') === 'true'
+
         // Play welcome greeting after loading only if not played yet
-        if (!hasPlayedWelcome) {
+        if (!welcomePlayed) {
           console.log('🎤 Scheduling welcome message...')
           welcomeTimeoutRef.current = setTimeout(() => {
             playWelcomeGreeting()
@@ -352,7 +355,7 @@ export default function Home() {
         console.log('🧹 Cleaned up welcome timeout')
       }
     }
-  }, [playWelcomeGreeting]) // Removed hasPlayedWelcome from dependencies to prevent loops
+  }, [playWelcomeGreeting])
 
   if (isLoading) {
     return <LoadingScreen />

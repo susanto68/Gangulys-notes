@@ -95,93 +95,46 @@ function handleVideoClick(event, videoPath) {
 
 // Initialize visitor counter with text display
 function initVisitorCounter() {
-    // Check if we've already counted this session to avoid double counting
-    const sessionKey = 'visitor_counted_' + window.location.pathname;
-    if (sessionStorage.getItem(sessionKey)) {
-        console.log('✅ Visitor already counted for this page in this session');
-        return;
-    }
-
-    // Get visitor's country using a free IP geolocation service
-    fetch('https://ipapi.co/json/')
-        .then(response => response.json())
-        .then(data => {
-            // Send visitor data to our counter API
-            return fetch('/api/visitor-counter', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    countryCode: data.country_code || 'Unknown',
-                    ipAddress: data.ip || 'Unknown',
-                    userAgent: navigator.userAgent,
-                    pageUrl: window.location.href,
-                    timestamp: new Date().toISOString()
-                })
-            });
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log('✅ Visitor counted:', data);
-            // Mark this page as counted in this session
-            sessionStorage.setItem(sessionKey, 'true');
-            
-            // Add a subtle animation to the counter
-            const counterImg = document.querySelector('img[alt="page hit counter"]');
-            if (counterImg) {
-                counterImg.style.transform = 'scale(1.05)';
-                setTimeout(() => {
-                    counterImg.style.transform = 'scale(1)';
-                }, 200);
-            }
-            
-            // Update counter display with actual count
-            updateCounterDisplay(data.globalCount, data.indiaCount);
-        })
-        .catch(error => {
-            console.error('❌ Visitor counter error:', error);
-            // Still mark as counted to avoid retries
-            sessionStorage.setItem(sessionKey, 'true');
-        });
+    loadGoatCounterVisitorCount();
 }
 
 // Function to update counter display with actual numbers
 function updateCounterDisplay(globalCount, indiaCount) {
-    // No-op: we no longer render local numeric fallback.
-    // The site should display ONLY the FreeCounterStat image counter.
-    return;
+    const counter = document.querySelector('.visitor-counter-display');
+    if (!counter) return;
+
+    const count = typeof globalCount === 'string'
+        ? globalCount
+        : (Number(globalCount) || 0).toLocaleString();
+    counter.innerHTML = `<span class="visitor-count-value">${count}</span>`;
 }
 
 // Function to initialize mobile-friendly counter
 function initMobileCounter() {
-    // No-op for numeric fallback. The external image is injected by
-    // loadFreeCounterStatImage() on every page load.
+    const counter = document.querySelector('.visitor-counter-display');
+    if (!counter || counter.textContent.trim()) return;
+
+    counter.innerHTML = '<span class="visitor-count-value">Loading...</span>';
 }
 
-// Function to fetch and display real visitor count
-async function fetchVisitorCount() {
+// Function to fetch and display GoatCounter total visitor count
+async function loadGoatCounterVisitorCount() {
     try {
-        const response = await fetch('/api/visitor-counter', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                countryCode: 'FETCH',
-                ipAddress: '0.0.0.0',
-                userAgent: 'Counter Display'
-            })
+        const response = await fetch('https://gangulysnotes.goatcounter.com/counter/TOTAL.json', {
+            cache: 'no-store'
         });
         
         if (response.ok) {
             const data = await response.json();
-            updateCounterDisplay(data.globalCount, data.indiaCount);
-            console.log('✅ Visitor count updated:', data);
+            updateCounterDisplay(data.count || '--');
+            console.log('✅ GoatCounter visitor count updated:', data);
+            return;
         }
     } catch (error) {
-        console.log('ℹ️ Using default visitor count');
+        console.log('ℹ️ GoatCounter visitor count unavailable');
     }
+
+    updateCounterDisplay('--');
 }
 
 // Check if Font Awesome loaded and apply fallbacks if needed
@@ -214,7 +167,7 @@ function checkFontAwesome() {
 if (typeof window !== 'undefined') {
     window.addEventListener('load', function() {
         initMobileCounter();
-        fetchVisitorCount(); // Fetch real visitor count
+        loadGoatCounterVisitorCount();
         checkFontAwesome(); // Check Font Awesome loading
     });
     window.addEventListener('resize', initMobileCounter);
@@ -222,61 +175,13 @@ if (typeof window !== 'undefined') {
 
 // Run counter when page loads
 if (typeof window !== 'undefined') {
-    // Count visitor immediately
+    // Display visitor total immediately
     initVisitorCounter();
-    
-    // Also count when page becomes visible (for mobile apps, tabs, etc.)
+
+    // Refresh the display when returning to the tab.
     document.addEventListener('visibilitychange', function() {
         if (!document.hidden) {
-            // Small delay to ensure page is fully loaded
             setTimeout(initVisitorCounter, 1000);
         }
     });
-}
-
-// Inject FreeCounterStat counter image dynamically with cache-busting
-function loadFreeCounterStatImage() {
-    const container = document.querySelector('.visitor-counter-display');
-    if (!container) return;
-
-    // Clear previous content to avoid duplicates
-    container.innerHTML = '';
-
-    const img = document.createElement('img');
-    img.alt = 'page hit counter';
-    img.style.height = 'auto';
-    img.style.width = 'auto';
-    img.style.maxWidth = '100%';
-    img.style.borderRadius = '3px';
-
-    // Your counter code id from freecounterstat
-    const counterId = '39r6espucml7h4sesyx8f8j2cplpfr41';
-
-    // Try primary domain first, then fallback
-    const srcs = [
-        `https://counter1.optistats.ovh/private/freecounterstat.php?c=${counterId}&_=${Date.now()}`,
-        `https://counter2.optistats.ovh/private/freecounterstat.php?c=${counterId}&_=${Date.now()}`,
-        `https://counter3.optistats.ovh/private/freecounterstat.php?c=${counterId}&_=${Date.now()}`
-    ];
-
-    let idx = 0;
-    function tryNext() {
-        if (idx >= srcs.length) {
-            // If all fail, fall back to local custom counter (already handled by updateCounterDisplay)
-            return;
-        }
-        img.src = srcs[idx++];
-    }
-
-    img.onerror = () => tryNext();
-
-    // Start loading
-    tryNext();
-
-    container.appendChild(img);
-}
-
-// Ensure the external counter loads each time a page opens
-if (typeof window !== 'undefined') {
-    window.addEventListener('load', loadFreeCounterStatImage);
 }

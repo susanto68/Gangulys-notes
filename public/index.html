@@ -8,7 +8,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>Educational Notes - Ganguly's</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=20260503-buttons">
     <!-- Font Awesome with fallbacks -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" 
           onerror="this.onerror=null; this.href='https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css';">
@@ -19,8 +19,10 @@
         /* Base counter styles */
         .visitor-counter {
             transition: all 0.3s ease !important;
-            background: transparent !important;
-            border: none !important;
+            background: rgba(255, 255, 255, 0.72) !important;
+            border: 1px solid rgba(255, 255, 255, 0.8) !important;
+            border-radius: 8px !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
         }
         
         .visitor-counter h3 {
@@ -33,8 +35,8 @@
             .visitor-counter {
                 top: 10px !important;
                 left: 10px !important;
-                padding: 0 !important;
-                min-width: 0 !important;
+                padding: 6px 8px !important;
+                min-width: 96px !important;
                 max-width: 180px !important;
                 font-size: 12px !important;
             }
@@ -50,9 +52,9 @@
             .visitor-counter {
                 top: 5px !important;
                 left: 5px !important;
-                padding: 4px 6px !important;
-                min-width: 80px !important;
-                max-width: 100px !important;
+                padding: 5px 7px !important;
+                min-width: 92px !important;
+                max-width: 110px !important;
                 font-size: 10px !important;
                 z-index: 1001 !important;
             }
@@ -63,9 +65,8 @@
                 line-height: 1 !important;
             }
             
-            .visitor-counter img {
-                max-height: 12px !important;
-                max-width: 100% !important;
+            .visitor-count-value {
+                font-size: 12px !important;
             }
         }
         
@@ -118,9 +119,9 @@
             .visitor-counter {
                 top: 3px !important;
                 left: 3px !important;
-                padding: 3px 5px !important;
-                min-width: 70px !important;
-                max-width: 85px !important;
+                padding: 4px 6px !important;
+                min-width: 86px !important;
+                max-width: 100px !important;
             }
             
             .visitor-counter h3 {
@@ -128,10 +129,8 @@
                 margin: 0 0 1px 0 !important;
             }
             
-            .fallback-counter span {
-                font-size: 8px !important;
-                padding: 1px !important;
-                min-width: 8px !important;
+            .visitor-count-value {
+                font-size: 11px !important;
             }
         }
     </style>
@@ -159,6 +158,8 @@
 <script>
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', function() {
+      // Keep only the main /sw.js registration below; this older worker cached CSS/JS too aggressively.
+      return
       navigator.serviceWorker.register('/service-worker.js')
         .then(reg => console.log("✅ Service Worker Registered"))
         .catch(err => console.log("❌ Service Worker Error", err));
@@ -173,10 +174,12 @@
 </head>
 <body>
     <!-- Visitor Counter - Mobile Friendly -->
-    <div class="visitor-counter" style="position: fixed; top: 8px; left: 8px; z-index: 1000; padding: 0;">
+    <div class="visitor-counter" style="position: fixed; top: 8px; left: 8px; z-index: 1000;">
         <div style="text-align: center;">
             <h3 style="color: #000; margin: 0 0 3px 0; font-size: 10px; font-weight: bold; line-height: 1;">No Of Visitors</h3>
-            <div class="visitor-counter-display" style="display: inline-block; text-decoration: none; cursor: default;"></div>
+            <div class="visitor-counter-display" style="display: inline-block; text-decoration: none; cursor: default;">
+                <span class="visitor-count-value">Loading...</span>
+            </div>
         </div>
     </div>
     
@@ -194,19 +197,16 @@
     <main class="container">
          
         <div class="class-buttons">
-            <!--<a href="#" class="chapter-btn" onclick="showError('Coming soon!')">-->
-            
-            <a href="ai.html" class="class-btn" style="background: linear-gradient(to bottom, #7dd3fc, #1e3a8a); box-shadow: 0 6px 18px rgba(30,58,138,0.35);">
-                <img src="assets/icons/icon-72x72.png" alt="AI" style="width:32px; height:32px; vertical-align:middle; margin-right:10px; border-radius:6px;" />
-                <i class="fas fa-robot"></i> Talk to my AI Avatar
+            <a href="ai.html" class="class-btn featured-ai" style="background: linear-gradient(to bottom, #7dd3fc, #1e3a8a); box-shadow: 0 6px 18px rgba(30,58,138,0.35);">
+                <img src="assets/icons/icon-72x72.png" alt="AI" class="class-btn-image" />
+                <span class="class-btn-label">Talk to my AI Avatar</span>
             </a>
             <a
             href="/pdf/Holiday%20Homework(2026-27).pdf"
-            class="class-btn"
-            onclick="handlePDFClick(event, '/pdf/Holiday%20Homework(2026-27).pdf')"
+            class="class-btn holiday-btn"
           >
             <i class="fas fa-book-open"></i>
-            <h2>Holiday Homework 2026-27</h2>
+            <span class="class-btn-label">Holiday Homework 2026-27</span>
           </a>
             <a href="videos.html" class="class-btn"><i class="fas fa-video"></i> Tutorial Videos</a>
             <a href="Java_program.html" class="class-btn"><i class="fas fa-code"></i> Java Programs</a>
@@ -243,7 +243,14 @@
      </div>
  </div>
  
- <script src="scripts.js"></script>
+ <script>
+     window.goatcounter = { allow_local: true };
+ </script>
+ <script
+     data-goatcounter="https://gangulysnotes.goatcounter.com/count"
+     async
+     src="https://gc.zgo.at/count.js"></script>
+ <script src="scripts.js?v=20260503-goatcounter"></script>
  
  <!-- PWA Service Worker Registration -->
  <script>
