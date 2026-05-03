@@ -353,4 +353,13 @@ footer {
     padding: 0.6rem 1.5rem;
     font-size: 0.9rem;
   }
+  .chapter-btn {
+    display: block;
+    padding: 20px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #6dd5fa, #1e3c72);
+    color: white;
+    text-align: center;
+    text-decoration: none;
+  }
 }
