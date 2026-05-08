@@ -45,6 +45,13 @@
     #responseBox { background:#f1f5f9; padding:12px; border-radius:12px; margin-top:12px; font-size:.9rem; min-height:60px; text-align:left; line-height:1.4; white-space:pre-wrap; flex-grow:1; }
     #status { margin-top:8px; font-size:.8rem; color:#64748b; min-height:1.2em; }
 
+    .question-form { margin-top:12px; display:flex; flex-direction:column; gap:8px; }
+    #questionInput { width:100%; min-height:92px; resize:vertical; padding:12px; border:1px solid #cbd5e1; border-radius:10px; font:inherit; line-height:1.45; color:#1e293b; background:#fff; }
+    #questionInput:focus { outline:2px solid #93c5fd; border-color:#3b82f6; }
+    .form-actions { display:flex; gap:8px; }
+    #askBtn { background:#16a34a; color:#fff; }
+    #askBtn:hover:not(:disabled) { background:#15803d; }
+
     #controls { margin-top:12px; display:flex; justify-content:center; gap:8px; }
     button { flex:1; padding:10px; font-size:.9rem; border:none; border-radius:8px; cursor:pointer; display:flex; justify-content:center; align-items:center; gap:6px; transition:background .2s; }
     button:disabled { opacity:.5; cursor:not-allowed; }
@@ -57,12 +64,18 @@
     .snippet, .qa { background:#f8fafc; padding:12px; border-radius:8px; margin-top:8px; overflow-x:auto; font-family:'Courier New', monospace; font-size:.85rem; white-space:pre-wrap; }
     .copyBtn { margin-top:6px; align-self:flex-end; padding:6px 10px; font-size:.8rem; background:#10b981; color:#fff; border:none; border-radius:6px; cursor:pointer; display:flex; align-items:center; gap:4px; }
     .copyBtn:hover { background:#059669; }
+    .resource-list { display:flex; flex-direction:column; gap:8px; margin-top:8px; }
+    .resource-card { display:block; padding:10px; border-radius:8px; background:#eef6ff; color:#1e3a8a; text-decoration:none; border:1px solid #bfdbfe; }
+    .resource-card:hover { background:#dbeafe; }
+    .resource-card strong { display:block; margin-bottom:4px; }
+    .resource-card span { display:block; color:#475569; font-size:.8rem; line-height:1.35; }
 
     @media (max-width:768px) {
       h1 { font-size:1.25rem; }
       #avatar { width:80px; height:80px; }
       #responseBox, .snippet, .qa { font-size:.85rem; }
       button { font-size:.85rem; padding:8px; }
+      .form-actions, #controls { flex-direction:column; }
       .view2 { margin-top:16px; }
     }
   </style>
@@ -77,6 +90,12 @@
         </a>
       </div>
       <img id="avatar" src="sirganguly.png" alt="Avatar" />
+      <form class="question-form" id="questionForm">
+        <textarea id="questionInput" placeholder="Type your question here. Ask computer theory, programming, Java, Python, algorithms, errors, or any study question."></textarea>
+        <div class="form-actions">
+          <button id="askBtn" type="submit">Ask Question</button>
+        </div>
+      </form>
       <div id="responseBox">Ask me anything about computer science…</div>
       <div id="status"></div>
       <div id="controls">
@@ -90,6 +109,9 @@
     const API_URL = '/api/chat';
     const talkBtn = document.getElementById('talkBtn');
     const stopBtn = document.getElementById('stopBtn');
+    const askBtn = document.getElementById('askBtn');
+    const questionForm = document.getElementById('questionForm');
+    const questionInput = document.getElementById('questionInput');
     const statusEl = document.getElementById('status');
     const responseBox = document.getElementById('responseBox');
     const avatar = document.getElementById('avatar');
@@ -100,9 +122,44 @@
     let maleVoice = null;
 
     // load male voice
-    window.speechSynthesis.onvoiceschanged = () => {
-      maleVoice = window.speechSynthesis.getVoices().find(v => /male/i.test(v.name));
-    };
+    function chooseVoice() {
+      const voices = window.speechSynthesis.getVoices();
+      maleVoice = voices.find(v => /male/i.test(v.name)) ||
+        voices.find(v => /english|india|us|uk/i.test(`${v.name} ${v.lang}`)) ||
+        voices[0] ||
+        null;
+    }
+    chooseVoice();
+    window.speechSynthesis.onvoiceschanged = chooseVoice;
+
+    function detectAvatarType(question) {
+      const text = String(question || '').toLowerCase();
+      const subjectRules = [
+        { avatar: 'physics-teacher', words: ['physics', 'motion', 'force', 'energy', 'light', 'electricity', 'magnetism', 'gravity', 'velocity', 'acceleration'] },
+        { avatar: 'biology-teacher', words: ['biology', 'cell', 'brain', 'heart', 'plant', 'animal', 'human body', 'organism'] },
+        { avatar: 'chemistry-teacher', words: ['chemistry', 'acid', 'base', 'atom', 'molecule', 'reaction', 'chemical'] },
+        { avatar: 'history-teacher', words: ['history', 'historical', 'civilization', 'empire', 'war', 'revolution', 'ancient', 'medieval', 'freedom movement'] },
+        { avatar: 'geography-teacher', words: ['geography', 'map', 'climate', 'river', 'mountain', 'earth', 'environment', 'continent', 'country'] },
+        { avatar: 'mathematics-teacher', words: ['math', 'mathematics', 'algebra', 'geometry', 'calculus', 'equation', 'trigonometry'] },
+        { avatar: 'english-teacher', words: ['english', 'grammar', 'essay', 'letter', 'paragraph', 'poem', 'literature'] }
+      ];
+      const match = subjectRules.find(rule => rule.words.some(word => text.includes(word)));
+      return match ? match.avatar : 'computer-teacher';
+    }
+
+    function teacherInstructionFor(avatarType) {
+      const subjects = {
+        'physics-teacher': 'Please answer like a helpful physics teacher. Explain the physics concept clearly, with examples and simple steps.',
+        'biology-teacher': 'Please answer like a helpful biology teacher. Explain the biology concept clearly, with examples and simple steps.',
+        'chemistry-teacher': 'Please answer like a helpful chemistry teacher. Explain the chemistry concept clearly, with examples and simple steps.',
+        'history-teacher': 'Please answer like a helpful history teacher. Explain events, people, timelines, causes, effects, and connections to the present.',
+        'geography-teacher': 'Please answer like a helpful geography teacher. Explain places, maps, climate, environment, and real-world examples clearly.',
+        'mathematics-teacher': 'Please answer like a helpful mathematics teacher. Show steps and examples when useful.',
+        'english-teacher': 'Please answer like a helpful English teacher. Give clear explanation and examples.',
+        'computer-teacher': 'Please answer like a helpful computer science teacher. Include clear explanation, examples, programming help when useful, and suggest related articles or videos if helpful.'
+      };
+      return subjects[avatarType] || subjects['computer-teacher'];
+    }
 
     function initRecognition() {
       const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -119,35 +176,58 @@
       recognition.onresult = async e => {
         stopSpeech();
         const transcript = e.results[0][0].transcript;
-        responseBox.textContent = transcript; statusEl.textContent = 'Thinking...'; cleanupView2();
-        try {
-          const payload = {
-            prompt: transcript,
-            message: transcript,
-            avatarType: 'computer-teacher',
-            sessionId: 'ai-html'
-          };
-          const res = await fetch(API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-          });
-          const data = await res.json();
-          if (!res.ok || !data) {
-            throw new Error(data?.error || 'Server error');
-          }
-          const replyText = data.part1 || data.reply || 'I could not generate a response right now.';
-          processReply(replyText);
-        } catch (error) {
-          console.error('AI request failed:', error);
-          processReply('Sorry, I could not reach the server.');
-        }
+        questionInput.value = transcript;
+        askQuestion(transcript);
       };
       recognition.onerror = e => { statusEl.textContent = 'Error: ' + e.error; cleanup(); };
       recognition.onend = () => { isListening = false; if (!isSpeaking) talkBtn.disabled = false; stopBtn.disabled = true; };
     }
 
-    function processReply(reply) {
+    async function askQuestion(question) {
+      const prompt = (question || '').trim();
+      if (!prompt) {
+        statusEl.textContent = 'Please type or speak a question first.';
+        questionInput.focus();
+        return;
+      }
+
+      stopSpeech();
+      cleanupView2();
+      responseBox.textContent = prompt;
+      statusEl.textContent = 'Thinking...';
+      askBtn.disabled = true;
+      talkBtn.disabled = true;
+      stopBtn.disabled = false;
+
+      try {
+        const avatarType = detectAvatarType(prompt);
+        const payload = {
+          prompt: `${prompt}\n\n${teacherInstructionFor(avatarType)}`,
+          message: prompt,
+          avatarType,
+          sessionId: 'ai-html'
+        };
+        const res = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (!res.ok || !data) {
+          throw new Error(data?.error || 'Server error');
+        }
+        const replyText = data.part1 || data.reply || 'I could not generate a response right now.';
+        processReply(replyText, data);
+      } catch (error) {
+        console.error('AI request failed:', error);
+        processReply('Sorry, I could not reach the server. Please try again.');
+      } finally {
+        askBtn.disabled = false;
+        if (!isSpeaking) talkBtn.disabled = !recognition;
+      }
+    }
+
+    function processReply(reply, data = {}) {
       // detect code blocks
       const codeMatch = reply.match(/```([\s\S]*?)```/);
       const qaMatch = reply.match(/\*\*(.*?)\*\*([\s\S]*)/);
@@ -161,29 +241,92 @@
       } else {
         responseBox.textContent = reply;
       }
+      if (data.part2) {
+        showSnippet(data.part2.replace(/```(\w+)?/g, '').trim());
+      }
+      showResources(data.relatedArticles || [], data.relatedVideos || [], '');
       speakText(responseBox.textContent || reply);
     }
 
+    function escapeHTML(value) {
+      return String(value || '').replace(/[&<>"']/g, char => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+      }[char]));
+    }
+
     function showSnippet(code) {
-      view2.innerHTML = `<h2>Code Snippet</h2><div class="snippet">${code}</div><button class="copyBtn">Copy Code</button>`;
+      view2.innerHTML = `<h2>Code Snippet</h2><div class="snippet">${escapeHTML(code)}</div><button class="copyBtn">Copy Code</button>`;
       view2.querySelector('.copyBtn').onclick = () => navigator.clipboard.writeText(code);
       view2.classList.add('active');
     }
 
     function showQA(question, answer) {
-      view2.innerHTML = `<h2>Q & A</h2><div class="qa"><strong>${question}</strong><br>${answer}</div>`;
+      view2.innerHTML = `<h2>Q and A</h2><div class="qa"><strong>${escapeHTML(question)}</strong><br>${escapeHTML(answer)}</div>`;
+      view2.classList.add('active');
+    }
+
+    function showResources(articles, videos, part2) {
+      const usefulArticles = articles.slice(0, 3);
+      const usefulVideos = videos.slice(0, 3);
+      if (!part2 && usefulArticles.length === 0 && usefulVideos.length === 0) return;
+
+      const codeSection = part2
+        ? `<h2>Extra Help</h2><div class="snippet">${escapeHTML(part2)}</div>`
+        : '';
+      const articleCards = usefulArticles.map(item => `
+        <a class="resource-card" href="${escapeHTML(item.url)}" target="_blank" rel="noopener noreferrer">
+          <strong>${escapeHTML(item.title)}</strong>
+          <span>${escapeHTML(item.description || 'Read more')}</span>
+        </a>`).join('');
+      const videoCards = usefulVideos.map(item => `
+        <a class="resource-card" href="${escapeHTML(item.url)}" target="_blank" rel="noopener noreferrer">
+          <strong>${escapeHTML(item.title)}</strong>
+          <span>${escapeHTML(item.description || item.duration || 'Watch video')}</span>
+        </a>`).join('');
+
+      view2.insertAdjacentHTML('beforeend', `${codeSection}<h2>Helpful Resources</h2><div class="resource-list">${articleCards}${videoCards}</div>`);
       view2.classList.add('active');
     }
 
     function cleanupView2() { view2.innerHTML = ''; view2.classList.remove('active'); }
 
+    function textForSpeech(text) {
+      return String(text || '')
+        .replace(/```[\s\S]*?```/g, ' code example shown on screen ')
+        .replace(/[*&#@!'"]/g, '')
+        .replace(/[{}[\]<>_|~`^\\]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
     function speakText(text) {
       stopSpeech();
+      if (!('speechSynthesis' in window) || !('SpeechSynthesisUtterance' in window)) {
+        statusEl.textContent = 'Sound is not supported in this browser.';
+        return;
+      }
+      const speechText = textForSpeech(text);
+      if (!speechText) {
+        statusEl.textContent = '';
+        return;
+      }
+      chooseVoice();
       isSpeaking = true; statusEl.textContent = 'Speaking...'; stopBtn.disabled = false; avatar.style.animation = 'float 1s ease-in-out infinite';
-      utterance = new SpeechSynthesisUtterance(text);
+      utterance = new SpeechSynthesisUtterance(speechText);
       utterance.lang = 'en-IN'; utterance.rate = 1; utterance.pitch = 1;
       if (maleVoice) utterance.voice = maleVoice;
       utterance.onend = () => { isSpeaking = false; avatar.style.animation = ''; statusEl.textContent = ''; stopBtn.disabled = true; talkBtn.disabled = false; };
+      utterance.onerror = event => {
+        isSpeaking = false;
+        avatar.style.animation = '';
+        statusEl.textContent = `Sound error: ${event.error || 'browser blocked speech'}`;
+        stopBtn.disabled = true;
+        talkBtn.disabled = false;
+      };
       speechSynthesis.speak(utterance);
     }
 
@@ -204,6 +347,10 @@
     window.addEventListener('load', () => {
       processReply('Hello I am Sir Ganguly. Welcome to my AI Avatar Experiment. Feel free to learn new things with me.');
     });
+    questionForm.onsubmit = event => {
+      event.preventDefault();
+      askQuestion(questionInput.value);
+    };
     talkBtn.onclick = () => { cleanup(); recognition.start(); };
     stopBtn.onclick = () => { stopSpeech(); if (isListening) recognition.stop(); };
   </script>

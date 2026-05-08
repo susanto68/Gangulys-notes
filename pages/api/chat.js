@@ -508,8 +508,80 @@ const getQuotaStatus = () => {
   }
 }
 
+// Offline code examples for common programming requests
+const generateProgrammingFallback = (prompt) => {
+  const promptLower = String(prompt || '').toLowerCase()
+  const wantsProgram = /(write|create|make|give|show).*(program|code)|program.*(to|for)|code.*(to|for)/.test(promptLower)
+  if (!wantsProgram) return null
+
+  if (promptLower.includes('python') && (promptLower.includes('add') || promptLower.includes('sum')) && (promptLower.includes('two') || promptLower.includes('2'))) {
+    return `Here is a simple Python program to add any two numbers.
+
+PART2:
+\`\`\`python
+num1 = float(input("Enter first number: "))
+num2 = float(input("Enter second number: "))
+
+sum = num1 + num2
+
+print("The sum is", sum)
+\`\`\`
+
+Explanation:
+The program takes two numbers from the user, converts them to numeric values using float, adds them, and prints the result.`
+  }
+
+  if (promptLower.includes('python')) {
+    return `Here is a simple Python program structure you can modify for your question.
+
+PART2:
+\`\`\`python
+def main():
+    print("Hello from Python")
+
+main()
+\`\`\`
+
+Tell me the exact task and I can write the full Python program for it.`
+  }
+
+  if (promptLower.includes('java') && (promptLower.includes('add') || promptLower.includes('sum')) && (promptLower.includes('two') || promptLower.includes('2'))) {
+    return `Here is a simple Java program to add any two numbers.
+
+PART2:
+\`\`\`java
+import java.util.Scanner;
+
+class AddTwoNumbers {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("Enter first number: ");
+        double num1 = sc.nextDouble();
+
+        System.out.print("Enter second number: ");
+        double num2 = sc.nextDouble();
+
+        double sum = num1 + num2;
+        System.out.println("The sum is " + sum);
+    }
+}
+\`\`\`
+
+Explanation:
+The program reads two numbers, adds them, and displays the result.`
+  }
+
+  return null
+}
+
 // Enhanced intelligent fallback that searches the offline knowledge base
 const generateIntelligentFallback = (avatarType, prompt) => {
+  const programmingFallback = generateProgrammingFallback(prompt)
+  if (programmingFallback) {
+    return programmingFallback
+  }
+
   // First, try to find a specific match in the offline knowledge base
   const avatarKnowledge = OFFLINE_KNOWLEDGE_BASE[avatarType]
   if (avatarKnowledge) {
@@ -535,6 +607,33 @@ const generateIntelligentFallback = (avatarType, prompt) => {
   
   // Fallback to the original intelligent responses if no offline knowledge
   const fallbackResponses = {
+    'computer-teacher': {
+      'algorithm': `An algorithm is a step by step method to solve a problem. In computer science, algorithms tell a computer exactly what to do and in what order.
+
+Key ideas:
+• Input - the data given to the algorithm
+• Process - the steps used to solve the problem
+• Output - the final answer
+• Efficiency - how fast and memory friendly the solution is
+
+Example: To find the largest number in a list, compare each number one by one and keep the biggest value found so far.`,
+      'program': `Programming is the process of writing instructions that a computer can follow. A program takes input, processes it using logic, and produces output.
+
+Important programming ideas include:
+• Variables for storing values
+• Conditions for decision making
+• Loops for repeated work
+• Functions for reusable code
+• Debugging for finding and fixing errors`,
+      'default': `Computer science is the study of computers, software, data, and problem solving. It teaches how to write programs, build applications, understand algorithms, and create technology.
+
+Key areas include:
+• Programming fundamentals
+• Algorithms and data structures
+• Computer hardware and software
+• Web and mobile development
+• Artificial intelligence and databases`
+    },
     'biology-teacher': {
       'brain': `The brain is the command center of the human body, controlling all our thoughts, movements, and bodily functions. It's made up of billions of nerve cells called neurons that communicate through electrical and chemical signals.
 
@@ -666,11 +765,37 @@ Key areas in English include:
 • Reading comprehension - understanding written text
 • Writing - expressing ideas clearly
 • Literature - appreciating written works`
+    },
+    'history-teacher': {
+      'default': `History is the study of past events, people, societies, and civilizations. It helps us understand how the world changed over time and why present-day society looks the way it does.
+
+Key areas in history include:
+• Ancient civilizations and their achievements
+• Medieval kingdoms, trade, and culture
+• Modern revolutions and freedom movements
+• Important leaders and reformers
+• Causes and effects of major events
+
+Studying history builds understanding, judgment, and respect for different cultures.`,
+      'war': `Wars are major conflicts between countries, kingdoms, or groups. In history, we study wars by looking at their causes, main events, leaders, results, and long-term effects on society.`,
+      'civilization': `A civilization is an advanced human society with cities, government, writing, occupations, trade, culture, and organized ways of living. Examples include the Indus Valley, Egyptian, Greek, Roman, and Chinese civilizations.`
+    },
+    'geography-teacher': {
+      'default': `Geography is the study of the Earth, places, people, climate, resources, and the relationship between humans and their environment.
+
+Key areas in geography include:
+• Physical geography such as landforms, rivers, climate, and oceans
+• Human geography such as population, settlements, and transport
+• Maps and directions
+• Natural resources
+• Environmental issues and conservation`,
+      'climate': `Climate means the average weather condition of a place over a long period. It includes temperature, rainfall, humidity, wind, and seasons.`,
+      'map': `A map is a drawing of the Earth or a part of it on a flat surface. Maps use symbols, scale, directions, and colors to show places and features.`
     }
   }
   
   // Get the specific avatar responses
-  const avatarResponses = fallbackResponses[avatarType] || fallbackResponses['biology-teacher']
+  const avatarResponses = fallbackResponses[avatarType] || fallbackResponses['computer-teacher']
   
   // Check if we have a specific response for the prompt
   const promptLower = prompt.toLowerCase()
@@ -681,7 +806,7 @@ Key areas in English include:
   }
   
   // Return default response for the avatar
-  return avatarResponses.default || avatarResponses['biology-teacher'].default
+  return avatarResponses.default || fallbackResponses['computer-teacher'].default
 }
 
 // Helper function to parse JSON body with multiple fallbacks
