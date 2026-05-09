@@ -1,15 +1,18 @@
 // Service Worker for Avatar AI Assistant PWA
 // Created by Susanto Ganguly (Sir Ganguly)
 
-const CACHE_NAME = 'avatar-ai-v1.0.1';
-const STATIC_CACHE = 'avatar-ai-static-v1.0.1';
-const DYNAMIC_CACHE = 'avatar-ai-dynamic-v1.0.1';
+const CACHE_NAME = 'sirganguly-v20260509';
+const STATIC_CACHE = 'sirganguly-static-v20260509';
+const DYNAMIC_CACHE = 'sirganguly-dynamic-v20260509';
 
 // Files to cache immediately
 const STATIC_FILES = [
   '/',
+  '/index.html',
   '/offline.html',
   '/manifest.json',
+  '/icon-192.png',
+  '/icon-512.png',
   '/assets/icons/icon-192x192.png',
   '/assets/icons/icon-512x512.png',
   '/assets/avatars/computer-teacher.png',
@@ -221,7 +224,7 @@ self.addEventListener('push', (event) => {
     const data = event.data.json();
     const options = {
       body: data.body || 'New message from your AI Avatar',
-      icon: '/assets/icons/icon-192x192.png',
+      icon: '/icon-192.png',
       badge: '/assets/icons/icon-72x72.png',
       vibrate: [100, 50, 100],
       data: {
@@ -257,7 +260,7 @@ self.addEventListener('notificationclick', (event) => {
   if (event.action === 'explore') {
     // Open the app
     event.waitUntil(
-      clients.openWindow('/')
+      clients.openWindow('/index.html')
     );
   } else if (event.action === 'close') {
     // Just close the notification

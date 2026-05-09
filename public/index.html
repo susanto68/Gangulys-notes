@@ -80,6 +80,26 @@
             cursor: default !important;
             pointer-events: none !important;
         }
+
+        .install-pwa-btn {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin: 10px auto 0;
+            padding: 10px 18px;
+            border: 0;
+            border-radius: 999px;
+            background: #1e3a8a;
+            color: #fff;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 6px 16px rgba(30, 58, 138, 0.25);
+        }
+
+        .install-pwa-btn.is-visible {
+            display: inline-flex;
+        }
         
         /* Fallback icons if Font Awesome fails to load */
         .fa-whatsapp::before,
@@ -192,6 +212,9 @@
                 <i class="fab fa-whatsapp"></i> Share Feedback via WhatsApp
             </a>
         </div>
+        <button id="installPwaBtn" class="install-pwa-btn" type="button">
+            <i class="fas fa-download"></i> Install SirGanguly App
+        </button>
     </header>
 
     <main class="container">
@@ -246,6 +269,31 @@
  
  <script>
      window.goatcounter = { allow_local: true };
+ </script>
+ <script>
+     let deferredInstallPrompt = null;
+     const installPwaBtn = document.getElementById('installPwaBtn');
+
+     window.addEventListener('beforeinstallprompt', event => {
+         event.preventDefault();
+         deferredInstallPrompt = event;
+         if (installPwaBtn) installPwaBtn.classList.add('is-visible');
+     });
+
+     if (installPwaBtn) {
+         installPwaBtn.addEventListener('click', async () => {
+             if (!deferredInstallPrompt) return;
+             deferredInstallPrompt.prompt();
+             await deferredInstallPrompt.userChoice;
+             deferredInstallPrompt = null;
+             installPwaBtn.classList.remove('is-visible');
+         });
+     }
+
+     window.addEventListener('appinstalled', () => {
+         deferredInstallPrompt = null;
+         if (installPwaBtn) installPwaBtn.classList.remove('is-visible');
+     });
  </script>
  <script
      data-goatcounter="https://gangulysnotes.goatcounter.com/count"
