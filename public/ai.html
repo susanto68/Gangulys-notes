@@ -119,14 +119,30 @@
 
     let recognition, utterance, isListening = false;
     let isSpeaking = false;
-    let maleVoice = null;
+    let teacherVoice = null;
 
-    // load male voice
+    function scoreTeacherVoice(voice) {
+      const label = `${voice.name} ${voice.lang} ${voice.voiceURI || ''}`.toLowerCase();
+      let score = 0;
+
+      if (/en-in|india|indian/.test(label)) score += 45;
+      if (/en-gb|english \(united kingdom\)|uk/.test(label)) score += 30;
+      if (/en-us|english \(united states\)|us/.test(label)) score += 20;
+      if (/male|man|david|mark|ravi|aarav|arjun|raj|google uk english male|microsoft ravi|microsoft mark|microsoft david/.test(label)) score += 50;
+      if (/natural|neural|online|enhanced|premium/.test(label)) score += 15;
+      if (/female|woman|zira|susan|heera|hazel|samantha/.test(label)) score -= 40;
+      if (!/^en/i.test(voice.lang || '')) score -= 50;
+
+      return score;
+    }
+
+    // Prefer a calm, deep, male teacher voice when the browser provides one.
     function chooseVoice() {
       const voices = window.speechSynthesis.getVoices();
-      maleVoice = voices.find(v => /male/i.test(v.name)) ||
-        voices.find(v => /english|india|us|uk/i.test(`${v.name} ${v.lang}`)) ||
-        voices[0] ||
+      teacherVoice = voices
+        .filter(voice => /^en/i.test(voice.lang || '') || /english/i.test(voice.name || ''))
+        .sort((a, b) => scoreTeacherVoice(b) - scoreTeacherVoice(a))[0] ||
+        voices.sort((a, b) => scoreTeacherVoice(b) - scoreTeacherVoice(a))[0] ||
         null;
     }
     chooseVoice();
@@ -317,8 +333,15 @@
       chooseVoice();
       isSpeaking = true; statusEl.textContent = 'Speaking...'; stopBtn.disabled = false; avatar.style.animation = 'float 1s ease-in-out infinite';
       utterance = new SpeechSynthesisUtterance(speechText);
-      utterance.lang = 'en-IN'; utterance.rate = 1; utterance.pitch = 1;
-      if (maleVoice) utterance.voice = maleVoice;
+      if (teacherVoice) {
+        utterance.voice = teacherVoice;
+        utterance.lang = teacherVoice.lang || 'en-IN';
+      } else {
+        utterance.lang = 'en-IN';
+      }
+      utterance.rate = 0.88;
+      utterance.pitch = 0.82;
+      utterance.volume = 1;
       utterance.onend = () => { isSpeaking = false; avatar.style.animation = ''; statusEl.textContent = ''; stopBtn.disabled = true; talkBtn.disabled = false; };
       utterance.onerror = event => {
         isSpeaking = false;
