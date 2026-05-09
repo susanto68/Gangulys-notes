@@ -82,7 +82,7 @@
         }
 
         .install-pwa-btn {
-            display: none;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
@@ -99,6 +99,16 @@
 
         .install-pwa-btn.is-visible {
             display: inline-flex;
+        }
+
+        .install-pwa-help {
+            max-width: 420px;
+            margin: 6px auto 0;
+            color: #1e3a8a;
+            font-size: 12px;
+            font-weight: 600;
+            line-height: 1.35;
+            min-height: 16px;
         }
         
         /* Fallback icons if Font Awesome fails to load */
@@ -213,8 +223,9 @@
             </a>
         </div>
         <button id="installPwaBtn" class="install-pwa-btn" type="button">
-            <i class="fas fa-download"></i> Install SirGanguly App
+            <i class="fas fa-download"></i> Download SirGanguly App
         </button>
+        <div id="installPwaHelp" class="install-pwa-help" aria-live="polite"></div>
     </header>
 
     <main class="container">
@@ -273,26 +284,49 @@
  <script>
      let deferredInstallPrompt = null;
      const installPwaBtn = document.getElementById('installPwaBtn');
+     const installPwaHelp = document.getElementById('installPwaHelp');
+
+     function isAppInstalled() {
+         return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+     }
+
+     function showInstallHelp(message) {
+         if (installPwaHelp) installPwaHelp.textContent = message;
+     }
+
+     if (isAppInstalled()) {
+         if (installPwaBtn) installPwaBtn.textContent = 'SirGanguly App Installed';
+     } else {
+         showInstallHelp('Tap this button to install the app on your mobile.');
+     }
 
      window.addEventListener('beforeinstallprompt', event => {
          event.preventDefault();
          deferredInstallPrompt = event;
-         if (installPwaBtn) installPwaBtn.classList.add('is-visible');
+         showInstallHelp('Ready to install. Tap the download button.');
      });
 
      if (installPwaBtn) {
          installPwaBtn.addEventListener('click', async () => {
-             if (!deferredInstallPrompt) return;
+             if (!deferredInstallPrompt) {
+                 showInstallHelp('If the install popup does not appear, open browser menu and choose Add to Home screen or Install app.');
+                 return;
+             }
              deferredInstallPrompt.prompt();
-             await deferredInstallPrompt.userChoice;
+             const choice = await deferredInstallPrompt.userChoice;
              deferredInstallPrompt = null;
-             installPwaBtn.classList.remove('is-visible');
+             if (choice.outcome === 'accepted') {
+                 showInstallHelp('Installing SirGanguly app...');
+             } else {
+                 showInstallHelp('Installation cancelled. You can tap Download again anytime.');
+             }
          });
      }
 
      window.addEventListener('appinstalled', () => {
          deferredInstallPrompt = null;
-         if (installPwaBtn) installPwaBtn.classList.remove('is-visible');
+         if (installPwaBtn) installPwaBtn.textContent = 'SirGanguly App Installed';
+         showInstallHelp('SirGanguly app has been installed on this device.');
      });
  </script>
  <script
