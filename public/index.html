@@ -110,6 +110,37 @@
             line-height: 1.35;
             min-height: 16px;
         }
+
+        .install-guide {
+            display: none;
+            max-width: 460px;
+            margin: 10px auto 0;
+            padding: 12px 14px;
+            border: 1px solid rgba(30, 58, 138, 0.18);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.88);
+            color: #0f172a;
+            text-align: left;
+            box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+        }
+
+        .install-guide.is-visible {
+            display: block;
+        }
+
+        .install-guide strong {
+            display: block;
+            margin-bottom: 6px;
+            color: #1e3a8a;
+            font-size: 14px;
+        }
+
+        .install-guide ol {
+            margin: 0;
+            padding-left: 18px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
         
         /* Fallback icons if Font Awesome fails to load */
         .fa-whatsapp::before,
@@ -226,6 +257,7 @@
             <i class="fas fa-download"></i> Download SirGanguly App
         </button>
         <div id="installPwaHelp" class="install-pwa-help" aria-live="polite"></div>
+        <div id="installGuide" class="install-guide" aria-live="polite"></div>
     </header>
 
     <main class="container">
@@ -285,6 +317,7 @@
      let deferredInstallPrompt = null;
      const installPwaBtn = document.getElementById('installPwaBtn');
      const installPwaHelp = document.getElementById('installPwaHelp');
+     const installGuide = document.getElementById('installGuide');
 
      function isAppInstalled() {
          return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
@@ -292,6 +325,48 @@
 
      function showInstallHelp(message) {
          if (installPwaHelp) installPwaHelp.textContent = message;
+     }
+
+     function showInstallGuide(title, steps) {
+         if (!installGuide) return;
+         installGuide.innerHTML = `<strong>${title}</strong><ol>${steps.map(step => `<li>${step}</li>`).join('')}</ol>`;
+         installGuide.classList.add('is-visible');
+     }
+
+     function showDeviceInstallGuide() {
+         const ua = navigator.userAgent || '';
+         const isIOS = /iphone|ipad|ipod/i.test(ua);
+         const isAndroid = /android/i.test(ua);
+
+         if (isIOS) {
+             showInstallHelp('On iPhone or iPad, use Safari Share to add the app.');
+             showInstallGuide('Install on iPhone or iPad', [
+                 'Open this website in Safari.',
+                 'Tap the Share button.',
+                 'Tap Add to Home Screen.',
+                 'Tap Add.'
+             ]);
+             return;
+         }
+
+         if (isAndroid) {
+             showInstallHelp('On Android, use Chrome menu to install the app.');
+             showInstallGuide('Install on Android mobile', [
+                 'Open this website in Chrome.',
+                 'Tap the three dots menu.',
+                 'Tap Install app or Add to Home screen.',
+                 'Tap Install.'
+             ]);
+             return;
+         }
+
+         showInstallHelp('On computer, use Chrome or Edge install option.');
+         showInstallGuide('Install on computer', [
+             'Open this website in Chrome or Edge.',
+             'Click the install icon in the address bar.',
+             'If you do not see it, open browser menu.',
+             'Choose Install SirGanguly or Apps, then install this site.'
+         ]);
      }
 
      if (isAppInstalled()) {
@@ -303,13 +378,14 @@
      window.addEventListener('beforeinstallprompt', event => {
          event.preventDefault();
          deferredInstallPrompt = event;
-         showInstallHelp('Ready to install. Tap the download button.');
+         showInstallHelp('Ready to install. Tap Download SirGanguly App.');
+         if (installGuide) installGuide.classList.remove('is-visible');
      });
 
      if (installPwaBtn) {
          installPwaBtn.addEventListener('click', async () => {
              if (!deferredInstallPrompt) {
-                 showInstallHelp('If the install popup does not appear, open browser menu and choose Add to Home screen or Install app.');
+                 showDeviceInstallGuide();
                  return;
              }
              deferredInstallPrompt.prompt();
