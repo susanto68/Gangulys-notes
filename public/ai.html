@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI Voice Assistant</title>
+  <title>Sir Ganguly's AI Avatar</title>
   
   <!-- PWA Meta Tags -->
   <link rel="manifest" href="manifest.json">
@@ -71,19 +71,25 @@
     .resource-card span { display:block; color:#475569; font-size:.8rem; line-height:1.35; }
 
     @media (max-width:768px) {
-      h1 { font-size:1.25rem; }
+      html, body { min-height: 100%; height: auto; overflow-x: hidden; overflow-y: auto; }
+      body { display: block; padding: 10px; }
+      .app { max-width: 100%; gap: 12px; }
+      .container, .view2 { width: 100%; max-width: 100%; overflow: visible; }
+      .view2.active { display: block; order: 2; }
+      h1 { font-size:1.25rem; flex-wrap: wrap; }
       #avatar { width:80px; height:80px; }
       #responseBox, .snippet, .qa { font-size:.85rem; }
       button { font-size:.85rem; padding:8px; }
       .form-actions, #controls { flex-direction:column; }
-      .view2 { margin-top:16px; }
+      .view2 { margin-top:0; }
+      .resource-card { padding: 12px; }
     }
   </style>
 </head>
 <body>
   <div class="app">
     <div class="container">
-      <h1>🎤 AI Voice Assistant <img src="/assets/icons/icon-72x72.png" alt="Bot"/></h1>
+      <h1>🎤 Sir Ganguly's AI Avatar <img src="/assets/icons/icon-72x72.png" alt="Bot"/></h1>
       <div class="whatsapp-feedback">
         <a href="https://wa.me/919835379900?text=Hi! I have feedback about the AI Assistant." class="whatsapp-btn" target="_blank" rel="noopener noreferrer">
           <i class="fab fa-whatsapp"></i> Share Feedback via WhatsApp
@@ -246,14 +252,10 @@
     function processReply(reply, data = {}) {
       // detect code blocks
       const codeMatch = reply.match(/```([\s\S]*?)```/);
-      const qaMatch = reply.match(/\*\*(.*?)\*\*([\s\S]*)/);
       if (codeMatch) {
         const code = codeMatch[1].trim();
         showSnippet(code);
         responseBox.textContent = reply.replace(codeMatch[0], '').trim();
-      } else if (qaMatch) {
-        showQA(qaMatch[1].trim(), qaMatch[2].trim());
-        responseBox.textContent = '';
       } else {
         responseBox.textContent = reply;
       }

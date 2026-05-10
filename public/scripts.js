@@ -1,46 +1,50 @@
-function handlePDFClick(event, pdfPath) {
-    event.preventDefault();
-    
-    // Check if it's a local PDF file or external link
-    if (pdfPath.startsWith('../pdf/') || pdfPath.startsWith('/pdf/') || pdfPath.startsWith('pdfs/') || pdfPath.startsWith('pdf/')) {
-        // For local PDF files, try multiple approaches
-        try {
-            // First try: Direct file access
-            const link = document.createElement('a');
-            link.href = pdfPath;
-            link.target = '_blank';
-            link.rel = 'noopener noreferrer';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        } catch (error) {
-            try {
-                // Second try: Window.open
-                window.open(pdfPath, '_blank');
-            } catch (error2) {
-                // Third try: Show error modal
-                const errorModal = document.getElementById('errorModal');
-                const errorMessage = document.getElementById('errorMessage');
-                errorMessage.textContent = 'Sorry, this PDF is currently unavailable. Please try again later.';
-                errorModal.style.display = 'flex';
-            }
-        }
-    } else {
-        // For external links (like Google Drive), convert forward slashes to backslashes for Windows
-        const windowsPath = pdfPath.replace(/\//g, '\\');
-        
-        try {
-            // Open PDF in the same window
-            window.location.href = windowsPath;
-        } catch (error) {
-            // Show error modal only if opening fails
-            const errorModal = document.getElementById('errorModal');
-            const errorMessage = document.getElementById('errorMessage');
-            errorMessage.textContent = 'Sorry, this PDF is currently unavailable. Please try again later.';
-            errorModal.style.display = 'flex';
-        }
+function isLocalPDFPath(pdfPath) {
+    try {
+        const url = new URL(pdfPath, window.location.href);
+        return url.origin === window.location.origin && url.pathname.toLowerCase().endsWith('.pdf');
+    } catch (error) {
+        return false;
     }
 }
+
+function getPDFViewerURL(pdfPath) {
+    const url = new URL(pdfPath, window.location.href);
+    const filePath = url.pathname + url.search + url.hash;
+    return `/pdf-viewer.html?file=${encodeURIComponent(filePath)}`;
+}
+
+function showPDFError() {
+    const errorModal = document.getElementById('errorModal');
+    const errorMessage = document.getElementById('errorMessage');
+    if (!errorModal || !errorMessage) return;
+    errorMessage.textContent = 'Sorry, this PDF is currently unavailable. Please try again later.';
+    errorModal.style.display = 'flex';
+}
+
+function handlePDFClick(event, pdfPath) {
+    if (event) event.preventDefault();
+
+    try {
+        if (isLocalPDFPath(pdfPath)) {
+            window.location.href = getPDFViewerURL(pdfPath);
+            return;
+        }
+
+        window.open(pdfPath, '_blank', 'noopener,noreferrer');
+    } catch (error) {
+        showPDFError();
+    }
+}
+
+document.addEventListener('click', function(event) {
+    const link = event.target.closest && event.target.closest('a[href]');
+    if (!link) return;
+    const href = link.getAttribute('href') || '';
+
+    if (isLocalPDFPath(href)) {
+        handlePDFClick(event, href);
+    }
+});
 
 function closeErrorModal() {
     const errorModal = document.getElementById('errorModal');

@@ -63,6 +63,30 @@ const OFFLINE_KNOWLEDGE_BASE = {
 • **Skin cells** - Provide protection`,
       keywords: ['cell', 'cells', 'nucleus', 'membrane', 'cytoplasm', 'organelles']
     },
+    'human body': {
+      title: "Human Body",
+      content: `The human body is a complex living system made of many organs and organ systems that work together to keep us alive, active, and healthy.
+
+Main systems of the human body:
+• Skeletal system - gives shape and support to the body
+• Muscular system - helps the body move
+• Digestive system - breaks food into nutrients
+• Respiratory system - helps us breathe and take in oxygen
+• Circulatory system - carries blood, oxygen, and nutrients
+• Nervous system - controls actions, thoughts, and senses
+• Excretory system - removes waste from the body
+• Reproductive system - helps in producing offspring
+
+Important organs:
+• Brain - controls the body
+• Heart - pumps blood
+• Lungs - help in breathing
+• Stomach - helps digest food
+• Kidneys - filter waste from blood
+
+In simple words, the human body is like a well-organized machine. Each part has a special job, and all parts work together so that we can breathe, eat, move, think, learn, and live.`,
+      keywords: ['human body', 'body', 'anatomy', 'organs', 'organ system', 'organ systems', 'skeletal', 'muscular', 'digestive', 'respiratory', 'circulatory', 'nervous system']
+    },
     'heart': {
       title: "The Human Heart",
       content: `The heart is a muscular organ that pumps blood throughout the body, delivering oxygen and nutrients to all cells.
@@ -106,6 +130,29 @@ const OFFLINE_KNOWLEDGE_BASE = {
     }
   },
   'physics-teacher': {
+    'force': {
+      title: "Force in Physics",
+      content: `Force is a push or pull that can change the state of rest or motion of an object. It can make an object start moving, stop moving, change speed, or change direction.
+
+Key points:
+• Force is measured in newton, written as N
+• Force has both magnitude and direction
+• A larger force can produce a larger change in motion
+• Force can also change the shape of an object
+
+Examples:
+• Pushing a door to open it
+• Pulling a chair
+• Kicking a football
+• Gravity pulling objects towards Earth
+
+Formula:
+Force = mass × acceleration
+F = m × a
+
+In simple words, force is what causes changes in motion.`,
+      keywords: ['force', 'push', 'pull', 'newton', 'forces']
+    },
     'motion': {
       title: "Motion and Forces",
       content: `Motion is the change in position of an object over time. It's one of the fundamental concepts in physics that helps us understand how things move.
@@ -575,11 +622,25 @@ The program reads two numbers, adds them, and displays the result.`
   return null
 }
 
+const topicLabelFromPrompt = (prompt) => {
+  return String(prompt || '')
+    .replace(/^(please\s+)?(explain|tell me about|what is|what are|define|describe|give me|show me)\s+/i, '')
+    .replace(/[?.!]+$/g, '')
+    .trim()
+}
+
+const withStudentQuestionIntro = (prompt, answer) => {
+  const question = String(prompt || '').trim()
+  const topic = topicLabelFromPrompt(question) || question
+  if (!question || String(answer || '').startsWith('You have asked')) return answer
+  return `You have asked "${question}". Now I am explaining ${topic}.\n\n${answer}`
+}
+
 // Enhanced intelligent fallback that searches the offline knowledge base
 const generateIntelligentFallback = (avatarType, prompt) => {
   const programmingFallback = generateProgrammingFallback(prompt)
   if (programmingFallback) {
-    return programmingFallback
+    return withStudentQuestionIntro(prompt, programmingFallback)
   }
 
   // First, try to find a specific match in the offline knowledge base
@@ -596,18 +657,140 @@ const generateIntelligentFallback = (avatarType, prompt) => {
         )
         
         if (hasKeywordMatch) {
-          return knowledge.content
+          return withStudentQuestionIntro(prompt, knowledge.content)
         }
       }
     }
     
     // Return default knowledge for the avatar
-    return avatarKnowledge.default.content
+    return withStudentQuestionIntro(prompt, avatarKnowledge.default.content)
   }
   
   // Fallback to the original intelligent responses if no offline knowledge
   const fallbackResponses = {
     'computer-teacher': {
+      'computer': `A computer is an electronic machine that accepts data, processes it according to instructions, stores information, and gives useful output.
+
+Main parts of a computer:
+• Input devices - keyboard, mouse, scanner, microphone
+• Processing unit - CPU, which works like the brain of the computer
+• Memory and storage - RAM, hard disk, SSD, pen drive
+• Output devices - monitor, printer, speaker
+
+Simple example:
+When you type a letter on the keyboard, the computer receives the input, processes it, shows it on the screen, and can save it as a file.
+
+In short, a computer helps us calculate, write, draw, learn, communicate, and solve many kinds of problems quickly.`,
+      'keyboard': `A keyboard is an input device used to type letters, numbers, symbols, and commands into a computer.
+
+Main uses of a keyboard:
+• Typing text in documents
+• Entering numbers and symbols
+• Giving commands using shortcut keys
+• Playing some computer games
+
+Important keys:
+• Alphabet keys - A to Z
+• Number keys - 0 to 9
+• Function keys - F1 to F12
+• Enter key - moves to a new line or confirms a command
+• Spacebar - gives space between words
+• Backspace - deletes characters
+
+In simple words, a keyboard helps the user communicate with the computer by typing input.`,
+      'mouse': `A mouse is an input device used to point, click, select, drag, and open items on a computer screen.
+
+Main actions:
+• Click - select or open something
+• Double click - open files or programs
+• Right click - show more options
+• Drag and drop - move items
+• Scroll - move up and down on a page
+
+In simple words, a mouse helps us control the pointer on the screen.`,
+      'cpu': `CPU stands for Central Processing Unit. It is called the brain of the computer because it processes instructions and controls most computer operations.
+
+Main work of CPU:
+• Performs calculations
+• Processes data
+• Controls other parts of the computer
+• Runs programs and instructions
+
+Main parts:
+• ALU - performs arithmetic and logical operations
+• Control Unit - controls and coordinates instructions
+• Registers - small memory locations inside CPU
+
+In simple words, the CPU thinks and works for the computer.`,
+      'hardware': `Hardware means the physical parts of a computer that we can see and touch.
+
+Examples:
+• Monitor
+• Keyboard
+• Mouse
+• CPU cabinet
+• Printer
+• Speaker
+• Hard disk
+
+In simple words, hardware is the body of the computer.`,
+      'software': `Software is a set of programs or instructions that tells the computer what to do.
+
+Examples:
+• Windows
+• MS Word
+• Web browsers
+• Games
+• Antivirus programs
+
+Types of software:
+• System software - runs and controls the computer, like operating system
+• Application software - helps users do specific work, like typing, drawing, browsing
+
+In simple words, software is the set of instructions that makes hardware useful.`,
+      'for loop': `A for loop in Java is used when we want to repeat a statement or a group of statements a fixed number of times.
+
+Syntax:
+for (initialization; condition; update) {
+    statements;
+}
+
+Parts of a for loop:
+• Initialization - gives the starting value, for example int i = 1
+• Condition - checks whether the loop should continue, for example i <= 5
+• Update - changes the loop variable after each round, for example i++
+
+Example:
+class Main {
+    public static void main(String[] args) {
+        for (int i = 1; i <= 5; i++) {
+            System.out.println(i);
+        }
+    }
+}
+
+Output:
+1
+2
+3
+4
+5
+
+Explanation:
+The loop starts with i = 1. It keeps running while i <= 5. After every repetition, i increases by 1. So it prints the numbers from 1 to 5.`,
+      'loop': `A loop is used in programming to repeat a set of statements again and again until a condition is satisfied.
+
+In Java, the main types of loops are:
+• for loop - used when the number of repetitions is known
+• while loop - used when repetition depends on a condition
+• do while loop - runs at least once, then checks the condition
+
+Example of a for loop:
+for (int i = 1; i <= 5; i++) {
+    System.out.println(i);
+}
+
+This prints numbers from 1 to 5.`,
       'algorithm': `An algorithm is a step by step method to solve a problem. In computer science, algorithms tell a computer exactly what to do and in what order.
 
 Key ideas:
@@ -801,12 +984,12 @@ Key areas in geography include:
   const promptLower = prompt.toLowerCase()
   for (const [key, response] of Object.entries(avatarResponses)) {
     if (key !== 'default' && promptLower.includes(key)) {
-      return response
+      return withStudentQuestionIntro(prompt, response)
     }
   }
   
   // Return default response for the avatar
-  return avatarResponses.default || fallbackResponses['computer-teacher'].default
+  return withStudentQuestionIntro(prompt, avatarResponses.default || fallbackResponses['computer-teacher'].default)
 }
 
 // Helper function to parse JSON body with multiple fallbacks
@@ -984,7 +1167,10 @@ export default async function handler(req, res) {
     const parsedBody = parseBody(req)
     console.log('Parsed Body:', parsedBody)
     
-    const { prompt, avatarType, sessionId = 'default' } = parsedBody || {}
+    const { prompt, message, avatarType, sessionId = 'default' } = parsedBody || {}
+    const studentPrompt = typeof message === 'string' && message.trim()
+      ? message.trim()
+      : String(prompt || '').split('\n\nPlease answer like')[0].trim()
 
     // Enhanced validation with detailed error messages
     if (!parsedBody) {
@@ -1064,7 +1250,7 @@ export default async function handler(req, res) {
     if (!hasGeminiKey && !hasOpenAIKey) {
       console.error('❌ No AI API keys found. Please set GEMINI_API_KEY and/or OPENAI_API_KEY environment variables')
       
-      const fallbackResponse = generateIntelligentFallback(avatarType, prompt)
+      const fallbackResponse = generateIntelligentFallback(avatarType, studentPrompt)
       const relatedArticles = generateFallbackArticles(avatarType)
       const relatedVideos = generateFallbackVideos(avatarType)
       
@@ -1088,7 +1274,7 @@ export default async function handler(req, res) {
 
     // Log successful validation
     console.log('API Request validated successfully:', {
-      prompt: prompt.substring(0, 100) + (prompt.length > 100 ? '...' : ''),
+      prompt: studentPrompt.substring(0, 100) + (studentPrompt.length > 100 ? '...' : ''),
       avatarType,
       avatarName: avatarConfig.name,
       sessionId
@@ -1098,7 +1284,7 @@ export default async function handler(req, res) {
     const history = getConversationHistory(avatarType, sessionId).slice(-5)
     
     // Add user message to history
-    addToConversationHistory(avatarType, sessionId, 'user', prompt)
+    addToConversationHistory(avatarType, sessionId, 'user', studentPrompt)
 
     let aiResponse = ''
     let apiUsed = 'none'
@@ -1140,7 +1326,7 @@ export default async function handler(req, res) {
 
     if (!aiResponse) {
       console.log('🔄 All AI services unavailable, using intelligent fallback')
-      aiResponse = generateIntelligentFallback(avatarType, prompt)
+      aiResponse = generateIntelligentFallback(avatarType, studentPrompt)
       apiUsed = 'fallback'
     }
 
@@ -1284,7 +1470,7 @@ In the meantime, you can explore the suggested resources below to continue learn
     } else {
       // Generic error - use intelligent fallback
       errorType = 'Service temporarily unavailable'
-      fallbackResponse = generateIntelligentFallback(avatarType, prompt)
+      fallbackResponse = generateIntelligentFallback(avatarType, studentPrompt)
     }
     
     // Generate fallback content for the specific avatar type
