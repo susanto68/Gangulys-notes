@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Registration - Ganguly's Notes</title>
+  <link rel="stylesheet" href="styles.css?v=20260511-registration">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#66a6ff">
+</head>
+<body>
+  <header>
+    <h1>Student Registration</h1>
+    <p>Register your details for Ganguly's Notes</p>
+    <div class="header-buttons">
+      <a href="index.html" class="back-btn"><i class="fas fa-home"></i> Home</a>
+    </div>
+  </header>
+
+  <main class="container registration-page">
+    <section class="registration-card">
+      <h2>Register Student</h2>
+      <p>All fields are compulsory.</p>
+      <p id="registrationSetupNote" class="registration-note">
+        Google Sheet connection is not added yet. After you deploy the Google Apps Script, paste the Web App URL in this page.
+      </p>
+
+      <form id="studentRegistrationForm" class="student-form">
+        <div class="form-row">
+          <label for="studentName">Student Name</label>
+          <input id="studentName" name="studentName" type="text" autocomplete="name" required>
+        </div>
+
+        <div class="form-row">
+          <label for="studentClass">Class</label>
+          <select id="studentClass" name="studentClass" required>
+            <option value="">Select class</option>
+            <option value="6">Class 6</option>
+            <option value="7">Class 7</option>
+            <option value="8">Class 8</option>
+            <option value="9">Class 9</option>
+            <option value="10">Class 10</option>
+            <option value="11">Class 11</option>
+            <option value="12">Class 12</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <label for="studentSection">Section</label>
+          <input id="studentSection" name="studentSection" type="text" placeholder="Example: A" maxlength="10" required>
+        </div>
+
+        <div class="form-row">
+          <label for="studentPhone">Phone Number</label>
+          <input id="studentPhone" name="studentPhone" type="tel" inputmode="numeric" autocomplete="tel" pattern="[0-9]{10,15}" placeholder="10 to 15 digits" required>
+        </div>
+
+        <div class="form-row">
+          <label for="academicYear">Year</label>
+          <input id="academicYear" name="academicYear" type="number" min="2024" max="2100" placeholder="2026" required>
+        </div>
+
+        <button id="submitRegistrationBtn" class="submit-registration-btn" type="submit">
+          Submit Registration
+        </button>
+        <div id="registrationStatus" class="registration-status" aria-live="polite"></div>
+      </form>
+    </section>
+  </main>
+
+  <footer style="font-size: 8px; padding: 5px; text-align: center;">
+    <p>&copy; 2024 Ganguly's Educational Notes. All rights reserved.</p>
+  </footer>
+
+  <script>
+    const STUDENT_REGISTRATION_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyACGV04xv16HKn7hWH022vZkz-MtZjZY-wyBAcCVstYctlTaKbtsvzx4eLEPitEpCo/exec';
+
+    const form = document.getElementById('studentRegistrationForm');
+    const submitButton = document.getElementById('submitRegistrationBtn');
+    const statusBox = document.getElementById('registrationStatus');
+    const setupNote = document.getElementById('registrationSetupNote');
+    const yearInput = document.getElementById('academicYear');
+
+    yearInput.value = new Date().getFullYear();
+
+    function showStatus(message, isError) {
+      statusBox.textContent = message;
+      statusBox.style.color = isError ? '#b91c1c' : '#166534';
+    }
+
+    if (STUDENT_REGISTRATION_WEB_APP_URL) {
+      setupNote.style.display = 'none';
+    }
+
+    form.addEventListener('submit', async function(event) {
+      event.preventDefault();
+
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+
+      if (!STUDENT_REGISTRATION_WEB_APP_URL) {
+        showStatus('Google Sheet is not connected yet. Please add the Apps Script Web App URL first.', true);
+        return;
+      }
+
+      const formData = new FormData(form);
+      const payload = {
+        name: formData.get('studentName').trim(),
+        className: formData.get('studentClass'),
+        section: formData.get('studentSection').trim(),
+        phone: formData.get('studentPhone').trim(),
+        year: formData.get('academicYear'),
+        source: 'Ganguly Notes Website',
+        submittedAt: new Date().toISOString()
+      };
+
+      submitButton.disabled = true;
+      showStatus('Submitting registration...', false);
+
+      try {
+        await fetch(STUDENT_REGISTRATION_WEB_APP_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: {
+            'Content-Type': 'text/plain;charset=utf-8'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        form.reset();
+        yearInput.value = new Date().getFullYear();
+        showStatus('Registration submitted successfully.', false);
+      } catch (error) {
+        showStatus('Registration could not be submitted. Please check internet connection and try again.', true);
+      } finally {
+        submitButton.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
