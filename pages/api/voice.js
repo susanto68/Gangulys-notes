@@ -64,7 +64,7 @@ async function callOpenAItTS(text, voice = 'verse') {
       model: 'gpt-4o-mini-tts',
       voice: voice || 'verse',
       input: text,
-      format: 'mp3'
+      response_format: 'mp3'
     })
   });
 
@@ -104,5 +104,4 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: err.message || 'Server error' });
   }
 }
-
 

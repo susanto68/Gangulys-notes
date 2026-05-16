@@ -126,8 +126,7 @@
           if (data.audioBase64) {
             playBase64(data.audioBase64);
           } else {
-            // Fallback: no audio returned, do nothing
-            statusEl.textContent = '';
+            statusEl.textContent = 'Audio is temporarily unavailable. Please read the answer on screen.';
           }
         } catch (err) {
           processReply('Sorry, I could not reach the server.');

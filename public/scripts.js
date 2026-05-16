@@ -107,7 +107,7 @@ This portal believes that education and knowledge should reach every learner wit
 let portalIntroUtterance = null;
 let portalIntroAudio = null;
 let portalIntroVoicesReadyPromise = null;
-const PORTAL_INTRO_AUDIO_URL = '/api/intro-tts-audio?v=20260517-mobile-pwa-mp3';
+const PORTAL_INTRO_AUDIO_URL = '/audio/portal-introduction.wav?v=20260517-static-intro-audio';
 
 function getPortalIntroVoice() {
     if (!window.speechSynthesis) return null;
@@ -189,7 +189,7 @@ function stopPortalIntroduction() {
     portalIntroUtterance = null;
 }
 
-async function playPortalIntroductionAudioFallback(status, reason) {
+async function playPortalIntroductionAudio(status, reason) {
     try {
         portalIntroAudio = new Audio(PORTAL_INTRO_AUDIO_URL);
         portalIntroAudio.preload = 'auto';
@@ -213,7 +213,7 @@ async function playPortalIntroductionAudioFallback(status, reason) {
         if (status) {
             status.textContent = reason
                 ? `${reason} Please tap Hear Introduction once more.`
-                : 'Introduction audio is unavailable right now. Please try again.';
+                : 'Introduction audio was blocked. Please tap Hear Introduction once more.';
         }
         return false;
     }
@@ -273,20 +273,19 @@ async function speakPortalIntroduction() {
     const speakButton = document.getElementById('portalIntroSpeakBtn');
     const status = document.getElementById('portalIntroSpeechStatus');
 
-    if (!('speechSynthesis' in window) || !('SpeechSynthesisUtterance' in window)) {
-        await playPortalIntroductionAudioFallback(status, 'Speech is not supported in this browser.');
-        return;
-    }
-
     if (speakButton) speakButton.disabled = true;
     if (status) status.textContent = 'Starting introduction...';
 
     stopPortalIntroduction();
 
     if (shouldUsePortalIntroMp3First()) {
-        const audioStarted = await playPortalIntroductionAudioFallback(status);
-        if (audioStarted) return;
-        if (status) status.textContent = 'Starting introduction with phone speech...';
+        await playPortalIntroductionAudio(status);
+        return;
+    }
+
+    if (!('speechSynthesis' in window) || !('SpeechSynthesisUtterance' in window)) {
+        await playPortalIntroductionAudio(status, 'Speech is not supported in this browser.');
+        return;
     }
 
     await waitForPortalIntroVoices();
@@ -300,7 +299,7 @@ async function speakPortalIntroduction() {
             if (status) status.textContent = 'Starting introduction again...';
             await speakPortalIntroductionWithSynthesis(status, 2);
         } catch (secondError) {
-            await playPortalIntroductionAudioFallback(status, 'Mobile speech was blocked.');
+            await playPortalIntroductionAudio(status, 'Speech was blocked.');
         }
     }
 }
