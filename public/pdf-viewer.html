@@ -163,7 +163,13 @@
       openBtn.href = pdfURL;
       downloadBtn.href = pdfURL;
       downloadBtn.setAttribute('download', fileNameFromPath(pdfURL) + '.pdf');
-      window.location.replace(pdfURL);
+      stage.style.display = 'none';
+      fallback.style.display = 'block';
+      fallback.innerHTML = `
+        <h1>Open PDF in full screen</h1>
+        <p>The PDF now opens directly from the chapter button so the browser Back button returns to the previous menu.</p>
+        <p>If you reached this helper page from an old link, use Open above to view the PDF, or Back to return to the chapter menu.</p>
+      `;
     }
 
     fullscreenBtn.addEventListener('click', async () => {

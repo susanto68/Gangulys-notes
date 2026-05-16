@@ -26,7 +26,7 @@ function handlePDFClick(event, pdfPath) {
 
     try {
         if (isLocalPDFPath(pdfPath)) {
-            window.location.href = getPDFViewerURL(pdfPath);
+            window.location.href = new URL(pdfPath, window.location.href).href;
             return;
         }
 
