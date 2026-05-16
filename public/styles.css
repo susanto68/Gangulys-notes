@@ -110,8 +110,8 @@ header h1 {
 .student-register-help {
   max-width: min(92vw, 560px);
   margin: 0.42rem auto 0;
-  background: linear-gradient(90deg, #ef4444, #f97316, #eab308, #22c55e, #06b6d4, #3b82f6, #a855f7, #ef4444);
-  background-size: 300% 100%;
+  background: linear-gradient(90deg, #0f3f91, #2563eb, #ffffff, #1d4ed8, #0f3f91);
+  background-size: 220% 100%;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -121,29 +121,27 @@ header h1 {
   text-align: center;
   white-space: normal;
   overflow-wrap: anywhere;
-  filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.86)) drop-shadow(0 0 8px rgba(255, 255, 255, 0.58));
-  animation: introRainbowFlow 3.2s linear infinite, introTextLift 1.9s ease-in-out infinite;
+  filter: drop-shadow(0 1px 1px rgba(255, 255, 255, 0.45));
+  animation: introBlueWhiteShimmer 7s ease-in-out infinite, introTextLift 2.8s ease-in-out infinite;
 }
 
 .free-help-word {
   display: inline-block;
-  color: #ffffff;
-  background: linear-gradient(90deg, #ff1744, #ff9100, #ffee00, #00e676, #00b0ff, #651fff, #d500f9);
-  background-size: 260% 100%;
+  background: linear-gradient(90deg, #ffffff, #bfdbfe, #2563eb, #ffffff);
+  background-size: 200% 100%;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
   font-weight: 950;
   text-transform: uppercase;
-  text-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.75),
-    0 0 12px rgba(255, 255, 255, 0.92);
-  animation: introRainbowFlow 1.6s linear infinite, freeHelpPop 1.4s ease-in-out infinite;
+  text-shadow: 0 1px 8px rgba(37, 99, 235, 0.18);
+  animation: introBlueWhiteShimmer 5.5s ease-in-out infinite, freeHelpPop 2.2s ease-in-out infinite;
 }
 
-@keyframes introRainbowFlow {
+@keyframes introBlueWhiteShimmer {
   0% { background-position: 0% 50%; }
-  100% { background-position: 300% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 @keyframes introTextLift {
@@ -287,30 +285,30 @@ header p {
 
 .portal-introduction-title,
 .portal-introduction-belief {
-  background: linear-gradient(90deg, #ff1744, #ff9100, #ffee00, #00e676, #00b0ff, #651fff, #d500f9, #ff1744);
-  background-size: 320% 100%;
+  background: linear-gradient(90deg, #e0f2fe, #ffffff, #60a5fa, #ffffff, #dbeafe);
+  background-size: 220% 100%;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
   font-size: clamp(0.72rem, 1.8vw, 0.92rem);
   font-weight: 950;
   line-height: 1.18;
-  filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.9)) drop-shadow(0 0 8px rgba(255, 255, 255, 0.58));
-  animation: introRainbowFlow 3.8s linear infinite, introTextLift 2s ease-in-out infinite;
+  filter: drop-shadow(0 1px 2px rgba(15, 23, 42, 0.2));
+  animation: introBlueWhiteShimmer 7.5s ease-in-out infinite, introTextLift 2.8s ease-in-out infinite;
 }
 
 .portal-introduction-quote {
   margin: 0;
-  background: linear-gradient(90deg, #fef08a, #86efac, #67e8f9, #c4b5fd, #f9a8d4, #fef08a);
-  background-size: 280% 100%;
+  background: linear-gradient(90deg, #ffffff, #dbeafe, #93c5fd, #ffffff);
+  background-size: 220% 100%;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
   font-size: clamp(0.94rem, 2.6vw, 1.28rem);
   font-weight: 900;
   line-height: 1.12;
-  filter: drop-shadow(0 2px 2px rgba(15, 23, 42, 0.3));
-  animation: introRainbowFlow 3s linear infinite;
+  filter: drop-shadow(0 2px 2px rgba(15, 23, 42, 0.24));
+  animation: introBlueWhiteShimmer 6.5s ease-in-out infinite;
 }
 
 .portal-introduction-quote p {
@@ -427,7 +425,7 @@ footer {
 
 @media (max-width: 768px) {
   header {
-    padding: 0.9rem 0.72rem 2.1rem;
+    padding: 3.25rem 0.72rem 2.1rem;
     clip-path: polygon(0 0, 100% 0, 100% 96%, 0 100%);
   }
   header h1 {
@@ -683,6 +681,12 @@ footer {
   100% {
     opacity: 0;
     transform: translate(-50%, -50%) scale(1.14) rotate(10deg);
+  }
+}
+
+@media (max-width: 480px) {
+  header {
+    padding-top: 2.75rem;
   }
 }
 

@@ -8,7 +8,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>Educational Notes - Ganguly's</title>
-    <link rel="stylesheet" href="styles.css?v=20260516-home-visible-rainbow">
+    <link rel="stylesheet" href="styles.css?v=20260516-home-blue-white">
     <!-- Font Awesome with fallbacks -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" 
           onerror="this.onerror=null; this.href='https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css';">
@@ -19,8 +19,8 @@
         /* Base counter styles */
         .visitor-counter {
             transition: all 0.3s ease !important;
-            background: rgba(255, 255, 255, 0.72) !important;
-            border: 1px solid rgba(255, 255, 255, 0.8) !important;
+            background: rgba(255, 255, 255, 0.84) !important;
+            border: 1px solid rgba(255, 255, 255, 0.92) !important;
             border-radius: 8px !important;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
         }
@@ -50,23 +50,25 @@
         /* Mobile styles - much smaller and positioned to not overlap */
         @media (max-width: 768px) {
             .visitor-counter {
-                top: 5px !important;
-                left: 5px !important;
-                padding: 5px 7px !important;
-                min-width: 118px !important;
-                max-width: 145px !important;
-                font-size: 10px !important;
+                top: 6px !important;
+                left: 6px !important;
+                padding: 3px 5px !important;
+                min-width: 88px !important;
+                max-width: 108px !important;
+                font-size: 8px !important;
                 z-index: 1001 !important;
+                line-height: 1.05 !important;
             }
             
             .visitor-counter h3 {
-                font-size: 9px !important;
-                margin: 0 0 2px 0 !important;
+                font-size: 7px !important;
+                margin: 0 0 1px 0 !important;
                 line-height: 1 !important;
             }
             
             .visitor-count-value {
-                font-size: 10px !important;
+                font-size: 8px !important;
+                line-height: 1.12 !important;
             }
         }
         
@@ -202,20 +204,19 @@
         /* Very small screens */
         @media (max-width: 480px) {
             .visitor-counter {
-                top: 3px !important;
-                left: 3px !important;
-                padding: 4px 6px !important;
-                min-width: 86px !important;
-                max-width: 100px !important;
+                top: 5px !important;
+                left: 5px !important;
+                padding: 2px 4px !important;
+                min-width: 76px !important;
+                max-width: 92px !important;
             }
             
             .visitor-counter h3 {
-                font-size: 8px !important;
-                margin: 0 0 1px 0 !important;
+                font-size: 6px !important;
             }
             
             .visitor-count-value {
-                font-size: 11px !important;
+                font-size: 7px !important;
             }
         }
     </style>
