@@ -99,18 +99,38 @@ function handleVideoClick(event, videoPath) {
 
 // Initialize visitor counter with text display
 function initVisitorCounter() {
-    loadGoatCounterVisitorCount();
+    loadVisitorCounter();
 }
 
 // Function to update counter display with actual numbers
-function updateCounterDisplay(globalCount, indiaCount) {
+function getVisitorId() {
+    let visitorId = localStorage.getItem('visitorId');
+    if (!visitorId) {
+        visitorId = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+        localStorage.setItem('visitorId', visitorId);
+    }
+    return visitorId;
+}
+
+function updateCounterDisplay(totalVisitors, indiaCount, activeNow) {
     const counter = document.querySelector('.visitor-counter-display');
     if (!counter) return;
 
-    const count = typeof globalCount === 'string'
-        ? globalCount
-        : (Number(globalCount) || 0).toLocaleString();
-    counter.innerHTML = `<span class="visitor-count-value">${count}</span>`;
+    const total = typeof totalVisitors === 'string'
+        ? totalVisitors
+        : (Number(totalVisitors) || 0).toLocaleString();
+    const india = typeof indiaCount === 'number'
+        ? indiaCount.toLocaleString()
+        : '--';
+    const active = typeof activeNow === 'number'
+        ? activeNow.toLocaleString()
+        : '--';
+
+    counter.innerHTML = `
+        <span class="visitor-count-value" style="display:block;white-space:nowrap;line-height:1.25;">Total Visitors: ${total}</span>
+        <span class="visitor-count-value" style="display:block;white-space:nowrap;line-height:1.25;">Indian Visitor: ${india}</span>
+        <span class="visitor-count-value" style="display:block;white-space:nowrap;line-height:1.25;">Active now: ${active}</span>
+    `;
 }
 
 // Function to initialize mobile-friendly counter
@@ -121,8 +141,67 @@ function initMobileCounter() {
     counter.innerHTML = '<span class="visitor-count-value">Loading...</span>';
 }
 
-// Function to fetch and display GoatCounter total visitor count
-async function loadGoatCounterVisitorCount() {
+async function detectVisitorCountry() {
+    try {
+        const response = await fetch('https://ipapi.co/json/', { cache: 'no-store' });
+        if (!response.ok) return {};
+        const data = await response.json();
+
+        return {
+            countryCode: data.country_code || 'UNKNOWN',
+            ipAddress: data.ip || ''
+        };
+    } catch (error) {
+        return {};
+    }
+}
+
+async function updateVisitorApi(countVisit) {
+    try {
+        const location = countVisit ? await detectVisitorCountry() : {};
+        const activityResponse = await fetch('/api/visitor-counter', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                countryCode: location.countryCode || 'HEARTBEAT',
+                ipAddress: location.ipAddress,
+                visitorId: getVisitorId(),
+                userAgent: navigator.userAgent,
+                countVisit
+            })
+        });
+
+        if (activityResponse.ok) {
+            const activityData = await activityResponse.json();
+            updateCounterDisplay(activityData.totalVisitors, activityData.indiaCount, activityData.activeNow);
+            return true;
+        }
+    } catch (error) {
+        console.log('Visitor activity API unavailable');
+    }
+
+    return false;
+}
+
+// Function to fetch and display live visitor counts
+async function loadVisitorCounter() {
+    if (window.__visitorCounterLoading) return;
+    window.__visitorCounterLoading = true;
+
+    const sessionKey = 'visitorCounted';
+    const shouldCountVisit = sessionStorage.getItem(sessionKey) !== 'true';
+    const apiUpdated = await updateVisitorApi(shouldCountVisit);
+
+    if (apiUpdated) {
+        if (shouldCountVisit) {
+            sessionStorage.setItem(sessionKey, 'true');
+        }
+        window.__visitorCounterLoading = false;
+        return;
+    }
+
     try {
         const response = await fetch('https://gangulysnotes.goatcounter.com/counter/TOTAL.json', {
             cache: 'no-store'
@@ -131,6 +210,7 @@ async function loadGoatCounterVisitorCount() {
         if (response.ok) {
             const data = await response.json();
             updateCounterDisplay(data.count || '--');
+            window.__visitorCounterLoading = false;
             console.log('✅ GoatCounter visitor count updated:', data);
             return;
         }
@@ -138,7 +218,8 @@ async function loadGoatCounterVisitorCount() {
         console.log('ℹ️ GoatCounter visitor count unavailable');
     }
 
-    updateCounterDisplay('--');
+    updateCounterDisplay('--', undefined, undefined);
+    window.__visitorCounterLoading = false;
 }
 
 // Check if Font Awesome loaded and apply fallbacks if needed
@@ -171,7 +252,8 @@ function checkFontAwesome() {
 if (typeof window !== 'undefined') {
     window.addEventListener('load', function() {
         initMobileCounter();
-        loadGoatCounterVisitorCount();
+        loadVisitorCounter();
+        setInterval(() => updateVisitorApi(false), 30000);
         checkFontAwesome(); // Check Font Awesome loading
     });
     window.addEventListener('resize', initMobileCounter);

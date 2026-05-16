@@ -115,7 +115,7 @@
     border: 1px solid rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    max-width: 120px;
+    max-width: 170px;
     transition: all 0.3s ease;
     /* Subtle glow effect */
     box-shadow: 
@@ -172,7 +172,7 @@
       left: 6px;
       font-size: 8px;
       padding: 3px 5px;
-      max-width: 100px;
+      max-width: 145px;
     }
     
     .visitor {
@@ -191,7 +191,7 @@
       left: 4px;
       font-size: 7px;
       padding: 2px 4px;
-      max-width: 90px;
+      max-width: 135px;
     }
     
     .visitor {
