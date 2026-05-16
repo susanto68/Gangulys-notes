@@ -104,6 +104,8 @@ Where knowledge is free.
 
 This portal believes that education and knowledge should reach every learner without barriers.`;
 
+let portalIntroUtterance = null;
+
 function getPortalIntroVoice() {
     if (!window.speechSynthesis) return null;
 
@@ -130,54 +132,52 @@ function speakPortalIntroduction() {
     }
 
     window.speechSynthesis.cancel();
-    let speechStarted = false;
+    const selectedVoice = getPortalIntroVoice();
+    const utterance = new SpeechSynthesisUtterance(PORTAL_INTRO_SPEECH_TEXT);
+    portalIntroUtterance = utterance;
 
-    const startSpeech = () => {
-        if (speechStarted) return;
-        speechStarted = true;
+    utterance.lang = selectedVoice?.lang || 'en-IN';
+    if (selectedVoice) utterance.voice = selectedVoice;
+    utterance.pitch = 0.72;
+    utterance.rate = 0.82;
+    utterance.volume = 1;
 
-        const utterance = new SpeechSynthesisUtterance(PORTAL_INTRO_SPEECH_TEXT);
-        const selectedVoice = getPortalIntroVoice();
-
-        utterance.lang = selectedVoice?.lang || 'en-IN';
-        utterance.voice = selectedVoice;
-        utterance.pitch = 0.72;
-        utterance.rate = 0.82;
-        utterance.volume = 1;
-
-        utterance.onstart = () => {
-            if (speakButton) {
-                speakButton.disabled = true;
-                speakButton.innerHTML = '<i class="fas fa-volume-up"></i> Speaking...';
-            }
-            if (status) status.textContent = 'Teacher introduction is playing.';
-        };
-
-        utterance.onend = () => {
-            if (speakButton) {
-                speakButton.disabled = false;
-                speakButton.innerHTML = '<i class="fas fa-volume-up"></i> Hear Introduction';
-            }
-            if (status) status.textContent = '';
-        };
-
-        utterance.onerror = () => {
-            if (speakButton) {
-                speakButton.disabled = false;
-                speakButton.innerHTML = '<i class="fas fa-volume-up"></i> Hear Introduction';
-            }
-            if (status) status.textContent = 'Tap Hear Introduction to play again.';
-        };
-
-        window.speechSynthesis.speak(utterance);
+    const resetButton = () => {
+        if (speakButton) {
+            speakButton.disabled = false;
+            speakButton.innerHTML = '<i class="fas fa-volume-up"></i> Hear Introduction';
+        }
     };
 
-    if (window.speechSynthesis.getVoices().length > 0) {
-        startSpeech();
-    } else {
-        window.speechSynthesis.addEventListener('voiceschanged', startSpeech, { once: true });
-        setTimeout(startSpeech, 700);
-    }
+    utterance.onstart = () => {
+        if (speakButton) {
+            speakButton.disabled = true;
+            speakButton.innerHTML = '<i class="fas fa-volume-up"></i> Speaking...';
+        }
+        if (status) status.textContent = 'Teacher introduction is playing.';
+    };
+
+    utterance.onend = () => {
+        resetButton();
+        if (status) status.textContent = '';
+        portalIntroUtterance = null;
+    };
+
+    utterance.onerror = () => {
+        resetButton();
+        if (status) status.textContent = 'Tap Hear Introduction to play again.';
+        portalIntroUtterance = null;
+    };
+
+    if (status) status.textContent = 'Starting introduction...';
+    window.speechSynthesis.speak(utterance);
+
+    setTimeout(() => {
+        if (!window.speechSynthesis.speaking && !window.speechSynthesis.pending) {
+            resetButton();
+            if (status) status.textContent = 'Tap Hear Introduction once more if your phone blocked the first sound.';
+        }
+    }, 1200);
 }
 
 function initPortalIntroductionSpeech() {
@@ -185,6 +185,10 @@ function initPortalIntroductionSpeech() {
     if (!speakButton) return;
 
     speakButton.addEventListener('click', speakPortalIntroduction);
+    if (window.speechSynthesis) {
+        window.speechSynthesis.getVoices();
+        window.speechSynthesis.addEventListener('voiceschanged', getPortalIntroVoice);
+    }
 }
 
 // Initialize visitor counter with text display
