@@ -97,6 +97,96 @@ function handleVideoClick(event, videoPath) {
     }
 }
 
+const PORTAL_INTRO_SPEECH_TEXT = `The vision behind this effort is inspired by the words of Rabindranath Tagore.
+
+Where the mind is without fear and the head is held high.
+Where knowledge is free.
+
+This portal believes that education and knowledge should reach every learner without barriers.`;
+
+function getPortalIntroVoice() {
+    if (!window.speechSynthesis) return null;
+
+    const voices = window.speechSynthesis.getVoices();
+
+    return voices.find((voice) =>
+        /en-IN|hi-IN/i.test(voice.lang) && /male|ravi|hemant|amit|arjun|madhur/i.test(voice.name)
+    ) || voices.find((voice) =>
+        /en-IN|hi-IN/i.test(voice.lang)
+    ) || voices.find((voice) =>
+        /india|indian/i.test(voice.name)
+    ) || voices.find((voice) =>
+        /^en\b/i.test(voice.lang)
+    ) || voices[0] || null;
+}
+
+function speakPortalIntroduction() {
+    const speakButton = document.getElementById('portalIntroSpeakBtn');
+    const status = document.getElementById('portalIntroSpeechStatus');
+
+    if (!('speechSynthesis' in window) || !('SpeechSynthesisUtterance' in window)) {
+        if (status) status.textContent = 'Speech is not supported in this browser.';
+        return;
+    }
+
+    window.speechSynthesis.cancel();
+    let speechStarted = false;
+
+    const startSpeech = () => {
+        if (speechStarted) return;
+        speechStarted = true;
+
+        const utterance = new SpeechSynthesisUtterance(PORTAL_INTRO_SPEECH_TEXT);
+        const selectedVoice = getPortalIntroVoice();
+
+        utterance.lang = selectedVoice?.lang || 'en-IN';
+        utterance.voice = selectedVoice;
+        utterance.pitch = 0.72;
+        utterance.rate = 0.82;
+        utterance.volume = 1;
+
+        utterance.onstart = () => {
+            if (speakButton) {
+                speakButton.disabled = true;
+                speakButton.innerHTML = '<i class="fas fa-volume-up"></i> Speaking...';
+            }
+            if (status) status.textContent = 'Teacher introduction is playing.';
+        };
+
+        utterance.onend = () => {
+            if (speakButton) {
+                speakButton.disabled = false;
+                speakButton.innerHTML = '<i class="fas fa-volume-up"></i> Hear Introduction';
+            }
+            if (status) status.textContent = '';
+        };
+
+        utterance.onerror = () => {
+            if (speakButton) {
+                speakButton.disabled = false;
+                speakButton.innerHTML = '<i class="fas fa-volume-up"></i> Hear Introduction';
+            }
+            if (status) status.textContent = 'Tap Hear Introduction to play again.';
+        };
+
+        window.speechSynthesis.speak(utterance);
+    };
+
+    if (window.speechSynthesis.getVoices().length > 0) {
+        startSpeech();
+    } else {
+        window.speechSynthesis.addEventListener('voiceschanged', startSpeech, { once: true });
+        setTimeout(startSpeech, 700);
+    }
+}
+
+function initPortalIntroductionSpeech() {
+    const speakButton = document.getElementById('portalIntroSpeakBtn');
+    if (!speakButton) return;
+
+    speakButton.addEventListener('click', speakPortalIntroduction);
+}
+
 // Initialize visitor counter with text display
 function initVisitorCounter() {
     loadVisitorCounter();
@@ -425,6 +515,7 @@ function checkFontAwesome() {
 // Initialize mobile counter on load
 if (typeof window !== 'undefined') {
     window.addEventListener('load', function() {
+        initPortalIntroductionSpeech();
         initMobileCounter();
         loadVisitorCounter();
         setInterval(() => updateVisitorApi(false), 30000);

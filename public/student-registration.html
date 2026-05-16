@@ -64,7 +64,7 @@
         <button id="submitRegistrationBtn" class="submit-registration-btn" type="submit">
           Submit Registration
         </button>
-        <div id="registrationStatus" class="registration-status" aria-live="polite"></div>
+        <div id="registrationStatus" class="registration-status" role="status" aria-live="polite"></div>
       </form>
     </section>
   </main>
@@ -84,9 +84,13 @@
 
     yearInput.value = new Date().getFullYear();
 
-    function showStatus(message, isError) {
+    function showStatus(message, type) {
       statusBox.textContent = message;
-      statusBox.style.color = isError ? '#b91c1c' : '#166534';
+      statusBox.className = 'registration-status';
+
+      if (type) {
+        statusBox.classList.add(`registration-status-${type}`);
+      }
     }
 
     if (STUDENT_REGISTRATION_WEB_APP_URL) {
@@ -102,7 +106,7 @@
       }
 
       if (!STUDENT_REGISTRATION_WEB_APP_URL) {
-        showStatus('Google Sheet is not connected yet. Please add the Apps Script Web App URL first.', true);
+        showStatus('Google Sheet is not connected yet. Please add the Apps Script Web App URL first.', 'error');
         return;
       }
 
@@ -118,23 +122,34 @@
       };
 
       submitButton.disabled = true;
-      showStatus('Submitting registration...', false);
+      showStatus('Submitting registration...', 'loading');
 
       try {
-        await fetch(STUDENT_REGISTRATION_WEB_APP_URL, {
+        const response = await fetch(STUDENT_REGISTRATION_WEB_APP_URL, {
           method: 'POST',
-          mode: 'no-cors',
           headers: {
             'Content-Type': 'text/plain;charset=utf-8'
           },
           body: JSON.stringify(payload)
         });
 
+        let result;
+
+        try {
+          result = await response.json();
+        } catch (parseError) {
+          throw new Error('Registration response could not be read. Please try again.');
+        }
+
+        if (!response.ok || !result.ok) {
+          throw new Error(result.message || result.error || 'Registration could not be submitted. Please try again.');
+        }
+
         form.reset();
         yearInput.value = new Date().getFullYear();
-        showStatus('Registration submitted successfully.', false);
+        showStatus(result.message || 'Registration submitted successfully.', 'success');
       } catch (error) {
-        showStatus('Registration could not be submitted. Please check internet connection and try again.', true);
+        showStatus(error.message || 'Registration could not be submitted. Please check internet connection and try again.', 'error');
       } finally {
         submitButton.disabled = false;
       }

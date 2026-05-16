@@ -3,23 +3,47 @@ const SPREADSHEET_ID = '1yzZ7TRUg5yFvhcKzYfPPDJz3vkbMgxlGriN-VTx1CmU';
 
 function doPost(e) {
   try {
-    const data = JSON.parse(e.postData.contents || '{}');
+    const data = JSON.parse((e.postData && e.postData.contents) || '{}');
+    const registration = {
+      name: cleanValue(data.name),
+      className: cleanValue(data.className),
+      section: cleanValue(data.section),
+      phone: cleanValue(data.phone),
+      year: cleanValue(data.year),
+      source: cleanValue(data.source),
+      submittedAt: cleanValue(data.submittedAt)
+    };
+
+    if (!isValidRegistration(registration)) {
+      return jsonResponse({
+        ok: false,
+        message: 'Please fill all required fields.'
+      });
+    }
+
     const sheet = getRegistrationSheet();
 
     sheet.appendRow([
       new Date(),
-      cleanValue(data.name),
-      cleanValue(data.className),
-      cleanValue(data.section),
-      cleanValue(data.phone),
-      cleanValue(data.year),
-      cleanValue(data.source),
-      cleanValue(data.submittedAt)
+      registration.name,
+      registration.className,
+      registration.section,
+      registration.phone,
+      registration.year,
+      registration.source,
+      registration.submittedAt
     ]);
 
-    return jsonResponse({ ok: true });
+    return jsonResponse({
+      ok: true,
+      message: 'Registration submitted successfully.'
+    });
   } catch (error) {
-    return jsonResponse({ ok: false, error: String(error) });
+    return jsonResponse({
+      ok: false,
+      message: 'Registration could not be saved. Please try again.',
+      error: String(error)
+    });
   }
 }
 
@@ -53,6 +77,16 @@ function getRegistrationSheet() {
 
 function cleanValue(value) {
   return String(value || '').trim();
+}
+
+function isValidRegistration(data) {
+  return Boolean(
+    data.name &&
+    data.className &&
+    data.section &&
+    /^[0-9]{10,15}$/.test(data.phone) &&
+    /^[0-9]{4}$/.test(data.year)
+  );
 }
 
 function jsonResponse(data) {

@@ -8,7 +8,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>Educational Notes - Ganguly's</title>
-    <link rel="stylesheet" href="styles.css?v=20260503-buttons">
+    <link rel="stylesheet" href="styles.css?v=20260516-intro-speech">
     <!-- Font Awesome with fallbacks -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" 
           onerror="this.onerror=null; this.href='https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css';">
@@ -270,6 +270,22 @@
     <header>
         <h1>Educational Notes Portal</h1>
         <p>Welcome to your comprehensive study resource</p>
+
+        <section class="portal-introduction" aria-labelledby="portalIntroTitle">
+            <img src="sirganguly.png" alt="Sir Ganguly" class="portal-introduction-photo">
+            <div class="portal-introduction-copy">
+                <p id="portalIntroTitle" class="portal-introduction-title">The vision behind this effort is inspired by the words of Rabindranath Tagore:</p>
+                <blockquote class="portal-introduction-quote">
+                    <p>&ldquo;Where the mind is without fear and the head is held high...&rdquo;</p>
+                    <p>&ldquo;Where knowledge is free...&rdquo;</p>
+                </blockquote>
+                <p class="portal-introduction-belief">This portal believes that education and knowledge should reach every learner without barriers.</p>
+                <button id="portalIntroSpeakBtn" class="portal-introduction-speak" type="button">
+                    <i class="fas fa-volume-up"></i> Hear Introduction
+                </button>
+                <div id="portalIntroSpeechStatus" class="portal-introduction-status" aria-live="polite"></div>
+            </div>
+        </section>
         
         <div class="whatsapp-feedback">
             <a href="https://wa.me/919835379900?text=Hi! I have feedback about the educational notes portal." class="whatsapp-btn" target="_blank" rel="noopener noreferrer">
@@ -438,7 +454,7 @@
      data-goatcounter="https://gangulysnotes.goatcounter.com/count"
      async
      src="https://gc.zgo.at/count.js"></script>
- <script src="scripts.js?v=20260516-direct-pdf"></script>
+ <script src="scripts.js?v=20260516-intro-speech"></script>
  
  <!-- PWA Service Worker Registration -->
  <script>

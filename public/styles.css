@@ -233,6 +233,94 @@ header p {
   font-size: 1.2rem;
 }
 
+.portal-introduction {
+  display: grid;
+  justify-items: center;
+  gap: 0.75rem;
+  width: min(92vw, 720px);
+  margin: 1rem auto 0;
+  position: relative;
+  z-index: 1;
+}
+
+.portal-introduction-photo {
+  width: clamp(112px, 24vw, 168px);
+  height: clamp(112px, 24vw, 168px);
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid rgba(255, 255, 255, 0.92);
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.28);
+  background: #ffffff;
+}
+
+.portal-introduction-copy {
+  display: grid;
+  justify-items: center;
+  gap: 0.45rem;
+  max-width: 680px;
+}
+
+.portal-introduction-title,
+.portal-introduction-belief {
+  color: #ffffff;
+  font-size: clamp(1rem, 2.5vw, 1.22rem);
+  font-weight: 800;
+  line-height: 1.35;
+  text-shadow: 0 2px 5px rgba(15, 23, 42, 0.32);
+}
+
+.portal-introduction-quote {
+  margin: 0;
+  color: #fff7ed;
+  font-size: clamp(1.24rem, 4vw, 1.8rem);
+  font-weight: 900;
+  line-height: 1.22;
+  text-shadow: 0 3px 8px rgba(15, 23, 42, 0.36);
+}
+
+.portal-introduction-quote p {
+  margin: 0.15rem 0;
+  color: inherit;
+  font-size: inherit;
+}
+
+.portal-introduction-speak {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  min-height: 42px;
+  margin-top: 0.2rem;
+  padding: 0.6rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #1e3a8a;
+  font: inherit;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.18);
+}
+
+.portal-introduction-speak:hover,
+.portal-introduction-speak:focus-visible {
+  background: #ffffff;
+  outline: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.portal-introduction-speak:disabled {
+  cursor: wait;
+  opacity: 0.78;
+}
+
+.portal-introduction-status {
+  min-height: 18px;
+  color: #e0f2fe;
+  font-size: 0.88rem;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
 .container {
   max-width: 1200px;
   margin: 2rem auto;
@@ -313,6 +401,22 @@ footer {
   }
   header p {
     font-size: 1rem;
+  }
+  .portal-introduction {
+    gap: 0.55rem;
+    margin-top: 0.8rem;
+  }
+  .portal-introduction-photo {
+    width: 112px;
+    height: 112px;
+  }
+  .portal-introduction-copy {
+    gap: 0.35rem;
+  }
+  .portal-introduction-speak {
+    min-height: 40px;
+    padding: 0.55rem 0.9rem;
+    font-size: 0.92rem;
   }
   .container {
     margin: 1rem;
@@ -634,6 +738,18 @@ footer {
   color: #1e3a8a;
   font-weight: 700;
   text-align: center;
+}
+
+.registration-status-loading {
+  color: #1e3a8a;
+}
+
+.registration-status-success {
+  color: #166534;
+}
+
+.registration-status-error {
+  color: #b91c1c;
 }
 
 .registration-note {
