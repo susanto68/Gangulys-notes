@@ -122,12 +122,12 @@ header h1 {
 
 .free-help-word {
   display: inline-block;
-  color: #dc2626;
+  color: #0b2f86;
   font-weight: 950;
   text-transform: uppercase;
   text-shadow:
     0 1px 0 rgba(255, 255, 255, 0.75),
-    0 0 10px rgba(250, 204, 21, 0.8);
+    0 0 10px rgba(96, 165, 250, 0.85);
   animation: freeHelpPop 1.4s ease-in-out infinite;
 }
 
