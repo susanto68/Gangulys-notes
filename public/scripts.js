@@ -102,6 +102,17 @@ function initVisitorCounter() {
     loadVisitorCounter();
 }
 
+const VISITOR_COUNTER_FALLBACK = {
+    totalVisitors: 630,
+    indiaCount: 127,
+    activeNow: 0
+};
+
+const FIREBASE_COUNTER_PATH = 'sirgangulyVisitorCounter';
+let firebaseCounterStarted = false;
+let firebaseCounterConfigPromise = null;
+let firebaseCounterModulesPromise = null;
+
 // Function to update counter display with actual numbers
 function getVisitorId() {
     let visitorId = localStorage.getItem('visitorId');
@@ -133,6 +144,146 @@ function updateCounterDisplay(totalVisitors, indiaCount, activeNow) {
     `;
 }
 
+function updateCounterFallback() {
+    updateCounterDisplay(
+        VISITOR_COUNTER_FALLBACK.totalVisitors,
+        VISITOR_COUNTER_FALLBACK.indiaCount,
+        VISITOR_COUNTER_FALLBACK.activeNow
+    );
+}
+
+function hasFirebaseCounterConfig() {
+    const config = window.SIRGANGULY_FIREBASE_CONFIG;
+    return Boolean(
+        config &&
+        config.apiKey &&
+        config.authDomain &&
+        config.databaseURL &&
+        config.projectId &&
+        config.appId
+    );
+}
+
+function ensureFirebaseCounterConfig() {
+    if (hasFirebaseCounterConfig()) return Promise.resolve(true);
+    if (firebaseCounterConfigPromise) return firebaseCounterConfigPromise;
+
+    firebaseCounterConfigPromise = new Promise((resolve) => {
+        const script = document.createElement('script');
+        script.src = '/firebase-config.js?v=20260516';
+        script.async = true;
+        script.onload = () => resolve(hasFirebaseCounterConfig());
+        script.onerror = () => resolve(false);
+        document.head.appendChild(script);
+    });
+
+    return firebaseCounterConfigPromise;
+}
+
+function getFirebaseVisitorKey() {
+    return getVisitorId().replace(/[.#$\[\]/]/g, '_');
+}
+
+function loadFirebaseCounterModules() {
+    if (!firebaseCounterModulesPromise) {
+        firebaseCounterModulesPromise = Promise.all([
+            import('https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js'),
+            import('https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js')
+        ]).then(([app, database]) => ({ app, database }));
+    }
+
+    return firebaseCounterModulesPromise;
+}
+
+function countSnapshotChildren(snapshot) {
+    let count = 0;
+    snapshot.forEach(() => {
+        count++;
+    });
+    return count;
+}
+
+async function startFirebaseCounter(countVisit) {
+    if (firebaseCounterStarted) return false;
+    const hasConfig = await ensureFirebaseCounterConfig();
+    if (!hasConfig) return false;
+    firebaseCounterStarted = true;
+
+    try {
+        const { app, database } = await loadFirebaseCounterModules();
+        const firebaseApp = app.getApps().length
+            ? app.getApps()[0]
+            : app.initializeApp(window.SIRGANGULY_FIREBASE_CONFIG);
+        const db = database.getDatabase(firebaseApp);
+        const statsRef = database.ref(db, `${FIREBASE_COUNTER_PATH}/stats`);
+        const activeRef = database.ref(db, `${FIREBASE_COUNTER_PATH}/active`);
+        const myActiveRef = database.ref(db, `${FIREBASE_COUNTER_PATH}/active/${getFirebaseVisitorKey()}`);
+
+        let latestStats = { ...VISITOR_COUNTER_FALLBACK };
+        let latestActiveNow = VISITOR_COUNTER_FALLBACK.activeNow;
+        const renderLatest = () => {
+            updateCounterDisplay(
+                latestStats.totalVisitors,
+                latestStats.indiaCount,
+                latestActiveNow
+            );
+        };
+
+        database.onValue(statsRef, (snapshot) => {
+            const stats = snapshot.val() || {};
+            latestStats = {
+                totalVisitors: Number(stats.totalVisitors) || VISITOR_COUNTER_FALLBACK.totalVisitors,
+                indiaCount: Number(stats.indiaCount) || VISITOR_COUNTER_FALLBACK.indiaCount
+            };
+            renderLatest();
+        });
+
+        database.onValue(activeRef, (snapshot) => {
+            latestActiveNow = countSnapshotChildren(snapshot);
+            renderLatest();
+        });
+
+        database.onValue(database.ref(db, '.info/connected'), async (snapshot) => {
+            if (snapshot.val() !== true) return;
+
+            await database.onDisconnect(myActiveRef).remove();
+            await database.set(myActiveRef, {
+                lastSeen: database.serverTimestamp(),
+                page: window.location.pathname || '/'
+            });
+        });
+
+        setInterval(() => {
+            database.update(myActiveRef, {
+                lastSeen: database.serverTimestamp(),
+                page: window.location.pathname || '/'
+            }).catch(() => {});
+        }, 30000);
+
+        if (countVisit) {
+            const isIndia = isLikelyIndianVisitor();
+
+            await database.runTransaction(statsRef, (stats) => {
+                const current = stats || {};
+                const totalVisitors = Number(current.totalVisitors) || VISITOR_COUNTER_FALLBACK.totalVisitors;
+                const indiaCount = Number(current.indiaCount) || VISITOR_COUNTER_FALLBACK.indiaCount;
+
+                return {
+                    totalVisitors: totalVisitors + 1,
+                    indiaCount: indiaCount + (isIndia ? 1 : 0),
+                    lastUpdated: database.serverTimestamp()
+                };
+            });
+        }
+
+        return true;
+    } catch (error) {
+        firebaseCounterStarted = false;
+        console.log('Firebase visitor counter unavailable');
+        return false;
+    }
+}
+
 // Function to initialize mobile-friendly counter
 function initMobileCounter() {
     const counter = document.querySelector('.visitor-counter-display');
@@ -156,7 +307,20 @@ async function detectVisitorCountry() {
     }
 }
 
+function isLikelyIndianVisitor() {
+    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const languages = navigator.languages && navigator.languages.length
+        ? navigator.languages
+        : [navigator.language];
+
+    return timeZone === 'Asia/Kolkata' ||
+        timeZone === 'Asia/Calcutta' ||
+        languages.some((language) => /-IN\b/i.test(language || ''));
+}
+
 async function updateVisitorApi(countVisit) {
+    if (firebaseCounterStarted) return true;
+
     try {
         const location = countVisit ? await detectVisitorCountry() : {};
         const activityResponse = await fetch('/api/visitor-counter', {
@@ -192,6 +356,16 @@ async function loadVisitorCounter() {
 
     const sessionKey = 'visitorCounted';
     const shouldCountVisit = sessionStorage.getItem(sessionKey) !== 'true';
+    const firebaseStarted = await startFirebaseCounter(shouldCountVisit);
+
+    if (firebaseStarted) {
+        if (shouldCountVisit) {
+            sessionStorage.setItem(sessionKey, 'true');
+        }
+        window.__visitorCounterLoading = false;
+        return;
+    }
+
     const apiUpdated = await updateVisitorApi(shouldCountVisit);
 
     if (apiUpdated) {
@@ -218,7 +392,7 @@ async function loadVisitorCounter() {
         console.log('ℹ️ GoatCounter visitor count unavailable');
     }
 
-    updateCounterDisplay('--', undefined, undefined);
+    updateCounterFallback();
     window.__visitorCounterLoading = false;
 }
 
