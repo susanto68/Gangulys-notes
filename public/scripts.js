@@ -106,8 +106,8 @@ This portal believes that education and knowledge should reach every learner wit
 
 let portalIntroUtterance = null;
 let portalIntroAudio = null;
-let portalIntroAudioSrc = null;
 let portalIntroVoicesReadyPromise = null;
+const PORTAL_INTRO_AUDIO_URL = '/api/intro-tts-audio?v=20260517-mobile-pwa-mp3';
 
 function getPortalIntroVoice() {
     if (!window.speechSynthesis) return null;
@@ -166,6 +166,13 @@ function setPortalIntroSpeakingState(message) {
     if (status) status.textContent = message || 'Teacher introduction is playing.';
 }
 
+function shouldUsePortalIntroMp3First() {
+    const userAgent = navigator.userAgent || '';
+    const isMobile = /android|iphone|ipad|ipod|mobile/i.test(userAgent);
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+    return isMobile || isStandalone;
+}
+
 function stopPortalIntroduction() {
     if (portalIntroAudio) {
         try {
@@ -184,24 +191,8 @@ function stopPortalIntroduction() {
 
 async function playPortalIntroductionAudioFallback(status, reason) {
     try {
-        if (!portalIntroAudioSrc) {
-            if (status) status.textContent = 'Preparing mobile audio...';
-
-            const response = await fetch('/api/intro-tts', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ text: PORTAL_INTRO_SPEECH_TEXT })
-            });
-            const data = await response.json().catch(() => ({}));
-
-            if (!response.ok || !data.audioBase64) {
-                throw new Error(data.error || 'Audio fallback unavailable');
-            }
-
-            portalIntroAudioSrc = `data:audio/mpeg;base64,${data.audioBase64}`;
-        }
-
-        portalIntroAudio = new Audio(portalIntroAudioSrc);
+        portalIntroAudio = new Audio(PORTAL_INTRO_AUDIO_URL);
+        portalIntroAudio.preload = 'auto';
         setPortalIntroSpeakingState('Teacher introduction is playing.');
 
         portalIntroAudio.onended = () => {
@@ -216,15 +207,15 @@ async function playPortalIntroductionAudioFallback(status, reason) {
         };
 
         await portalIntroAudio.play();
+        return true;
     } catch (error) {
         resetPortalIntroButton();
         if (status) {
-            status.textContent = portalIntroAudioSrc
-                ? 'Mobile prepared the introduction audio. Please tap Hear Introduction once more.'
-                : (reason
-                    ? `${reason} Please tap Hear Introduction once more.`
-                    : 'Introduction audio is unavailable right now. Please try again.');
+            status.textContent = reason
+                ? `${reason} Please tap Hear Introduction once more.`
+                : 'Introduction audio is unavailable right now. Please try again.';
         }
+        return false;
     }
 }
 
@@ -291,6 +282,13 @@ async function speakPortalIntroduction() {
     if (status) status.textContent = 'Starting introduction...';
 
     stopPortalIntroduction();
+
+    if (shouldUsePortalIntroMp3First()) {
+        const audioStarted = await playPortalIntroductionAudioFallback(status);
+        if (audioStarted) return;
+        if (status) status.textContent = 'Starting introduction with phone speech...';
+    }
+
     await waitForPortalIntroVoices();
 
     try {

@@ -1,11 +1,3 @@
-export const config = {
-  api: {
-    bodyParser: {
-      sizeLimit: '32kb',
-    },
-  },
-};
-
 const INTRO_TEXT = `The vision behind this effort is inspired by the words of Rabindranath Tagore.
 
 Where the mind is without fear and the head is held high.
@@ -13,7 +5,7 @@ Where knowledge is free.
 
 This portal believes that education and knowledge should reach every learner without barriers.`;
 
-async function callOpenAItTS(text) {
+async function createIntroAudio() {
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) throw new Error('OPENAI_API_KEY not configured');
 
@@ -26,7 +18,7 @@ async function callOpenAItTS(text) {
     body: JSON.stringify({
       model: 'gpt-4o-mini-tts',
       voice: 'verse',
-      input: text,
+      input: INTRO_TEXT,
       response_format: 'mp3',
     }),
   });
@@ -36,27 +28,27 @@ async function callOpenAItTS(text) {
     throw new Error(`OpenAI TTS error: ${errorText || response.status}`);
   }
 
-  const arrayBuffer = await response.arrayBuffer();
-  return Buffer.from(arrayBuffer).toString('base64');
+  return Buffer.from(await response.arrayBuffer());
 }
 
 export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
+  if (req.method !== 'GET' && req.method !== 'HEAD') {
+    return res.status(405).end('Method not allowed');
   }
 
   try {
-    const requestedText = typeof req.body?.text === 'string' ? req.body.text.trim() : '';
-    const text = requestedText || INTRO_TEXT;
+    const audio = await createIntroAudio();
+    res.setHeader('Content-Type', 'audio/mpeg');
+    res.setHeader('Cache-Control', 'public, max-age=3600, s-maxage=86400');
+    res.setHeader('Content-Length', audio.length);
 
-    if (text !== INTRO_TEXT) {
-      return res.status(400).json({ error: 'Invalid introduction text' });
+    if (req.method === 'HEAD') {
+      return res.status(200).end();
     }
 
-    const audioBase64 = await callOpenAItTS(text);
-    return res.status(200).json({ audioBase64 });
+    return res.status(200).send(audio);
   } catch (error) {
-    console.error('Intro TTS API Error:', error);
-    return res.status(500).json({ error: 'Introduction audio is temporarily unavailable' });
+    console.error('Intro audio API Error:', error);
+    return res.status(500).end('Introduction audio is temporarily unavailable');
   }
 }
