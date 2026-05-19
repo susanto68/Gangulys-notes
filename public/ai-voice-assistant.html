@@ -124,7 +124,7 @@
           if (!res.ok) throw new Error(data.error || 'Server error');
           processReply(data.reply || '');
           if (data.audioBase64) {
-            playBase64(data.audioBase64);
+            playBase64(data.audioBase64, data.audioMimeType || 'audio/mpeg');
           } else {
             statusEl.textContent = 'Audio is temporarily unavailable. Please read the answer on screen.';
           }
@@ -168,9 +168,9 @@
 
     function cleanupView2() { view2.innerHTML = ''; view2.classList.remove('active'); }
 
-    function playBase64(b64) {
+    function playBase64(b64, mimeType) {
       stopPlayback();
-      const src = `data:audio/mpeg;base64,${b64}`;
+      const src = `data:${mimeType || 'audio/mpeg'};base64,${b64}`;
       audio = new Audio(src);
       isSpeaking = true; statusEl.textContent = '🔊 Speaking…'; stopBtn.disabled = false; avatar.style.animation = 'float 1s ease-in-out infinite';
       audio.onended = () => { isSpeaking = false; avatar.style.animation = ''; statusEl.textContent = ''; stopBtn.disabled = true; talkBtn.disabled = false; };
