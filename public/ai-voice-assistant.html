@@ -41,6 +41,12 @@
 
     #responseBox { background:#f1f5f9; padding:12px; border-radius:12px; margin-top:12px; font-size:.9rem; min-height:60px; text-align:left; line-height:1.4; white-space:pre-wrap; flex-grow:1; }
     #status { margin-top:8px; font-size:.8rem; color:#64748b; min-height:1.2em; }
+    .question-form { margin-top: 12px; display: flex; flex-direction: column; gap: 8px; }
+    #questionInput { width: 100%; min-height: 78px; resize: vertical; border: 1px solid #cbd5e1; border-radius: 10px; padding: 10px; font: inherit; line-height: 1.4; }
+    #questionInput:focus { outline: 2px solid #93c5fd; border-color: #3b82f6; }
+    .form-actions { display:flex; gap:8px; }
+    #sendBtn { background:#16a34a; color:#fff; }
+    #sendBtn:hover:not(:disabled) { background:#15803d; }
 
     #controls { margin-top:12px; display:flex; justify-content:center; gap:8px; }
     button { flex:1; padding:10px; font-size:.9rem; border:none; border-radius:8px; cursor:pointer; display:flex; justify-content:center; align-items:center; gap:6px; transition:background .2s; }
@@ -74,6 +80,12 @@
         </a>
       </div>
       <img id="avatar" src="sirganguly.png" alt="Avatar" />
+      <form class="question-form" id="questionForm">
+        <textarea id="questionInput" placeholder="Type your question here. You can ask computer theory, Java, Python, programming errors, or study questions."></textarea>
+        <div class="form-actions">
+          <button id="sendBtn" type="submit">Send Question</button>
+        </div>
+      </form>
       <div id="responseBox">Ask me anything about computer science…</div>
       <div id="status"></div>
       <div id="controls">
@@ -86,8 +98,12 @@
 
   <script>
     const VOICE_API = '/api/voice'; // Server proxy for Gemini + OpenAI TTS
+    const VOICE_AUDIO_API = '/api/voice-audio';
     const talkBtn = document.getElementById('talkBtn');
     const stopBtn = document.getElementById('stopBtn');
+    const sendBtn = document.getElementById('sendBtn');
+    const questionForm = document.getElementById('questionForm');
+    const questionInput = document.getElementById('questionInput');
     const statusEl = document.getElementById('status');
     const responseBox = document.getElementById('responseBox');
     const avatar = document.getElementById('avatar');
@@ -117,39 +133,77 @@
       recognition.onresult = async e => {
         stopPlayback();
         const transcript = e.results[0][0].transcript;
-        responseBox.textContent = transcript; statusEl.textContent = '🤔 Thinking…'; cleanupView2();
-        try {
-          const res = await fetch(VOICE_API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ question: transcript, voice: 'alloy' }) });
-          const data = await res.json();
-          if (!res.ok) throw new Error(data.error || 'Server error');
-          processReply(data.reply || '');
-          if (data.audioBase64) {
-            playBase64(data.audioBase64, data.audioMimeType || 'audio/mpeg');
-          } else {
-            statusEl.textContent = 'Audio is temporarily unavailable. Please read the answer on screen.';
-          }
-        } catch (err) {
-          processReply('Sorry, I could not reach the server.');
-        }
+        questionInput.value = transcript;
+        askQuestion(transcript);
       };
       recognition.onerror = e => { statusEl.textContent = 'Error: ' + e.error; cleanup(); };
       recognition.onend = () => { isListening = false; if (!isSpeaking) talkBtn.disabled = false; stopBtn.disabled = true; };
     }
 
+    async function askQuestion(question) {
+      const prompt = String(question || '').trim();
+      if (!prompt) {
+        statusEl.textContent = 'Please type or speak a question first.';
+        return;
+      }
+
+      stopPlayback();
+      cleanupView2();
+      responseBox.textContent = prompt;
+      statusEl.textContent = 'Thinking...';
+      sendBtn.disabled = true;
+      talkBtn.disabled = true;
+
+      try {
+        const res = await fetch(VOICE_API, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ question: prompt, voice: 'alloy', includeAudio: false })
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.error || 'Server error');
+
+        const reply = data.reply || 'I received your question, but I could not prepare a full answer. Please try again.';
+        processReply(reply);
+        statusEl.textContent = 'Answer ready. Preparing voice...';
+        requestVoice(reply);
+      } catch (err) {
+        processReply(`Question:
+${prompt}
+Answer:
+I could not connect to the AI server right now. Please check your internet connection and try again. If the problem continues, type a shorter question and send again.`);
+        statusEl.textContent = 'Temporary server problem. Please try again.';
+      } finally {
+        sendBtn.disabled = false;
+        if (!isListening && !isSpeaking) talkBtn.disabled = !recognition;
+      }
+    }
+
+    async function requestVoice(reply) {
+      try {
+        const res = await fetch(VOICE_AUDIO_API, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text: reply, voice: 'alloy' })
+        });
+        const data = await res.json().catch(() => ({}));
+        if (res.ok && data.audioBase64) {
+          playBase64(data.audioBase64, data.audioMimeType || 'audio/mpeg');
+        } else {
+          statusEl.textContent = 'Answer is ready. Audio is temporarily unavailable.';
+        }
+      } catch (err) {
+        statusEl.textContent = 'Answer is ready. Audio is temporarily unavailable.';
+      }
+    }
+
     function processReply(reply) {
       // detect code blocks
       const codeMatch = reply.match(/```([\s\S]*?)```/);
-      const qaMatch = reply.match(/\*\*Question:\*\*[\s\S]*?\n([\s\S]*?)\n\*\*Answer:\*\*[\s\S]*?/i);
       if (codeMatch) {
         const code = codeMatch[1].trim();
         showSnippet(code);
         responseBox.textContent = reply.replace(codeMatch[0], '').trim();
-      } else if (qaMatch) {
-        // Best effort extraction of question/answer
-        const q = (reply.match(/\*\*Question:\*\*[\s\S]*?\n([\s\S]*?)\n/i) || [,''])[1].trim();
-        const a = (reply.match(/\*\*Answer:\*\*[\s\S]*/i) || [,''])[1].replace(/\*\*Answer:\*\*/i,'').trim();
-        showQA(q, a);
-        responseBox.textContent = '';
       } else {
         responseBox.textContent = reply;
       }
@@ -200,6 +254,10 @@
     window.addEventListener('load', () => {
       responseBox.textContent = 'Hello I am Sir Ganguly. Welcome to my AI Avatar Experiment. Feel free to learn new things with me.';
     });
+    questionForm.onsubmit = event => {
+      event.preventDefault();
+      askQuestion(questionInput.value);
+    };
     talkBtn.onclick = () => { cleanup(); recognition.start(); };
     stopBtn.onclick = () => { stopPlayback(); if (isListening) recognition.stop(); };
   </script>
