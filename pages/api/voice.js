@@ -9,8 +9,9 @@ export const config = {
 };
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
-const GEMINI_VOICE_MODELS = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-flash-latest'];
+const GEMINI_VOICE_MODELS = ['gemini-2.0-flash-lite', 'gemini-2.0-flash', 'gemini-2.5-flash'];
 const GEMINI_TTS_MODEL = 'gemini-2.5-flash-preview-tts';
+const MAX_SPEECH_CHARS = 650;
 
 async function callGemini(question) {
   const apiKey = process.env.GEMINI_API_KEY;
@@ -36,7 +37,11 @@ If asked about money or financial topics, respond that this is for educational p
 End every reply with a short motivational note such as
 “Keep learning, you’re doing great!”`;
 
-  const text = `${personality}\n\nStudent question: ${question}`;
+  const text = `${personality}
+
+Keep the answer short, clear, and easy to speak in less than 45 seconds.
+
+Student question: ${question}`;
 
   let lastError = null;
   for (const modelName of GEMINI_VOICE_MODELS) {
@@ -44,7 +49,7 @@ End every reply with a short motivational note such as
       const model = genAI.getGenerativeModel({
         model: modelName,
         generationConfig: {
-          maxOutputTokens: 700,
+          maxOutputTokens: 320,
           temperature: 0.7,
         },
       });
@@ -110,9 +115,20 @@ function createWaveBuffer(pcmBuffer, sampleRate = 24000, channels = 1, bitsPerSa
   return Buffer.concat([header, pcmBuffer]);
 }
 
+function textForVoice(text) {
+  return String(text || '')
+    .replace(/```[\s\S]*?```/g, 'code example shown on screen')
+    .replace(/[*_`#>~|{}[\]\\]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, MAX_SPEECH_CHARS);
+}
+
 async function callGeminiTTS(text) {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) throw new Error('GEMINI_API_KEY not configured');
+  const speechText = textForVoice(text);
+  if (!speechText) throw new Error('No text available for Gemini TTS');
 
   const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_TTS_MODEL}:generateContent`, {
     method: 'POST',
@@ -123,7 +139,7 @@ async function callGeminiTTS(text) {
     body: JSON.stringify({
       contents: [{
         parts: [{
-          text: `Say in a calm, friendly teacher voice: ${text}`,
+          text: `Say in a calm, friendly teacher voice: ${speechText}`,
         }],
       }],
       generationConfig: {
@@ -168,17 +184,17 @@ export default async function handler(req, res) {
     let audioBase64 = null;
     let audioMimeType = null;
     try {
-      const audio = await callOpenAItTS(reply, voice || 'verse');
+      const audio = await callGeminiTTS(reply);
       audioBase64 = audio.audioBase64;
       audioMimeType = audio.audioMimeType;
     } catch (ttsErr) {
-      console.error('OpenAI TTS failed, trying Gemini TTS:', ttsErr);
+      console.error('Gemini TTS failed, trying OpenAI TTS:', ttsErr);
       try {
-        const audio = await callGeminiTTS(reply);
+        const audio = await callOpenAItTS(textForVoice(reply), voice || 'verse');
         audioBase64 = audio.audioBase64;
         audioMimeType = audio.audioMimeType;
-      } catch (geminiTtsErr) {
-        console.error('Gemini TTS failed:', geminiTtsErr);
+      } catch (openAiTtsErr) {
+        console.error('OpenAI TTS failed:', openAiTtsErr);
       }
     }
 
