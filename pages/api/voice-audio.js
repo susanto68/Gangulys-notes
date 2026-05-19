@@ -9,7 +9,7 @@ export const config = {
 };
 
 const GEMINI_TTS_MODEL = 'gemini-2.5-flash-preview-tts';
-const MAX_SPEECH_CHARS = 180;
+const MAX_SPEECH_CHARS = 900;
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -48,6 +48,47 @@ function textForVoice(text) {
   return `${preview}. The full answer is written on the screen.`;
 }
 
+function localSpokenAnswer(question) {
+  const q = String(question || '').toLowerCase();
+  if (/\bpython\b/.test(q) && /\b(add|sum)\b/.test(q) && /\bdigits?\b/.test(q)) {
+    return 'In Python, add all digits of a number by taking the last digit with modulus 10, adding it to a sum, and removing that digit with integer division by 10. The full program is written on the screen.';
+  }
+  if (/\brecursion\b/.test(q) && /\bjava\b/.test(q)) {
+    return 'Recursion in Java means a method calls itself. It needs a base condition to stop, and it is useful for problems like factorial and Fibonacci. The full explanation and Java example are written on the screen.';
+  }
+  if (/\brecursion\b/.test(q)) {
+    return 'Recursion means a function or method calls itself to solve smaller parts of the same problem.';
+  }
+  if (/artificial\s+intelligen/.test(q) || /\bai\b/.test(q)) {
+    return 'Artificial Intelligence is a branch of computer science that helps machines learn, reason, solve problems, and make decisions like humans.';
+  }
+  if (/selection\s*sort/.test(q) && /\bjava\b/.test(q)) {
+    return 'Selection sort in Java repeatedly finds the smallest element from the unsorted part of the array and swaps it into the correct position. The full explanation and Java program are written on the screen.';
+  }
+  if (/selection\s*sort/.test(q)) {
+    return 'Selection sort repeatedly selects the smallest element from the unsorted part and places it in the correct position.';
+  }
+  if (/bubble\s*sort/.test(q) && /\bjava\b/.test(q)) {
+    return 'Bubble sort in Java compares adjacent array elements and swaps them when they are in the wrong order. The full explanation and Java program are written on the screen.';
+  }
+  if (/bubble\s*sort/.test(q)) {
+    return 'Bubble sort compares adjacent elements and swaps them until the list becomes sorted. It is simple to learn, but slow for large data.';
+  }
+  if (/\bram\b|random access memory/.test(q)) {
+    return 'RAM stands for Random Access Memory. It is the temporary working memory of a computer. It helps programs run quickly, but its data is lost when power is switched off.';
+  }
+  if (/\brom\b|read only memory/.test(q)) {
+    return 'ROM stands for Read Only Memory. It stores permanent startup instructions for the computer and keeps its data even when power is switched off.';
+  }
+  if (/\bcpu\b|processor/.test(q)) {
+    return 'CPU stands for Central Processing Unit. It is the main processing part of the computer and is often called the brain of the computer.';
+  }
+  if (/\balgorithm\b/.test(q)) {
+    return 'An algorithm is a step-by-step method for solving a problem. It helps us plan the logic before writing a program.';
+  }
+  return 'I have written the answer on the screen. Read it carefully, and ask again with the topic name if you want a more detailed explanation.';
+}
+
 async function quickAnswerForVoice(question) {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) throw new Error('GEMINI_API_KEY not configured');
@@ -73,12 +114,20 @@ Student question: ${question}`);
 }
 
 async function quickAnswerForVoiceWithRetry(question) {
+  const localAnswer = localSpokenAnswer(question);
+  if (!/answer on the screen/i.test(localAnswer)) return localAnswer;
+
   try {
     return await quickAnswerForVoice(question);
   } catch (error) {
     console.warn('Quick spoken answer failed, retrying:', error.message);
     await sleep(1200);
-    return quickAnswerForVoice(question);
+    try {
+      return await quickAnswerForVoice(question);
+    } catch (retryError) {
+      console.warn('Quick spoken answer retry failed, using local spoken answer:', retryError.message);
+      return localSpokenAnswer(question);
+    }
   }
 }
 
@@ -143,10 +192,11 @@ async function callOpenAItTS(text, voice = 'verse') {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      model: 'gpt-4o-mini-tts',
+      model: 'tts-1',
       voice: voice || 'verse',
       input: textForVoice(text),
       response_format: 'mp3',
+      speed: 1.03,
     }),
   });
 
