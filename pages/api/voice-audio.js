@@ -9,7 +9,7 @@ export const config = {
 };
 
 const GEMINI_TTS_MODEL = 'gemini-2.5-flash-preview-tts';
-const MAX_SPEECH_CHARS = 650;
+const MAX_SPEECH_CHARS = 280;
 
 function createWaveBuffer(pcmBuffer, sampleRate = 24000, channels = 1, bitsPerSample = 16) {
   const header = Buffer.alloc(44);
@@ -34,12 +34,15 @@ function createWaveBuffer(pcmBuffer, sampleRate = 24000, channels = 1, bitsPerSa
 }
 
 function textForVoice(text) {
-  return String(text || '')
+  const cleaned = String(text || '')
     .replace(/```[\s\S]*?```/g, 'code example shown on screen')
     .replace(/[*_`#>~|{}[\]\\]/g, ' ')
     .replace(/\s+/g, ' ')
-    .trim()
-    .slice(0, MAX_SPEECH_CHARS);
+    .trim();
+
+  if (cleaned.length <= MAX_SPEECH_CHARS) return cleaned;
+  const preview = cleaned.slice(0, MAX_SPEECH_CHARS).replace(/\s+\S*$/, '');
+  return `${preview}. The full answer is written on the screen.`;
 }
 
 async function callGeminiTTS(text) {

@@ -165,7 +165,7 @@
 
         const reply = data.reply || 'I received your question, but I could not prepare a full answer. Please try again.';
         processReply(reply);
-        statusEl.textContent = 'Answer ready. Preparing voice...';
+        statusEl.textContent = 'Complete answer is ready. Preparing voice...';
         requestVoice(reply);
       } catch (err) {
         processReply(`Question:
@@ -190,10 +190,10 @@ I could not connect to the AI server right now. Please check your internet conne
         if (res.ok && data.audioBase64) {
           playBase64(data.audioBase64, data.audioMimeType || 'audio/mpeg');
         } else {
-          statusEl.textContent = 'Answer is ready. Audio is temporarily unavailable.';
+          statusEl.textContent = 'Complete answer is ready. Audio is temporarily unavailable.';
         }
       } catch (err) {
-        statusEl.textContent = 'Answer is ready. Audio is temporarily unavailable.';
+        statusEl.textContent = 'Complete answer is ready. Audio is temporarily unavailable.';
       }
     }
 

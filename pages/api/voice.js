@@ -9,9 +9,19 @@ export const config = {
 };
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
-const GEMINI_VOICE_MODELS = ['gemini-2.0-flash', 'gemini-2.5-flash', 'gemini-2.0-flash-lite'];
+const GEMINI_VOICE_MODELS = ['gemini-2.5-flash', 'gemini-flash-latest'];
 const GEMINI_TTS_MODEL = 'gemini-2.5-flash-preview-tts';
-const MAX_SPEECH_CHARS = 650;
+const MAX_SPEECH_CHARS = 420;
+
+function wantsDetailedAnswer(question) {
+  return /\b(detail|detailed|explain fully|briefly explain|step by step|difference between|compare|example|examples|program|code|why|how)\b/i.test(String(question || ''));
+}
+
+function isCompleteEnough(reply) {
+  const text = String(reply || '').trim();
+  if (text.length < 90) return false;
+  return /[.!?)]$/.test(text);
+}
 
 function fallbackAnswer(question) {
   return `Question:
@@ -36,14 +46,19 @@ For conceptual questions, give a direct detailed answer with definitions, key po
 If a question is off-topic, politely say:
 "That's a great question, but let's focus on computer applications as per the ICSE curriculum."
 
-Always be positive, humble, and excited to teach.
+Begin directly with the answer. Do not start with long greetings like "Hello there" or "fantastic question".
+Always be positive, humble, and encouraging.
 If asked about money or financial topics, respond that this is for educational purposes only and return to computer science.
 End every reply with a short motivational note such as
 “Keep learning, you’re doing great!”`;
 
+  const answerDepth = wantsDetailedAnswer(question)
+    ? 'The student is asking for explanation. Give a complete detailed answer with simple examples or steps when useful.'
+    : 'Give a short but complete answer in 4 to 7 clear sentences. Do not stop in the middle of a sentence. Do not make it too long unless the student asks for detail.';
+
   const text = `${personality}
 
-Give a detailed, accurate, student-friendly answer. Use simple language, examples, and steps when useful.
+${answerDepth}
 
 Student question: ${question}`;
 
@@ -53,13 +68,25 @@ Student question: ${question}`;
       const model = genAI.getGenerativeModel({
         model: modelName,
         generationConfig: {
-          maxOutputTokens: 900,
+          maxOutputTokens: wantsDetailedAnswer(question) ? 1200 : 420,
           temperature: 0.7,
         },
       });
       const result = await model.generateContent(text);
       const reply = result.response.text();
-      if (reply && reply.trim()) return reply.trim();
+      if (isCompleteEnough(reply)) return reply.trim();
+      if (reply && reply.trim()) {
+        const continuation = await model.generateContent(`${text}
+
+Your previous answer was incomplete:
+${reply}
+
+Now provide the complete final answer only.`);
+        const completedReply = continuation.response.text();
+        if (isCompleteEnough(completedReply)) return completedReply.trim();
+      }
+      lastError = new Error(`Incomplete Gemini reply from ${modelName}`);
+      console.warn(lastError.message);
     } catch (error) {
       lastError = error;
       console.warn(`Gemini voice model failed: ${modelName}`, error.message);
