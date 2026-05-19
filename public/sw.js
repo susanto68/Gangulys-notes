@@ -1,9 +1,9 @@
 // Service Worker for Avatar AI Assistant PWA
 // Created by Susanto Ganguly (Sir Ganguly)
 
-const CACHE_NAME = 'sirganguly-v20260519-complete-answer-fast-audio';
-const STATIC_CACHE = 'sirganguly-static-v20260519-complete-answer-fast-audio';
-const DYNAMIC_CACHE = 'sirganguly-dynamic-v20260519-complete-answer-fast-audio';
+const CACHE_NAME = 'sirganguly-v20260519-parallel-audio-start';
+const STATIC_CACHE = 'sirganguly-static-v20260519-parallel-audio-start';
+const DYNAMIC_CACHE = 'sirganguly-dynamic-v20260519-parallel-audio-start';
 
 // Files to cache immediately
 const STATIC_FILES = [

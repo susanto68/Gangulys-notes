@@ -112,6 +112,10 @@
     let recognition, isListening = false;
     let isSpeaking = false;
     let audio = null;
+    let currentRequestId = 0;
+    const answerReady = {};
+    const pendingAudio = {};
+    const quickAudioFailed = {};
 
     function initRecognition() {
       const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -150,9 +154,11 @@
       stopPlayback();
       cleanupView2();
       responseBox.textContent = prompt;
-      statusEl.textContent = 'Thinking...';
+      statusEl.textContent = 'Thinking... preparing voice too.';
       sendBtn.disabled = true;
       talkBtn.disabled = true;
+      const requestId = ++currentRequestId;
+      requestQuestionVoice(prompt, requestId);
 
       try {
         const res = await fetch(VOICE_API, {
@@ -165,8 +171,16 @@
 
         const reply = data.reply || 'I received your question, but I could not prepare a full answer. Please try again.';
         processReply(reply);
-        statusEl.textContent = 'Complete answer is ready. Preparing voice...';
-        requestVoice(reply);
+        answerReady[requestId] = true;
+        if (pendingAudio[requestId]) {
+          playBase64(pendingAudio[requestId].audioBase64, pendingAudio[requestId].audioMimeType);
+          delete pendingAudio[requestId];
+        } else if (quickAudioFailed[requestId]) {
+          statusEl.textContent = 'Complete answer is ready. Preparing voice...';
+          requestAnswerVoice(reply, requestId);
+        } else {
+          statusEl.textContent = 'Complete answer is ready. Voice is preparing...';
+        }
       } catch (err) {
         processReply(`Question:
 ${prompt}
@@ -179,7 +193,41 @@ I could not connect to the AI server right now. Please check your internet conne
       }
     }
 
-    async function requestVoice(reply) {
+    async function requestQuestionVoice(question, requestId) {
+      try {
+        const res = await fetch(VOICE_AUDIO_API, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ question, voice: 'alloy' })
+        });
+        const data = await res.json().catch(() => ({}));
+        if (requestId !== currentRequestId) return;
+        if (res.ok && data.audioBase64) {
+          if (answerReady[requestId]) {
+            playBase64(data.audioBase64, data.audioMimeType || 'audio/mpeg');
+          } else {
+            pendingAudio[requestId] = {
+              audioBase64: data.audioBase64,
+              audioMimeType: data.audioMimeType || 'audio/mpeg'
+            };
+            statusEl.textContent = 'Thinking... voice is ready.';
+          }
+        } else {
+          quickAudioFailed[requestId] = true;
+          if (answerReady[requestId]) {
+            requestAnswerVoice(responseBox.textContent, requestId);
+          }
+        }
+      } catch (err) {
+        if (requestId !== currentRequestId) return;
+        quickAudioFailed[requestId] = true;
+        if (answerReady[requestId]) {
+          requestAnswerVoice(responseBox.textContent, requestId);
+        }
+      }
+    }
+
+    async function requestAnswerVoice(reply, requestId) {
       try {
         const res = await fetch(VOICE_AUDIO_API, {
           method: 'POST',
@@ -187,13 +235,16 @@ I could not connect to the AI server right now. Please check your internet conne
           body: JSON.stringify({ text: reply, voice: 'alloy' })
         });
         const data = await res.json().catch(() => ({}));
+        if (requestId !== currentRequestId) return;
         if (res.ok && data.audioBase64) {
           playBase64(data.audioBase64, data.audioMimeType || 'audio/mpeg');
         } else {
           statusEl.textContent = 'Complete answer is ready. Audio is temporarily unavailable.';
         }
       } catch (err) {
-        statusEl.textContent = 'Complete answer is ready. Audio is temporarily unavailable.';
+        if (requestId === currentRequestId) {
+          statusEl.textContent = 'Complete answer is ready. Audio is temporarily unavailable.';
+        }
       }
     }
 

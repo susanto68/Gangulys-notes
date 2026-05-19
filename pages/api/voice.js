@@ -11,7 +11,7 @@ export const config = {
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 const GEMINI_VOICE_MODELS = ['gemini-2.5-flash', 'gemini-flash-latest'];
 const GEMINI_TTS_MODEL = 'gemini-2.5-flash-preview-tts';
-const MAX_SPEECH_CHARS = 420;
+const MAX_SPEECH_CHARS = 180;
 
 function wantsDetailedAnswer(question) {
   return /\b(detail|detailed|explain fully|briefly explain|step by step|difference between|compare|example|examples|program|code|why|how)\b/i.test(String(question || ''));

@@ -9,7 +9,10 @@ export const config = {
 };
 
 const GEMINI_TTS_MODEL = 'gemini-2.5-flash-preview-tts';
-const MAX_SPEECH_CHARS = 280;
+const MAX_SPEECH_CHARS = 180;
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
+
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 function createWaveBuffer(pcmBuffer, sampleRate = 24000, channels = 1, bitsPerSample = 16) {
   const header = Buffer.alloc(44);
@@ -43,6 +46,50 @@ function textForVoice(text) {
   if (cleaned.length <= MAX_SPEECH_CHARS) return cleaned;
   const preview = cleaned.slice(0, MAX_SPEECH_CHARS).replace(/\s+\S*$/, '');
   return `${preview}. The full answer is written on the screen.`;
+}
+
+async function quickAnswerForVoice(question) {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) throw new Error('GEMINI_API_KEY not configured');
+
+  const model = genAI.getGenerativeModel({
+    model: 'gemini-2.5-flash',
+    generationConfig: {
+      maxOutputTokens: 140,
+      temperature: 0.5,
+    },
+  });
+
+  const result = await model.generateContent(`You are Sir Ganguly, a kind computer teacher.
+Give a short, complete spoken answer in 2 or 3 simple sentences.
+Do not use markdown, headings, or code blocks.
+End naturally.
+
+Student question: ${question}`);
+
+  const reply = result.response.text().trim();
+  if (!reply) throw new Error('No quick answer returned');
+  return reply;
+}
+
+async function quickAnswerForVoiceWithRetry(question) {
+  try {
+    return await quickAnswerForVoice(question);
+  } catch (error) {
+    console.warn('Quick spoken answer failed, retrying:', error.message);
+    await sleep(1200);
+    return quickAnswerForVoice(question);
+  }
+}
+
+async function callGeminiTTSWithRetry(text) {
+  try {
+    return await callGeminiTTS(text);
+  } catch (error) {
+    console.warn('Gemini TTS failed, retrying:', error.message);
+    await sleep(1200);
+    return callGeminiTTS(text);
+  }
 }
 
 async function callGeminiTTS(text) {
@@ -118,17 +165,23 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { text, voice } = req.body || {};
-    if (!text || typeof text !== 'string') {
-      return res.status(400).json({ error: 'Missing text' });
+    const { text, question, voice } = req.body || {};
+    let speechSource = typeof text === 'string' ? text.trim() : '';
+
+    if (!speechSource && typeof question === 'string' && question.trim()) {
+      speechSource = await quickAnswerForVoiceWithRetry(question.trim());
+    }
+
+    if (!speechSource) {
+      return res.status(400).json({ error: 'Missing text or question' });
     }
 
     try {
-      const audio = await callGeminiTTS(text);
+      const audio = await callOpenAItTS(speechSource, voice || 'verse');
       return res.status(200).json(audio);
-    } catch (geminiErr) {
-      console.error('Gemini audio failed, trying OpenAI:', geminiErr);
-      const audio = await callOpenAItTS(text, voice || 'verse');
+    } catch (openAiErr) {
+      console.error('OpenAI audio failed, trying Gemini:', openAiErr);
+      const audio = await callGeminiTTSWithRetry(speechSource);
       return res.status(200).json(audio);
     }
   } catch (error) {
