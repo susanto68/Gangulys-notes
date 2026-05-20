@@ -453,6 +453,9 @@
         renderAnswer(nextAnswer, data.code || data.part2 || '', data.language || '');
         questionInput.value = '';
         setStatus('Answer ready.', 'Online');
+        if (state.code) {
+          setTimeout(() => codeCard.scrollIntoView({ behavior: 'smooth', block: 'start' }), 350);
+        }
         requestAnimationFrame(() => speakText(nextAnswer));
       } catch (error) {
         const message = error.message || FRIENDLY_ERROR;

@@ -1,8 +1,9 @@
 const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models'
 const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-flash'
 const OPENAI_MODEL = process.env.OPENAI_MODEL || 'gpt-4o-mini'
-const AI_TIMEOUT_MS = 18000
+const AI_TIMEOUT_MS = 30000
 const MAX_HISTORY_ITEMS = 6
+const MAX_OUTPUT_TOKENS = 4096
 
 const sessionHistory = new Map()
 
@@ -13,8 +14,23 @@ If the student asks about selection sort, answer selection sort only. If the stu
 Keep normal answers short to medium and complete. Give a detailed answer only when the student asks for details.
 For programming questions, give a clear explanation first, then one clean working program in a fenced code block.
 Use the programming language requested by the student. If no language is requested, use Java.
+For board exam program questions, always provide the full required class exactly as asked, including constructor, all specified methods, and main().
+When a method is specified as recursive, implement it recursively exactly. For binary-number digit questions stored as an integer, count digits using k % 10 and recurse with k / 10.
+Do not stop in the middle of a program. If code is needed, the fenced code block must be complete and closed.
 Keep code comments very few. Do not add generic filler or meta instructions.
 Never return a placeholder answer.`
+
+function isProgrammingQuestion(question) {
+  return /\b(program|class|java|python|constructor|void|int\s+\w+|main\(\)|recursive|recursion|method|function|algorithm|code)\b/i.test(question)
+}
+
+function prepareQuestionForModel(question) {
+  if (!isProgrammingQuestion(question)) {
+    return question
+  }
+
+  return `Student question:\n${question}\n\nProgramming answer instructions:\nReturn one short sentence, then one complete fenced code block.\nDo not greet the student.\nDo not give a long explanation before the code.\nThe code must include every class, data member, constructor, method, and main() requested in the question.\nIf the question asks for recursion, use actual recursion in that method.\nClose the fenced code block.`
+}
 
 function getGeminiKey() {
   return process.env.GEMINI_API_KEY || process.env.GOOGLE_GEMINI_API_KEY || process.env.GOOGLE_API_KEY
@@ -94,11 +110,11 @@ async function askGemini(question, history) {
         systemInstruction: {
           parts: [{ text: TEACHER_PROMPT }]
         },
-        contents: buildGeminiContents(question, history),
+        contents: buildGeminiContents(prepareQuestionForModel(question), history),
         generationConfig: {
           temperature: 0.35,
           topP: 0.9,
-          maxOutputTokens: 1200
+          maxOutputTokens: MAX_OUTPUT_TOKENS
         }
       })
     })
@@ -141,9 +157,9 @@ async function askOpenAI(question, history) {
       signal: controller.signal,
       body: JSON.stringify({
         model: OPENAI_MODEL,
-        messages: buildOpenAiMessages(question, history),
+        messages: buildOpenAiMessages(prepareQuestionForModel(question), history),
         temperature: 0.35,
-        max_tokens: 1200
+        max_tokens: MAX_OUTPUT_TOKENS
       })
     })
 

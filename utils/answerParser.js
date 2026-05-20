@@ -1,4 +1,5 @@
 const CODE_BLOCK_PATTERN = /```([a-zA-Z0-9+#.-]*)\s*\n?([\s\S]*?)```/
+const OPEN_CODE_BLOCK_PATTERN = /```([a-zA-Z0-9+#.-]*)\s*\n?([\s\S]*)$/
 
 function removeCodeCommentNoise(code, language) {
   const lang = String(language || '').toLowerCase()
@@ -28,6 +29,22 @@ export function splitAnswerAndCode(rawAnswer) {
   const match = answer.match(CODE_BLOCK_PATTERN)
 
   if (!match) {
+    const openMatch = answer.match(OPEN_CODE_BLOCK_PATTERN)
+    if (openMatch) {
+      const language = (openMatch[1] || '').trim().toLowerCase()
+      const code = removeCodeCommentNoise((openMatch[2] || '').trim(), language)
+      const explanation = answer
+        .replace(openMatch[0], '')
+        .replace(/\n{3,}/g, '\n\n')
+        .trim()
+
+      return {
+        answer: explanation || 'Here is the complete program:',
+        code,
+        language
+      }
+    }
+
     return {
       answer,
       code: '',

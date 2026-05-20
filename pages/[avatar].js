@@ -131,7 +131,11 @@ export default function AvatarChat() {
       setQuestion('')
 
       requestAnimationFrame(() => {
-        answerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+        if (nextCode) {
+          document.getElementById('codeSnippetPanel')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        } else {
+          answerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+        }
         readAnswer(nextAnswer)
       })
     } catch (requestError) {
@@ -303,7 +307,7 @@ export default function AvatarChat() {
             )}
           </div>
 
-          <aside className="rounded-[28px] border border-white/70 bg-white/78 p-4 shadow-2xl shadow-blue-900/10 backdrop-blur-xl sm:p-6">
+          <aside id="codeSnippetPanel" className="rounded-[28px] border border-white/70 bg-white/78 p-4 shadow-2xl shadow-blue-900/10 backdrop-blur-xl sm:p-6">
             <h2 className="text-2xl font-black text-blue-900">Code Snippet</h2>
             <p className="mt-2 text-sm font-semibold text-slate-500">Programming answers appear here separately.</p>
             <div className="mt-4">

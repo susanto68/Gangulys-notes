@@ -32,16 +32,19 @@ export default async function handler(req, res) {
     });
 
     const parsed = splitAnswerAndCode(result.answer);
+    const answer = parsed.code && parsed.answer.length < 60
+      ? `Here is the complete ${parsed.language ? parsed.language.toUpperCase() : ''} program. The full code is shown in the Code Snippet box.`
+      : parsed.answer;
 
     return res.status(200).json({
       success: true,
-      answer: parsed.answer,
+      answer,
       code: parsed.code,
       language: parsed.language,
       provider: result.provider,
-      part1: parsed.answer,
+      part1: answer,
       part2: parsed.code,
-      reply: parsed.answer
+      reply: answer
     });
   } catch (error) {
     const status = error.statusCode && error.statusCode < 500 ? error.statusCode : 503;
