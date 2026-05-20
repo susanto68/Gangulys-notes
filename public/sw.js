@@ -1,9 +1,9 @@
 // Service Worker for Avatar AI Assistant PWA
 // Created by Susanto Ganguly (Sir Ganguly)
 
-const CACHE_NAME = 'sirganguly-v20260520-clean-avatar';
-const STATIC_CACHE = 'sirganguly-static-v20260520-clean-avatar';
-const DYNAMIC_CACHE = 'sirganguly-dynamic-v20260520-clean-avatar';
+const CACHE_NAME = 'sirganguly-v20260520-avatar-route-fix';
+const STATIC_CACHE = 'sirganguly-static-v20260520-avatar-route-fix';
+const DYNAMIC_CACHE = 'sirganguly-dynamic-v20260520-avatar-route-fix';
 
 // Files to cache immediately
 const STATIC_FILES = [
@@ -88,6 +88,19 @@ self.addEventListener('fetch', (event) => {
 
   // Skip API calls (they should always go to network)
   if (url.pathname.startsWith('/api/')) {
+    return;
+  }
+
+  // Next.js avatar pages must never be replaced by the generic offline page.
+  // If an older PWA cache is present, force a live network navigation for the
+  // teacher route and old AI entry points so students reach the real assistant.
+  if (
+    request.mode === 'navigate' &&
+    (url.pathname === '/computer-teacher' ||
+      url.pathname === '/ai-voice-assistant.html' ||
+      url.pathname === '/ai.html')
+  ) {
+    event.respondWith(fetch(request, { cache: 'reload' }));
     return;
   }
 

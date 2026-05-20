@@ -172,17 +172,23 @@
     </div>
     
     <script>
-        // Check if we're back online
-        window.addEventListener('online', () => {
-            window.location.reload();
-        });
-        
-        // Auto-retry every 10 seconds
-        setInterval(() => {
-            if (navigator.onLine) {
-                window.location.reload();
+        function recoverIfOnline() {
+            if (!navigator.onLine) return;
+
+            const target = sessionStorage.getItem('sirgangulyLastNavigationTarget') || '/';
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistrations()
+                    .then(registrations => Promise.all(registrations.map(registration => registration.update())))
+                    .finally(() => window.location.replace(target));
+                return;
             }
-        }, 10000);
+
+            window.location.replace(target);
+        }
+
+        window.addEventListener('online', recoverIfOnline);
+        setInterval(recoverIfOnline, 10000);
+        setTimeout(recoverIfOnline, 1200);
     </script>
 </body>
 </html>
