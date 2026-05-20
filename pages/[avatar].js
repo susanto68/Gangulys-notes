@@ -108,6 +108,8 @@ export default function AvatarChat() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           question: cleanQuestion,
+          prompt: cleanQuestion,
+          message: cleanQuestion,
           avatarType,
           sessionId
         })

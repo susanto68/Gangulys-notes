@@ -1,42 +1,54 @@
-import { readFileSync } from 'fs';
-import { join } from 'path';
-import OpenAI from 'openai';
+import { askAI } from '../services/aiService.js';
+import { splitAnswerAndCode } from '../utils/answerParser.js';
 
-const openai = new OpenAI({
-  apiKey: process.env.GEMINI_API_KEY,
-  baseURL: 'https://generativelanguage.googleapis.com/v1beta/openai'
-});
+const FRIENDLY_ERROR = 'AI service is temporarily unavailable. Please try again.';
 
-// Load once at cold start from the project root api/ folder
-const SYSTEM_PROMPT = readFileSync(
-  join(process.cwd(), 'api', 'system_prompt.txt'),
-  'utf8'
-).trim();
+function getQuestion(body) {
+  return String(body?.question || body?.prompt || body?.message || '').trim();
+}
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
+    return res.status(405).json({
+      success: false,
+      error: 'Method not allowed'
+    });
   }
 
-  const { message } = req.body;
-  if (!message) {
-    return res.status(400).json({ error: 'No message provided' });
+  const question = getQuestion(req.body || {});
+
+  if (!question) {
+    return res.status(400).json({
+      success: false,
+      error: 'Please type or say a question first.'
+    });
   }
 
   try {
-    const resp = await openai.chat.completions.create({
-      model: 'gemini-2.5-flash',
-      messages: [
-        { role: 'system', content: SYSTEM_PROMPT },
-        { role: 'user', content: message.trim() }
-      ],
-      temperature: 0.6,
-      max_tokens: 1100
+    const result = await askAI({
+      question,
+      avatarType: req.body?.avatarType || 'computer-teacher',
+      sessionId: req.body?.sessionId || ''
     });
 
-    res.status(200).json({ reply: resp.choices[0].message.content.trim() });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'AI service error' });
+    const parsed = splitAnswerAndCode(result.answer);
+
+    return res.status(200).json({
+      success: true,
+      answer: parsed.answer,
+      code: parsed.code,
+      language: parsed.language,
+      provider: result.provider,
+      part1: parsed.answer,
+      part2: parsed.code,
+      reply: parsed.answer
+    });
+  } catch (error) {
+    const status = error.statusCode && error.statusCode < 500 ? error.statusCode : 503;
+
+    return res.status(status).json({
+      success: false,
+      error: status === 503 ? FRIENDLY_ERROR : error.message
+    });
   }
 }
