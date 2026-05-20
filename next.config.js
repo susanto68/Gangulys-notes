@@ -29,6 +29,11 @@ const nextConfig = {
   async redirects() {
     return [
       {
+        source: '/computer-teacher',
+        destination: '/ai-voice-assistant.html',
+        permanent: false,
+      },
+      {
         source: '/',
         destination: '/index.html',
         permanent: false,

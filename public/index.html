@@ -310,7 +310,7 @@
     <main class="container">
          
         <div class="class-buttons">
-            <a href="/computer-teacher?v=20260520-avatar-route-fix" class="class-btn featured-ai" style="background: linear-gradient(to bottom, #7dd3fc, #1e3a8a); box-shadow: 0 6px 18px rgba(30,58,138,0.35);">
+            <a href="/ai-voice-assistant.html?v=20260520-static-avatar" class="class-btn featured-ai" style="background: linear-gradient(to bottom, #7dd3fc, #1e3a8a); box-shadow: 0 6px 18px rgba(30,58,138,0.35);">
                 <img src="assets/icons/icon-72x72.png" alt="AI" class="class-btn-image" />
                 <span class="class-btn-label">Talk to my AI Avatar</span>
             </a>
@@ -461,7 +461,7 @@
  <!-- PWA Service Worker Registration -->
  <script>
      document.addEventListener('click', event => {
-         const aiLink = event.target.closest('a[href^="/computer-teacher"]');
+         const aiLink = event.target.closest('a[href*="ai-voice-assistant.html"], a[href^="/computer-teacher"]');
          if (aiLink) {
              sessionStorage.setItem('sirgangulyLastNavigationTarget', aiLink.getAttribute('href'));
          }

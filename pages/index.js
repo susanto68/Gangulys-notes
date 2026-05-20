@@ -497,7 +497,7 @@ export default function Home() {
             {/* Quick Links to Portal and Java Lab */}
             <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 px-4">
               <Link
-                href="/computer-teacher?v=20260520-avatar-route-fix"
+                href="/ai-voice-assistant.html?v=20260520-static-avatar"
                 className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-semibold text-white shadow-lg bg-gradient-to-b from-sky-400 to-indigo-900 hover:from-sky-300 hover:to-indigo-800 transition"
               >
                 <img src="/assets/icons/icon-72x72.png" alt="AI" className="w-7 h-7 rounded" />
