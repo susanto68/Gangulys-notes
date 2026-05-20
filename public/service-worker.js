@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sir-ganguly-v4';
+const CACHE_NAME = 'sir-ganguly-v5-clean-avatar';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -19,7 +19,6 @@ const urlsToCache = [
   '/Java_program.html',
   '/basic-java-programs.html',
   '/videos.html',
-  '/ai.html',
   '/Motivational_Words.html',
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css'
 ];

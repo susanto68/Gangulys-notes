@@ -1,525 +1,321 @@
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
 import { AVATAR_CONFIG } from '../lib/avatars'
-import { initSynth, speakText, stopSpeaking, pauseSpeaking, resumeSpeaking } from '../lib/speech'
 import { useSpeechRecognition } from '../hooks/useSpeechRecognition'
-import { usePWA } from '../hooks/usePWA'
-import { generateContentSuggestions } from '../lib/contentSuggestions'
 import AvatarDisplay from '../components/ChatInterface/AvatarDisplay'
-import TextDisplay from '../components/ChatInterface/TextDisplay'
 import CodeBox from '../components/ChatInterface/CodeBox'
-import ArticleCarousel from '../components/ChatInterface/ArticleCarousel'
-import YouTubeVideos from '../components/ChatInterface/YouTubeVideos'
-import VoiceFallback from '../components/VoiceControls/VoiceFallback'
-import BackButton from '../components/Navigation/BackButton'
-import InstallPrompt from '../components/PWA/InstallPrompt'
-import { ERROR_MESSAGES, UI_TEXT, getAvatarGreeting } from '../context/constant.js'
-import ErrorBoundary from '../components/ErrorBoundary/ErrorBoundary'
-import TextDisplayFallback from '../components/ChatInterface/TextDisplayFallback'
+import { speakText, stopSpeaking, isSpeechSupported } from '../services/speechService'
+
+const FRIENDLY_ERROR = 'AI service is temporarily unavailable. Please try again.'
+const INITIAL_MESSAGE = 'Hello, I am Sir Ganguly. Ask me anything about computer science.'
+
+function TeacherButton({ children, onClick, disabled, variant = 'primary', type = 'button', className = '' }) {
+  const variants = {
+    primary: 'from-emerald-400 via-green-500 to-teal-700 text-white shadow-green-900/30',
+    blue: 'from-sky-400 via-blue-600 to-indigo-800 text-white shadow-blue-900/30',
+    purple: 'from-violet-400 via-purple-500 to-indigo-700 text-white shadow-purple-900/30',
+    danger: 'from-rose-300 via-rose-500 to-red-700 text-white shadow-red-900/30',
+    dark: 'from-slate-500 via-slate-700 to-slate-900 text-white shadow-slate-900/30'
+  }
+
+  return (
+    <button
+      type={type}
+      onClick={onClick}
+      disabled={disabled}
+      className={`w-full rounded-2xl bg-gradient-to-b ${variants[variant]} px-5 py-4 text-base font-extrabold shadow-lg transition duration-200 hover:-translate-y-0.5 hover:shadow-xl active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60 ${className}`}
+    >
+      {children}
+    </button>
+  )
+}
 
 export default function AvatarChat() {
   const router = useRouter()
   const { avatar } = router.query
-  
-  // PWA Hook
-  const { isPWASupported, isInstalled, updateAvailable, updateApp, isOnline } = usePWA()
-  
-  // Speech Recognition Hook
-  const { 
-    startListening, 
-    stopListening, 
-    isListening, 
-    transcript, 
+  const avatarType = typeof avatar === 'string' ? avatar : 'computer-teacher'
+  const avatarConfig = AVATAR_CONFIG[avatarType] || AVATAR_CONFIG['computer-teacher']
+  const sessionId = useMemo(() => `teacher-${Date.now()}-${Math.random().toString(36).slice(2)}`, [])
+  const answerRef = useRef(null)
+  const [question, setQuestion] = useState('')
+  const [answer, setAnswer] = useState(INITIAL_MESSAGE)
+  const [code, setCode] = useState('')
+  const [language, setLanguage] = useState('')
+  const [status, setStatus] = useState('Ready.')
+  const [isThinking, setIsThinking] = useState(false)
+  const [isSpeaking, setIsSpeaking] = useState(false)
+  const [isMuted, setIsMuted] = useState(false)
+  const [speechAvailable, setSpeechAvailable] = useState(true)
+  const [error, setError] = useState('')
+
+  const {
+    startListening,
+    stopListening,
+    isListening,
+    transcript,
     resetTranscript,
+    isSupported: recognitionSupported,
     error: speechError,
-    clearError: clearSpeechError,
-    permissionStatus,
-    checkPermission,
-    isSupported: recognitionSupported
+    clearError: clearSpeechError
   } = useSpeechRecognition()
 
-  // State variables
-  const [currentText, setCurrentText] = useState('')
-  const [isSpeaking, setIsSpeaking] = useState(false)
-  const [isPaused, setIsPaused] = useState(false)
-  const [isProcessing, setApiProcessing] = useState(false)
-  const [apiError, setApiError] = useState(null)
-  const [codeContent, setCodeContent] = useState('')
-  const [relatedArticles, setRelatedArticles] = useState([])
-  const [relatedVideos, setRelatedVideos] = useState([])
-  const [showError, setShowError] = useState(false)
-  const [noSpeechDetected, setNoSpeechDetected] = useState(false)
-  const [timeoutError, setTimeoutError] = useState(false)
-  const [hasPlayedGreeting, setHasPlayedGreeting] = useState(false)
-  const [sessionId] = useState(`session-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`)
-
-  // Refs
-  const greetingTimeoutRef = useRef(null)
-  const allTimeoutsRef = useRef([])
-
-  // Get avatar configuration
-  const avatarConfig = AVATAR_CONFIG[avatar] || null
-
-  // Clear all timeouts
-  const clearAllTimeouts = useCallback(() => {
-    allTimeoutsRef.current.forEach(timeoutId => clearTimeout(timeoutId))
-    allTimeoutsRef.current = []
-  }, [])
-
-  // Add timeout to tracking
-  const addTimeout = useCallback((timeoutId) => {
-    allTimeoutsRef.current.push(timeoutId)
-  }, [])
-
-  // Initialize speech synthesis
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      initSynth()
-    }
-  }, [])
-
-  // Play avatar greeting
-  const playAvatarGreeting = useCallback(() => {
-    if (!avatarConfig || hasPlayedGreeting) return
-    
-    const greeting = getAvatarGreeting(avatarConfig.name, avatarConfig.domain)
-    console.log('🎤 Playing avatar greeting:', greeting)
-    
-    setIsSpeaking(true)
-    setIsPaused(false)
-    speakText(greeting, () => {
-      setIsSpeaking(false)
-      setIsPaused(false)
-      setHasPlayedGreeting(true)
-    }, { avatarType: avatar })
-  }, [avatarConfig, hasPlayedGreeting, avatar])
-
-  // Initialize greeting
-  useEffect(() => {
-    if (avatarConfig && !hasPlayedGreeting) {
-      greetingTimeoutRef.current = setTimeout(() => {
-        playAvatarGreeting()
-      }, 1000)
-    }
-
-    return () => {
-      if (greetingTimeoutRef.current) {
-        clearTimeout(greetingTimeoutRef.current)
-      }
-      clearAllTimeouts()
-    }
-  }, [avatarConfig, hasPlayedGreeting, playAvatarGreeting, clearAllTimeouts])
-
-  // Handle back navigation
-  const handleBack = useCallback(() => {
+  const stopVoice = useCallback(() => {
     stopSpeaking()
-    clearAllTimeouts()
-    router.push('/')
-  }, [clearAllTimeouts, router])
+    setIsSpeaking(false)
+    setStatus('Ready.')
+  }, [])
 
-  // Handle copy to clipboard
-  const handleCopyAnswer = async () => {
-    if (!currentText || currentText.trim() === '') {
-      alert('No text to copy')
-      return
-    }
-    
-    try {
-      await navigator.clipboard.writeText(currentText)
-      alert('✅ Answer copied to clipboard!')
-    } catch (error) {
-      console.error('Copy failed:', error)
-      alert('❌ Copy failed')
-    }
-  }
+  const readAnswer = useCallback((text = answer) => {
+    if (isMuted || !text) return
 
-  // Test speech function for mobile debugging
-  const testSpeech = () => {
-    if (currentText) {
-      console.log('🧪 Testing speech with text:', currentText.substring(0, 50) + '...')
-      setIsSpeaking(true)
-      setIsPaused(false)
-      speakText(currentText.substring(0, 100), () => {
-        console.log('✅ Test speech finished')
+    const started = speakText(text, {
+      onStart: () => {
+        setIsSpeaking(true)
+        setStatus('Sir Ganguly is speaking...')
+      },
+      onEnd: () => {
         setIsSpeaking(false)
-        setIsPaused(false)
-      }, { avatarType: avatar })
-    }
-  }
+        setStatus('Ready for the next question.')
+      },
+      onError: () => {
+        setIsSpeaking(false)
+        setStatus('Speech is unavailable. Tap Read Again to try.')
+      }
+    })
 
-  // Handle start listening
-  const handleStartListening = async () => {
+    if (!started) {
+      setIsSpeaking(false)
+      setStatus('Speech is unavailable in this browser.')
+    }
+  }, [answer, isMuted])
+
+  const askTeacher = useCallback(async (rawQuestion) => {
+    const cleanQuestion = String(rawQuestion || '').trim()
+    if (!cleanQuestion || isThinking) return
+
+    stopVoice()
+    setError('')
+    setCode('')
+    setLanguage('')
+    setAnswer('')
+    setIsThinking(true)
+    setStatus('Sir Ganguly is thinking...')
+
     try {
-      setNoSpeechDetected(false)
-      setShowError(false)
-      await startListening()
-    } catch (error) {
-      console.error('Failed to start listening:', error)
-      setShowError(true)
-    }
-  }
-
-  // Handle speech recognition result - simplified like working example
-  useEffect(() => {
-    if (transcript && !isListening) {
-      console.log('🎤 Speech recognized:', transcript)
-      setCurrentText(transcript)
-      setNoSpeechDetected(false)
-      // Call API with transcript immediately
-      handleApiCall(transcript)
-      resetTranscript()
-    }
-  }, [transcript, isListening, resetTranscript, handleApiCall])
-
-  // Handle speech recognition errors
-  useEffect(() => {
-    if (speechError) {
-      setShowError(true)
-      setNoSpeechDetected(true)
-      
-      const timer = setTimeout(() => {
-    setShowError(false)
-    clearSpeechError()
-        setNoSpeechDetected(false)
-      }, 8000)
-      return () => clearTimeout(timer)
-    }
-  }, [speechError, clearSpeechError])
-
-  // API call function - simplified like the working example
-  const handleApiCall = useCallback(async (prompt) => {
-    if (!prompt || !avatarConfig) return
-    
-    setApiProcessing(true)
-    setApiError(null)
-    setShowError(false)
-    
-    try {
-      console.log('🚀 Making API call to /api/chat with:', { prompt: prompt.substring(0, 50) + '...', avatarType: avatar, sessionId })
-      
       const response = await fetch('/api/chat', {
         method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          prompt,
-          avatarType: avatar,
+          question: cleanQuestion,
+          avatarType,
           sessionId
         })
       })
 
-      console.log('📡 API Response status:', response.status, response.statusText)
+      const data = await response.json().catch(() => ({}))
 
-      if (!response.ok) {
-        const errorText = await response.text()
-        console.error('❌ API Error Response:', errorText)
-        throw new Error(`API error: ${response.status} - ${response.statusText}`)
+      if (!response.ok || !data.success) {
+        throw new Error(data.error || FRIENDLY_ERROR)
       }
 
-      const data = await response.json()
-      console.log('📦 API Response data:', { 
-        success: data.success, 
-        hasPart1: !!data.part1, 
-        hasPart2: !!data.part2,
-        error: data.error
+      const nextAnswer = data.answer || data.reply || data.part1 || ''
+      const nextCode = data.code || data.part2 || ''
+
+      setAnswer(nextAnswer)
+      setCode(nextCode)
+      setLanguage(data.language || '')
+      setStatus('Answer ready.')
+      setQuestion('')
+
+      requestAnimationFrame(() => {
+        answerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+        readAnswer(nextAnswer)
       })
-      
-      // Use the response text directly like the working example
-      const responseText = data.part1 || data.reply || 'No response received'
-      setCurrentText(responseText)
-      setCodeContent(data.part2 || '')
-      setRelatedArticles(data.relatedArticles || [])
-      setRelatedVideos(data.relatedVideos || [])
-
-      // Start speaking immediately like the working example
-      if (responseText && responseText !== 'No response received') {
-        console.log('🎤 Starting to speak answer:', responseText.substring(0, 100) + '...')
-        stopSpeaking()
-        setIsPaused(false)
-        setTimeout(() => {
-          setIsSpeaking(true)
-          speakText(responseText, () => {
-            console.log('✅ Finished speaking answer')
-            setIsSpeaking(false)
-            setIsPaused(false)
-          }, { avatarType: avatar })
-        }, 100) // Reduced delay for faster response
-      }
-
-    } catch (error) {
-      console.error('❌ API call failed:', error)
-      setApiError(error.message)
-      setShowError(true)
-      
-      // Simple fallback message like the working example
-      const fallbackMessage = `Sorry, I could not reach the server.`
-      setCurrentText(fallbackMessage)
-      
+    } catch (requestError) {
+      setError(requestError.message || FRIENDLY_ERROR)
+      setAnswer(requestError.message || FRIENDLY_ERROR)
+      setStatus('Please try again.')
     } finally {
-      setApiProcessing(false)
+      setIsThinking(false)
     }
-  }, [avatarConfig, avatar, sessionId])
+  }, [avatarType, isThinking, readAnswer, sessionId, stopVoice])
 
-  // Cleanup on component unmount
   useEffect(() => {
-    return () => {
-      stopSpeaking()
-      clearAllTimeouts()
-      if (greetingTimeoutRef.current) {
-        clearTimeout(greetingTimeoutRef.current)
-      }
-    }
-  }, [clearAllTimeouts])
+    if (!transcript || isListening) return
+    setQuestion(transcript)
+    askTeacher(transcript)
+    resetTranscript()
+  }, [askTeacher, isListening, resetTranscript, transcript])
 
-  // Show loading if avatar not found
-  if (!avatar || !avatarConfig) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 flex items-center justify-center p-4">
-        <div className="text-center text-white max-w-md mx-auto">
-          <div className="w-16 h-16 border-4 border-white/30 border-t-white rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-lg mb-2 font-medium">Loading avatar...</p>
-          <p className="text-sm opacity-70 mb-4">If this takes too long, please go back and try again.</p>
-          <button 
-            onClick={() => router.push('/')}
-            className="px-6 py-3 bg-white/10 hover:bg-white/20 rounded-lg transition-all duration-200 backdrop-blur-md border border-white/20 hover:scale-105"
-          >
-            Go Back
-          </button>
-        </div>
-      </div>
-    )
+  useEffect(() => {
+    if (!speechError) return
+    setError(speechError)
+    setStatus(speechError)
+    const timer = setTimeout(() => {
+      clearSpeechError()
+      setError('')
+      setStatus('Ready.')
+    }, 5000)
+    return () => clearTimeout(timer)
+  }, [clearSpeechError, speechError])
+
+  useEffect(() => {
+    setSpeechAvailable(isSpeechSupported())
+    return () => stopSpeaking()
+  }, [])
+
+  const handleSubmit = (event) => {
+    event.preventDefault()
+    askTeacher(question)
+  }
+
+  const handleQuestionKeyDown = (event) => {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault()
+      askTeacher(question)
+    }
+  }
+
+  const toggleListening = async () => {
+    if (isListening) {
+      stopListening()
+      return
+    }
+
+    setError('')
+    setStatus('Listening... ask your question now.')
+    await startListening()
+  }
+
+  const toggleMute = () => {
+    const nextMuted = !isMuted
+    setIsMuted(nextMuted)
+    if (nextMuted) {
+      stopVoice()
+      setStatus('Voice muted.')
+    } else {
+      setStatus('Voice unmuted.')
+    }
   }
 
   return (
     <>
       <Head>
-        <title>{avatarConfig.name} - AI Avatar Assistant</title>
-        <meta name="description" content={`Chat with ${avatarConfig.name} about ${avatarConfig.domain}`} />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Sir Ganguly AI Computer Teacher</title>
+        <meta name="description" content="Ask Sir Ganguly AI computer teacher by voice or text." />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
       </Head>
 
-      <VoiceFallback onVoiceSupportChange={(supported) => console.log('Voice support:', supported)}>
-        <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 relative overflow-hidden">
-          {/* Back Button */}
-          <div className="absolute top-4 left-4 z-10">
+      <main className="min-h-screen bg-[radial-gradient(circle_at_top,#dbeafe_0,#eff6ff_38%,#f8fafc_100%)] px-3 py-4 text-slate-900 sm:px-5">
+        <section className="mx-auto grid w-full max-w-6xl gap-5 lg:grid-cols-[minmax(0,1fr)_420px]">
+          <div className="rounded-[28px] border border-white/70 bg-white/78 p-4 shadow-2xl shadow-blue-900/10 backdrop-blur-xl sm:p-6">
+            <div className="mb-4 flex items-center justify-between gap-3">
               <button
-              onClick={handleBack}
-              className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-all duration-200 backdrop-blur-md border border-white/20 hover:scale-105"
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-                <path d="M19 12H5M12 19l-7-7 7-7"/>
-              </svg>
-              <span className="font-bold">BACK</span>
-            </button>
-          </div>
-
-          {/* Main Content */}
-          <div className="container mx-auto px-4 pb-32 flex flex-col min-h-screen">
-            {/* Header */}
-            <div className="text-center text-white pt-20 mb-8">
-              <h1 className="text-2xl md:text-3xl font-bold mb-2">{avatarConfig.name}</h1>
-              <p className="text-lg opacity-80">{avatarConfig.domain}</p>
-            </div>
-
-        {/* Avatar Display */}
-            <div className="flex justify-center mb-8">
-          <div className="transform transition-all duration-300 hover:scale-105">
-            <AvatarDisplay 
-              avatar={avatar} 
-              config={avatarConfig} 
-              isSpeaking={isSpeaking}
-            />
-          </div>
-        </div>
-
-            {/* Control Buttons - All Side by Side Below Avatar */}
-            <div className="flex flex-wrap justify-center items-center gap-3 mb-6 px-4">
-              {/* Play/Pause Button */}
-              <button
-                onClick={() => {
-                  if (isSpeaking && !isPaused) {
-                    // Pause speech
-                    const success = pauseSpeaking()
-                    if (success) {
-                      setIsPaused(true)
-                      console.log('🎤 Speech paused')
-                    }
-                  } else if (isPaused) {
-                    // Resume speech
-                    const success = resumeSpeaking()
-                    if (success) {
-                      setIsPaused(false)
-                      console.log('🎤 Speech resumed')
-                    }
-                  }
-                }}
-                disabled={!currentText}
-                className={`flex items-center gap-2 px-4 py-3 rounded-xl font-bold transition-all duration-200 shadow-lg hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base ${
-                  isSpeaking && !isPaused
-                    ? 'bg-blue-600 hover:bg-blue-700 text-white'
-                    : 'bg-green-600 hover:bg-green-700 text-white'
-                }`}
-                title={isSpeaking && !isPaused ? 'Pause speech' : 'Play speech'}
+                type="button"
+                onClick={() => router.push('/')}
+                className="rounded-full border border-slate-200 bg-white/80 px-4 py-2 text-sm font-bold text-slate-700 shadow-sm transition hover:bg-white"
               >
-                <span className="text-lg">{isSpeaking && !isPaused ? '⏸' : '▶️'}</span>
-                <span className="font-bold">{isSpeaking && !isPaused ? 'PAUSE' : 'PLAY'}</span>
+                Back
               </button>
-
-              {/* Copy Answer Button */}
-              <button
-                onClick={handleCopyAnswer}
-                disabled={!currentText}
-                className="flex items-center gap-2 px-4 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-xl font-bold transition-all duration-200 shadow-lg hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
-                title="Copy answer to clipboard"
-              >
-                <span className="text-lg">📋</span>
-                <span className="font-bold">COPY</span>
-              </button>
-
-              {/* Talk Button - More Prominent */}
-              <button
-                onClick={() => {
-                  if (isListening) {
-                    stopListening()
-                  } else {
-                    handleStartListening()
-                  }
-                }}
-                className={`flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-base sm:text-lg transition-all duration-200 shadow-lg hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed ${
-                  isListening
-                    ? 'bg-red-600 hover:bg-red-700 text-white'
-                    : 'bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white shadow-xl'
-                }`}
-                title={isListening ? 'Stop listening' : 'Click to ask a question'}
-              >
-                <span className="text-xl">🎤</span>
-                <span className="font-bold">{isListening ? 'STOP' : 'ASK QUESTION'}</span>
-              </button>
-            </div>
-
-            {/* User Instruction */}
-            <div className="text-center mb-6">
-              <p className="text-white text-base sm:text-lg font-bold">
-                {isListening ? "🎤 LISTENING... SPEAK NOW!" : "🎯 TAP THE 🎤 BUTTON ABOVE TO ASK A QUESTION"}
-              </p>
-            </div>
-
-            {/* Button Legend - Help Users Understand */}
-            <div className="text-center mb-4">
-              <div className="inline-flex flex-wrap justify-center gap-4 text-xs text-white/70">
-                <div className="flex items-center gap-1">
-                  <span className="w-3 h-3 bg-green-600 rounded-full"></span>
-                  <span>PLAY: Resume speech</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <span className="w-3 h-3 bg-blue-600 rounded-full"></span>
-                  <span>PAUSE: Stop speech</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <span className="w-3 h-3 bg-purple-600 rounded-full"></span>
-                  <span>COPY: Save answer</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <span className="w-3 h-3 bg-gradient-to-r from-orange-500 to-red-500 rounded-full"></span>
-                  <span>ASK: Voice question</span>
-                </div>
+              <div className="rounded-full bg-emerald-50 px-3 py-2 text-xs font-bold uppercase tracking-wide text-emerald-700">
+                {isThinking ? 'Thinking' : isListening ? 'Listening' : isSpeaking ? 'Speaking' : 'Online'}
               </div>
             </div>
 
-            {/* Debug Info for Mobile */}
-            <div className="text-center mb-4">
-              <div className="inline-flex flex-wrap justify-center gap-2 text-xs text-white/50">
-                <span>🎤 Speaking: {isSpeaking ? 'Yes' : 'No'}</span>
-                <span>⏸ Paused: {isPaused ? 'Yes' : 'No'}</span>
-                <span>📝 Text: {currentText ? 'Available' : 'None'}</span>
+            <header className="text-center">
+              <h1 className="text-3xl font-black text-slate-950 sm:text-4xl">AI Voice Assistant</h1>
+              <p className="mt-2 text-base font-semibold text-slate-600">Sir Ganguly Computer Teacher</p>
+            </header>
+
+            <div className="mt-5 flex justify-center">
+              <div className={`rounded-full p-2 transition duration-300 ${isSpeaking ? 'bg-blue-100 shadow-xl shadow-blue-300/50' : isListening ? 'bg-emerald-100 shadow-xl shadow-emerald-300/50' : 'bg-slate-100'}`}>
+                <AvatarDisplay avatar={avatarType} config={avatarConfig} isSpeaking={isSpeaking} />
               </div>
             </div>
 
-            {/* Test Speech Button for Mobile Debugging */}
-            {currentText && (
-              <div className="text-center mb-4">
-                <button
-                  onClick={testSpeech}
-                  className="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg font-semibold text-sm transition-all duration-200"
-                  title="Test speech synthesis on mobile"
-                >
-                  🧪 Test Speech
-                </button>
+            <form onSubmit={handleSubmit} className="mt-6 space-y-3">
+              <label htmlFor="questionInput" className="sr-only">Type your question</label>
+              <textarea
+                id="questionInput"
+                value={question}
+                onChange={(event) => setQuestion(event.target.value)}
+                onKeyDown={handleQuestionKeyDown}
+                placeholder="Type your question here. You can ask computer theory, Java, Python, programming errors, or study questions."
+                className="min-h-[112px] w-full resize-y rounded-2xl border border-slate-200 bg-white px-4 py-4 text-base leading-relaxed text-slate-900 shadow-inner outline-none transition placeholder:text-slate-500 focus:border-blue-400 focus:ring-4 focus:ring-blue-100"
+              />
+
+              <TeacherButton type="submit" disabled={isThinking || !question.trim()}>
+                Send Question to Sir Ganguly AI
+              </TeacherButton>
+            </form>
+
+            <div ref={answerRef} className="mt-5 rounded-2xl border border-slate-200 bg-white/90 p-4 shadow-inner">
+              {isThinking ? (
+                <div className="flex items-center gap-3 text-slate-700">
+                  <span className="h-3 w-3 animate-ping rounded-full bg-blue-600" />
+                  <span className="font-bold">Sir Ganguly is thinking...</span>
+                </div>
+              ) : (
+                <p className="max-h-[340px] overflow-y-auto whitespace-pre-wrap text-base leading-7 text-slate-800">
+                  {answer || 'Ask a question to begin.'}
+                </p>
+              )}
+            </div>
+
+            {error && (
+              <div className="mt-3 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-semibold text-rose-700">
+                {error}
               </div>
             )}
 
-            {/* Status Messages */}
-            <div className="text-center mb-6">
-              {isListening && (
-                <div className="inline-flex items-center gap-3 bg-green-500/30 text-green-100 px-6 py-3 rounded-full text-base font-semibold animate-pulse shadow-lg backdrop-blur-md border border-green-400/30">
-                  <div className="w-4 h-4 bg-green-300 rounded-full animate-ping"></div>
-                  <span>🎤 Listening... Speak now!</span>
+            <p className="mt-4 text-center text-sm font-bold text-slate-600" aria-live="polite">
+              {status}
+            </p>
+
+            <div className="mt-4 grid gap-3 sm:grid-cols-2">
+              <TeacherButton onClick={toggleListening} disabled={!recognitionSupported || isThinking} variant="blue">
+                {isListening ? 'Stop Listening' : 'Press/Click this button and ask any question'}
+              </TeacherButton>
+              <TeacherButton onClick={() => readAnswer()} disabled={!answer || isThinking || isMuted} variant="purple">
+                Read Again
+              </TeacherButton>
+              <TeacherButton onClick={stopVoice} disabled={!isSpeaking} variant="danger">
+                Stop Voice
+              </TeacherButton>
+              <TeacherButton onClick={toggleMute} variant="dark">
+                {isMuted ? 'Unmute' : 'Mute'}
+              </TeacherButton>
+            </div>
+
+            {!recognitionSupported && (
+              <p className="mt-3 rounded-2xl bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-800">
+                Voice input is not supported in this browser. Please type your question and press Send.
+              </p>
+            )}
+
+            {!speechAvailable && (
+              <p className="mt-3 rounded-2xl bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-800">
+                Voice reading is not supported in this browser, but written answers will still work.
+              </p>
+            )}
           </div>
-        )}
 
-              {isSpeaking && (
-                <div className="inline-flex items-center gap-3 bg-blue-500/30 text-blue-100 px-6 py-3 rounded-full text-base font-semibold animate-pulse shadow-lg backdrop-blur-md border border-blue-400/30">
-                  <div className="w-4 h-4 bg-blue-300 rounded-full animate-ping"></div>
-                  <span>🔊 Speaking...</span>
-                </div>
-              )}
-              
-              {isProcessing && (
-                <div className="inline-flex items-center gap-3 bg-purple-500/30 text-purple-100 px-6 py-3 rounded-full text-base font-semibold animate-pulse shadow-lg backdrop-blur-md border border-purple-400/30">
-                  <div className="w-4 h-4 bg-purple-300 rounded-full animate-spin"></div>
-                  <span>🤔 Processing your question...</span>
-                </div>
-              )}
-              
-              {showError && (
-                <div className="inline-flex items-center gap-3 bg-red-500/30 text-red-100 px-6 py-3 rounded-full text-base font-semibold shadow-lg backdrop-blur-md border border-red-400/30">
-                  <span>❌ {apiError || speechError || 'An error occurred'}</span>
+          <aside className="rounded-[28px] border border-white/70 bg-white/78 p-4 shadow-2xl shadow-blue-900/10 backdrop-blur-xl sm:p-6">
+            <h2 className="text-2xl font-black text-blue-900">Code Snippet</h2>
+            <p className="mt-2 text-sm font-semibold text-slate-500">Programming answers appear here separately.</p>
+            <div className="mt-4">
+              {code ? (
+                <CodeBox code={code} language={language} />
+              ) : (
+                <div className="rounded-2xl border border-dashed border-slate-300 bg-white/70 p-6 text-sm font-semibold text-slate-500">
+                  Ask for a program in Java, Python, C, or another language to see code here.
                 </div>
               )}
             </div>
-
-            {/* Content Display */}
-            <div className="flex-1 space-y-6">
-              {/* Text Display */}
-              {currentText && (
-                <div className="break-words overflow-wrap-anywhere">
-                  <ErrorBoundary fallback={<TextDisplayFallback text={currentText} />}>
-                    <TextDisplay 
-                      text={currentText}
-                      isProcessing={isProcessing}
-                      avatarConfig={avatarConfig}
-                      isListening={isListening}
-                    />
-                  </ErrorBoundary>
-            </div>
-          )}
-          
-              {/* Code Box */}
-              {codeContent && (
-                <div className="animate-fadeIn">
-                  <CodeBox code={codeContent} />
-            </div>
-          )}
-          
-              {/* Related Articles */}
-              {relatedArticles.length > 0 && (
-                <div className="animate-fadeIn">
-                  <ArticleCarousel articles={relatedArticles} />
-            </div>
-          )}
-
-              {/* Related Videos */}
-              {relatedVideos.length > 0 && (
-                <div className="animate-fadeIn">
-                  <YouTubeVideos videos={relatedVideos} />
-            </div>
-          )}
-            </div>
-            </div>
-        </div>
-      </VoiceFallback>
+          </aside>
+        </section>
+      </main>
     </>
   )
 }

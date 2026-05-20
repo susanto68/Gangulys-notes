@@ -1,7 +1,8 @@
 import { useState } from 'react'
 
-export default function CodeBox({ code }) {
+export default function CodeBox({ code, language = '' }) {
   const [copied, setCopied] = useState(false)
+  const label = language || 'code'
 
   const copyToClipboard = async () => {
     try {
@@ -14,33 +15,18 @@ export default function CodeBox({ code }) {
   }
 
   return (
-    <div className="bg-gray-900 rounded-lg p-4 border border-gray-700">
+    <div className="rounded-2xl border border-slate-700 bg-slate-950 p-4 shadow-xl">
       <div className="flex items-center justify-between mb-3">
-        <span className="text-gray-300 text-sm font-mono">javascript</span>
+        <span className="text-slate-300 text-sm font-mono uppercase">{label}</span>
         <button
           onClick={copyToClipboard}
-          className="text-gray-400 hover:text-white text-sm flex items-center gap-1 transition-colors"
+          className="rounded-lg bg-teal-700 px-3 py-2 text-sm font-bold text-white transition hover:bg-teal-600"
         >
-          {copied ? (
-            <>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <polyline points="20,6 9,17 4,12"/>
-              </svg>
-              Copied!
-            </>
-          ) : (
-            <>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
-                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
-              </svg>
-              Copy code
-            </>
-          )}
+          {copied ? 'Copied' : 'Copy Code'}
         </button>
       </div>
-      <pre className="text-gray-100 text-sm break-words overflow-wrap-anywhere whitespace-pre-wrap">
-        <code className="break-words overflow-wrap-anywhere">{code}</code>
+      <pre className="max-h-[560px] overflow-auto rounded-xl bg-slate-900 p-4 text-sm leading-6 text-sky-100">
+        <code>{code}</code>
       </pre>
     </div>
   )
