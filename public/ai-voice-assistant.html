@@ -1,0 +1,536 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>Sir Ganguly AI Voice Assistant</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, Poppins, Arial, sans-serif;
+      background: radial-gradient(circle at top, #dbeafe 0, #eff6ff 38%, #f8fafc 100%);
+      color: #0f172a;
+      padding: 14px;
+    }
+    .teacher-shell {
+      width: min(1120px, 100%);
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 420px;
+      gap: 18px;
+    }
+    .panel {
+      border: 1px solid rgba(255,255,255,.85);
+      border-radius: 28px;
+      background: rgba(255,255,255,.82);
+      box-shadow: 0 22px 55px rgba(30, 64, 175, .12);
+      padding: 24px;
+      backdrop-filter: blur(16px);
+    }
+    .top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .back-link, .state-pill {
+      border: 1px solid #e2e8f0;
+      border-radius: 999px;
+      background: rgba(255,255,255,.9);
+      color: #334155;
+      padding: 9px 14px;
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 13px;
+    }
+    .state-pill {
+      color: #047857;
+      background: #ecfdf5;
+      border-color: #bbf7d0;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+    h1 {
+      margin: 0;
+      text-align: center;
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 900;
+      color: #020617;
+      letter-spacing: 0;
+    }
+    .subtitle {
+      margin: 8px 0 0;
+      text-align: center;
+      color: #475569;
+      font-weight: 700;
+    }
+    .avatar-wrap {
+      width: 140px;
+      height: 140px;
+      margin: 22px auto;
+      border-radius: 50%;
+      background: #020617;
+      border: 8px solid #eef6ff;
+      box-shadow: 0 14px 40px rgba(37, 99, 235, .14);
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+    .avatar-wrap.speaking {
+      transform: scale(1.04);
+      box-shadow: 0 0 0 12px rgba(59, 130, 246, .13), 0 18px 45px rgba(37, 99, 235, .25);
+    }
+    .avatar-wrap.listening {
+      box-shadow: 0 0 0 12px rgba(16, 185, 129, .16), 0 18px 45px rgba(16, 185, 129, .2);
+    }
+    .avatar-wrap img {
+      width: 105px;
+      height: 125px;
+      object-fit: contain;
+    }
+    textarea {
+      width: 100%;
+      min-height: 112px;
+      resize: vertical;
+      border: 1px solid #cbd5e1;
+      border-radius: 18px;
+      background: #fff;
+      color: #0f172a;
+      font-size: 16px;
+      line-height: 1.55;
+      padding: 16px;
+      outline: none;
+      box-shadow: inset 0 2px 8px rgba(15, 23, 42, .04);
+    }
+    textarea:focus {
+      border-color: #60a5fa;
+      box-shadow: 0 0 0 4px rgba(96, 165, 250, .18);
+    }
+    .btn-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .btn {
+      width: 100%;
+      border: 0;
+      border-radius: 16px;
+      padding: 15px 16px;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 8px 0 rgba(15, 23, 42, .18), 0 18px 28px rgba(15, 23, 42, .12);
+      transition: transform .18s ease, filter .18s ease, box-shadow .18s ease;
+    }
+    .btn:hover { transform: translateY(-2px); filter: brightness(1.04); }
+    .btn:active { transform: translateY(4px); box-shadow: 0 3px 0 rgba(15,23,42,.18), 0 9px 16px rgba(15,23,42,.12); }
+    .btn:disabled { opacity: .58; cursor: not-allowed; transform: none; }
+    .btn-primary { grid-column: 1 / -1; background: linear-gradient(180deg, #34d399, #16a34a 58%, #0f766e); }
+    .btn-blue { background: linear-gradient(180deg, #38bdf8, #2563eb 58%, #1e3a8a); }
+    .btn-purple { background: linear-gradient(180deg, #c084fc, #8b5cf6 58%, #4338ca); }
+    .btn-red { background: linear-gradient(180deg, #fca5a5, #ef4444 58%, #b91c1c); }
+    .btn-dark { background: linear-gradient(180deg, #64748b, #334155 58%, #0f172a); }
+    .answer-box {
+      margin-top: 18px;
+      min-height: 160px;
+      max-height: 360px;
+      overflow: auto;
+      border: 1px solid #e2e8f0;
+      border-radius: 18px;
+      background: rgba(255,255,255,.96);
+      padding: 18px;
+      color: #1e293b;
+      font-size: 16px;
+      line-height: 1.7;
+      white-space: pre-wrap;
+      box-shadow: inset 0 2px 10px rgba(15,23,42,.04);
+    }
+    .status {
+      min-height: 24px;
+      margin: 14px 0 0;
+      text-align: center;
+      color: #475569;
+      font-weight: 900;
+    }
+    .error {
+      display: none;
+      margin-top: 12px;
+      border: 1px solid #fecdd3;
+      border-radius: 16px;
+      background: #fff1f2;
+      color: #be123c;
+      padding: 12px 14px;
+      font-weight: 800;
+    }
+    .code-title {
+      margin: 0;
+      color: #1e3a8a;
+      font-size: 26px;
+      font-weight: 900;
+    }
+    .code-help {
+      margin: 8px 0 18px;
+      color: #64748b;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .code-card {
+      display: none;
+      border: 1px solid #334155;
+      border-radius: 18px;
+      background: #020617;
+      padding: 14px;
+      box-shadow: 0 18px 42px rgba(15, 23, 42, .18);
+    }
+    .code-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .lang {
+      color: #cbd5e1;
+      font-family: Consolas, monospace;
+      font-size: 13px;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+    .copy-btn {
+      border: 0;
+      border-radius: 10px;
+      background: #0f766e;
+      color: #fff;
+      padding: 9px 12px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+    pre {
+      max-height: 560px;
+      overflow: auto;
+      margin: 0;
+      border-radius: 14px;
+      background: #0f172a;
+      color: #bae6fd;
+      padding: 16px;
+      font-size: 14px;
+      line-height: 1.55;
+    }
+    .empty-code {
+      border: 1px dashed #cbd5e1;
+      border-radius: 18px;
+      background: rgba(255,255,255,.72);
+      padding: 24px;
+      color: #64748b;
+      font-weight: 800;
+      line-height: 1.55;
+    }
+    @media (max-width: 900px) {
+      body { padding: 10px; }
+      .teacher-shell { grid-template-columns: 1fr; }
+      .panel { padding: 16px; border-radius: 22px; }
+      .btn-grid { grid-template-columns: 1fr; }
+      .btn-primary { grid-column: auto; }
+      .avatar-wrap { width: 118px; height: 118px; border-width: 7px; }
+      .avatar-wrap img { width: 90px; height: 106px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="teacher-shell">
+    <section class="panel">
+      <div class="top-row">
+        <a class="back-link" href="/index.html">Back</a>
+        <span id="statePill" class="state-pill">Online</span>
+      </div>
+      <h1>AI Voice Assistant</h1>
+      <p class="subtitle">Sir Ganguly Computer Teacher</p>
+      <div id="avatarWrap" class="avatar-wrap">
+        <img src="/assets/avatars/computer-teacher.png" alt="Sir Ganguly AI avatar">
+      </div>
+
+      <form id="questionForm">
+        <label for="questionInput" style="position:absolute;left:-9999px;">Type your question</label>
+        <textarea id="questionInput" placeholder="Type your question here. You can ask computer theory, Java, Python, programming errors, or study questions."></textarea>
+        <div class="btn-grid">
+          <button id="sendBtn" class="btn btn-primary" type="submit">Send Question to Sir Ganguly AI</button>
+          <button id="talkBtn" class="btn btn-blue" type="button">Press/Click this button and ask any question</button>
+          <button id="readAgainBtn" class="btn btn-purple" type="button">Read Again</button>
+          <button id="stopBtn" class="btn btn-red" type="button">Stop Voice</button>
+          <button id="muteBtn" class="btn btn-dark" type="button">Mute</button>
+        </div>
+      </form>
+
+      <div id="answerBox" class="answer-box">Hello, I am Sir Ganguly. Ask me anything about computer science.</div>
+      <div id="errorBox" class="error"></div>
+      <p id="statusText" class="status" aria-live="polite">Ready.</p>
+    </section>
+
+    <aside class="panel">
+      <h2 class="code-title">Code Snippet</h2>
+      <p class="code-help">Programming answers appear here separately.</p>
+      <div id="emptyCode" class="empty-code">Ask for a program in Java, Python, C, or another language to see code here.</div>
+      <div id="codeCard" class="code-card">
+        <div class="code-head">
+          <span id="codeLang" class="lang">code</span>
+          <button id="copyCodeBtn" class="copy-btn" type="button">Copy Code</button>
+        </div>
+        <pre><code id="codeBox"></code></pre>
+      </div>
+    </aside>
+  </main>
+
+  <script>
+    const API_URL = '/api/chat';
+    const FRIENDLY_ERROR = 'AI service is temporarily unavailable. Please try again.';
+    const state = {
+      sessionId: `static-teacher-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+      answer: 'Hello, I am Sir Ganguly. Ask me anything about computer science.',
+      code: '',
+      language: '',
+      muted: false,
+      thinking: false,
+      speaking: false,
+      recognition: null
+    };
+
+    const questionInput = document.getElementById('questionInput');
+    const questionForm = document.getElementById('questionForm');
+    const sendBtn = document.getElementById('sendBtn');
+    const talkBtn = document.getElementById('talkBtn');
+    const readAgainBtn = document.getElementById('readAgainBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    const muteBtn = document.getElementById('muteBtn');
+    const answerBox = document.getElementById('answerBox');
+    const statusText = document.getElementById('statusText');
+    const statePill = document.getElementById('statePill');
+    const avatarWrap = document.getElementById('avatarWrap');
+    const errorBox = document.getElementById('errorBox');
+    const codeCard = document.getElementById('codeCard');
+    const emptyCode = document.getElementById('emptyCode');
+    const codeBox = document.getElementById('codeBox');
+    const codeLang = document.getElementById('codeLang');
+    const copyCodeBtn = document.getElementById('copyCodeBtn');
+
+    function setStatus(text, mode = 'online') {
+      statusText.textContent = text;
+      statePill.textContent = mode;
+      avatarWrap.classList.toggle('speaking', mode === 'Speaking');
+      avatarWrap.classList.toggle('listening', mode === 'Listening');
+    }
+
+    function showError(message) {
+      if (!message) {
+        errorBox.style.display = 'none';
+        errorBox.textContent = '';
+        return;
+      }
+      errorBox.textContent = message;
+      errorBox.style.display = 'block';
+    }
+
+    function getVoices() {
+      return window.speechSynthesis ? window.speechSynthesis.getVoices() : [];
+    }
+
+    function pickVoice() {
+      const voices = getVoices().filter(voice => /^en/i.test(voice.lang || ''));
+      if (!voices.length) return null;
+      return voices.map(voice => {
+        const name = `${voice.name} ${voice.lang}`.toLowerCase();
+        let score = 0;
+        if (/en-in|india|indian/.test(name)) score += 50;
+        if (/english/.test(name)) score += 20;
+        if (/google|microsoft|natural|online/.test(name)) score += 15;
+        if (voice.default) score += 10;
+        if (/en-/.test(name)) score += 8;
+        return { voice, score };
+      }).sort((a, b) => b.score - a.score)[0].voice;
+    }
+
+    function cleanForSpeech(text) {
+      return String(text || '')
+        .replace(/```[\s\S]*?```/g, 'The code is shown on screen.')
+        .replace(/`([^`]+)`/g, '$1')
+        .replace(/[#*_>\\[\\]]/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
+    function stopSpeaking() {
+      if (window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+      }
+      state.speaking = false;
+      setStatus('Ready.', 'Online');
+    }
+
+    function speakText(text) {
+      if (state.muted || !text) return;
+      if (!window.speechSynthesis || !window.SpeechSynthesisUtterance) {
+        setStatus('Speech is unavailable in this browser.', 'Online');
+        return;
+      }
+      const speechText = cleanForSpeech(text);
+      if (!speechText) return;
+      stopSpeaking();
+      const utterance = new SpeechSynthesisUtterance(speechText);
+      const voice = pickVoice();
+      utterance.lang = voice?.lang || 'en-IN';
+      utterance.voice = voice || null;
+      utterance.rate = 0.94;
+      utterance.pitch = 0.88;
+      utterance.volume = 1;
+      utterance.onstart = () => {
+        state.speaking = true;
+        setStatus('Sir Ganguly is speaking...', 'Speaking');
+      };
+      utterance.onend = () => {
+        state.speaking = false;
+        setStatus('Ready for the next question.', 'Online');
+      };
+      utterance.onerror = () => {
+        state.speaking = false;
+        setStatus('Speech was blocked. Tap Read Again to hear the answer.', 'Online');
+      };
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function renderAnswer(answer, code, language) {
+      state.answer = answer || '';
+      state.code = code || '';
+      state.language = language || '';
+      answerBox.textContent = state.answer || 'Ask a question to begin.';
+      if (state.code) {
+        codeBox.textContent = state.code;
+        codeLang.textContent = state.language || 'code';
+        codeCard.style.display = 'block';
+        emptyCode.style.display = 'none';
+      } else {
+        codeBox.textContent = '';
+        codeCard.style.display = 'none';
+        emptyCode.style.display = 'block';
+      }
+    }
+
+    async function askTeacher(question) {
+      const cleanQuestion = String(question || '').trim();
+      if (!cleanQuestion || state.thinking) return;
+      stopSpeaking();
+      showError('');
+      renderAnswer('', '', '');
+      state.thinking = true;
+      sendBtn.disabled = true;
+      setStatus('Sir Ganguly is thinking...', 'Thinking');
+      answerBox.innerHTML = '<strong>Sir Ganguly is thinking...</strong>';
+
+      try {
+        const response = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            question: cleanQuestion,
+            prompt: cleanQuestion,
+            message: cleanQuestion,
+            avatarType: 'computer-teacher',
+            sessionId: state.sessionId
+          })
+        });
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok || !data.success) {
+          throw new Error(data.error || FRIENDLY_ERROR);
+        }
+        const nextAnswer = data.answer || data.reply || data.part1 || '';
+        renderAnswer(nextAnswer, data.code || data.part2 || '', data.language || '');
+        questionInput.value = '';
+        setStatus('Answer ready.', 'Online');
+        if (state.code) {
+          setTimeout(() => codeCard.scrollIntoView({ behavior: 'smooth', block: 'start' }), 350);
+        }
+        requestAnimationFrame(() => speakText(nextAnswer));
+      } catch (error) {
+        const message = error.message || FRIENDLY_ERROR;
+        renderAnswer(message, '', '');
+        showError(message);
+        setStatus('Please try again.', 'Online');
+      } finally {
+        state.thinking = false;
+        sendBtn.disabled = false;
+      }
+    }
+
+    function setupSpeechRecognition() {
+      const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!Recognition) {
+        talkBtn.textContent = 'Voice unavailable. Please type your question.';
+        talkBtn.disabled = true;
+        return;
+      }
+      state.recognition = new Recognition();
+      state.recognition.lang = 'en-IN';
+      state.recognition.continuous = false;
+      state.recognition.interimResults = false;
+      state.recognition.onstart = () => setStatus('Listening... ask your question now.', 'Listening');
+      state.recognition.onresult = event => {
+        const transcript = event.results[0][0].transcript;
+        questionInput.value = transcript;
+        askTeacher(transcript);
+      };
+      state.recognition.onerror = event => {
+        showError(event.error === 'not-allowed' ? 'Please allow microphone permission, or type your question.' : 'Voice input stopped. Please try again or type your question.');
+        setStatus('Ready.', 'Online');
+      };
+      state.recognition.onend = () => {
+        if (!state.thinking && !state.speaking) setStatus('Ready.', 'Online');
+      };
+    }
+
+    questionForm.addEventListener('submit', event => {
+      event.preventDefault();
+      askTeacher(questionInput.value);
+    });
+
+    questionInput.addEventListener('keydown', event => {
+      if (event.key === 'Enter' && !event.shiftKey) {
+        event.preventDefault();
+        askTeacher(questionInput.value);
+      }
+    });
+
+    talkBtn.addEventListener('click', () => {
+      showError('');
+      if (state.recognition) state.recognition.start();
+    });
+
+    readAgainBtn.addEventListener('click', () => speakText(state.answer));
+    stopBtn.addEventListener('click', stopSpeaking);
+    muteBtn.addEventListener('click', () => {
+      state.muted = !state.muted;
+      if (state.muted) stopSpeaking();
+      muteBtn.textContent = state.muted ? 'Unmute' : 'Mute';
+      setStatus(state.muted ? 'Voice muted.' : 'Voice unmuted.', 'Online');
+    });
+    copyCodeBtn.addEventListener('click', async () => {
+      if (!state.code) return;
+      await navigator.clipboard.writeText(state.code);
+      copyCodeBtn.textContent = 'Copied';
+      setTimeout(() => copyCodeBtn.textContent = 'Copy Code', 1400);
+    });
+
+    if (window.speechSynthesis) {
+      window.speechSynthesis.onvoiceschanged = () => getVoices();
+      getVoices();
+    }
+    setupSpeechRecognition();
+  </script>
+</body>
+</html>
