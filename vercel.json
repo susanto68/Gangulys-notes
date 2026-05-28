@@ -1,4 +1,10 @@
 {
+  "rewrites": [
+    {
+      "source": "/computer-teacher",
+      "destination": "/ai-voice-assistant.html"
+    }
+  ],
   "headers": [
     {
       "source": "/pdf/(.*)",

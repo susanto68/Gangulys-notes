@@ -51,7 +51,7 @@ export default function TestVoiceSimple() {
             const data = await res.json()
             processReply(data.reply || data.part1 || 'No response received')
           } catch (err) {
-            processReply('Sorry, I could not reach the server.')
+            processReply('AI service is temporarily unavailable. Please try again.')
           }
         }
 

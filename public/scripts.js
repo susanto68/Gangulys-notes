@@ -1,46 +1,50 @@
-function handlePDFClick(event, pdfPath) {
-    event.preventDefault();
-    
-    // Check if it's a local PDF file or external link
-    if (pdfPath.startsWith('../pdf/') || pdfPath.startsWith('pdfs/') || pdfPath.startsWith('pdf/')) {
-        // For local PDF files, try multiple approaches
-        try {
-            // First try: Direct file access
-            const link = document.createElement('a');
-            link.href = pdfPath;
-            link.target = '_blank';
-            link.rel = 'noopener noreferrer';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        } catch (error) {
-            try {
-                // Second try: Window.open
-                window.open(pdfPath, '_blank');
-            } catch (error2) {
-                // Third try: Show error modal
-                const errorModal = document.getElementById('errorModal');
-                const errorMessage = document.getElementById('errorMessage');
-                errorMessage.textContent = 'Sorry, this PDF is currently unavailable. Please try again later.';
-                errorModal.style.display = 'flex';
-            }
-        }
-    } else {
-        // For external links (like Google Drive), convert forward slashes to backslashes for Windows
-        const windowsPath = pdfPath.replace(/\//g, '\\');
-        
-        try {
-            // Open PDF in the same window
-            window.location.href = windowsPath;
-        } catch (error) {
-            // Show error modal only if opening fails
-            const errorModal = document.getElementById('errorModal');
-            const errorMessage = document.getElementById('errorMessage');
-            errorMessage.textContent = 'Sorry, this PDF is currently unavailable. Please try again later.';
-            errorModal.style.display = 'flex';
-        }
+function isLocalPDFPath(pdfPath) {
+    try {
+        const url = new URL(pdfPath, window.location.href);
+        return url.origin === window.location.origin && url.pathname.toLowerCase().endsWith('.pdf');
+    } catch (error) {
+        return false;
     }
 }
+
+function getPDFViewerURL(pdfPath) {
+    const url = new URL(pdfPath, window.location.href);
+    const filePath = url.pathname + url.search + url.hash;
+    return `/pdf-viewer.html?file=${encodeURIComponent(filePath)}`;
+}
+
+function showPDFError() {
+    const errorModal = document.getElementById('errorModal');
+    const errorMessage = document.getElementById('errorMessage');
+    if (!errorModal || !errorMessage) return;
+    errorMessage.textContent = 'Sorry, this PDF is currently unavailable. Please try again later.';
+    errorModal.style.display = 'flex';
+}
+
+function handlePDFClick(event, pdfPath) {
+    if (event) event.preventDefault();
+
+    try {
+        if (isLocalPDFPath(pdfPath)) {
+            window.location.href = new URL(pdfPath, window.location.href).href;
+            return;
+        }
+
+        window.open(pdfPath, '_blank', 'noopener,noreferrer');
+    } catch (error) {
+        showPDFError();
+    }
+}
+
+document.addEventListener('click', function(event) {
+    const link = event.target.closest && event.target.closest('a[href]');
+    if (!link) return;
+    const href = link.getAttribute('href') || '';
+
+    if (isLocalPDFPath(href)) {
+        handlePDFClick(event, href);
+    }
+});
 
 function closeErrorModal() {
     const errorModal = document.getElementById('errorModal');
@@ -93,95 +97,522 @@ function handleVideoClick(event, videoPath) {
     }
 }
 
-// Initialize visitor counter with text display
-function initVisitorCounter() {
-    // Check if we've already counted this session to avoid double counting
-    const sessionKey = 'visitor_counted_' + window.location.pathname;
-    if (sessionStorage.getItem(sessionKey)) {
-        console.log('✅ Visitor already counted for this page in this session');
+const PORTAL_INTRO_SPEECH_TEXT = `The vision behind this effort is inspired by the words of Rabindranath Tagore.
+
+Where the mind is without fear and the head is held high.
+Where knowledge is free.
+
+This portal believes that education and knowledge should reach every learner without barriers.`;
+
+let portalIntroUtterance = null;
+let portalIntroAudio = null;
+let portalIntroVoicesReadyPromise = null;
+const PORTAL_INTRO_AUDIO_URL = '/audio/portal-introduction.wav?v=20260517-static-intro-audio';
+
+function getPortalIntroVoice() {
+    if (!window.speechSynthesis) return null;
+
+    const voices = window.speechSynthesis.getVoices();
+
+    return voices.find((voice) =>
+        /en-IN|hi-IN/i.test(voice.lang) && /male|ravi|hemant|amit|arjun|madhur/i.test(voice.name)
+    ) || voices.find((voice) =>
+        /en-IN|hi-IN/i.test(voice.lang)
+    ) || voices.find((voice) =>
+        /india|indian/i.test(voice.name)
+    ) || voices.find((voice) =>
+        /^en\b/i.test(voice.lang)
+    ) || voices[0] || null;
+}
+
+function waitForPortalIntroVoices() {
+    if (!window.speechSynthesis) return Promise.resolve();
+    const voices = window.speechSynthesis.getVoices();
+    if (voices.length > 0) return Promise.resolve();
+    if (portalIntroVoicesReadyPromise) return portalIntroVoicesReadyPromise;
+
+    portalIntroVoicesReadyPromise = new Promise((resolve) => {
+        let finished = false;
+        const complete = () => {
+            if (finished) return;
+            finished = true;
+            window.speechSynthesis.removeEventListener('voiceschanged', complete);
+            resolve();
+        };
+
+        window.speechSynthesis.addEventListener('voiceschanged', complete);
+        setTimeout(complete, 700);
+    });
+
+    return portalIntroVoicesReadyPromise;
+}
+
+function resetPortalIntroButton() {
+    const speakButton = document.getElementById('portalIntroSpeakBtn');
+    if (speakButton) {
+        speakButton.disabled = false;
+        speakButton.innerHTML = '<i class="fas fa-volume-up"></i> Hear Introduction';
+    }
+}
+
+function setPortalIntroSpeakingState(message) {
+    const speakButton = document.getElementById('portalIntroSpeakBtn');
+    const status = document.getElementById('portalIntroSpeechStatus');
+
+    if (speakButton) {
+        speakButton.disabled = true;
+        speakButton.innerHTML = '<i class="fas fa-volume-up"></i> Speaking...';
+    }
+    if (status) status.textContent = message || 'Teacher introduction is playing.';
+}
+
+function shouldUsePortalIntroMp3First() {
+    const userAgent = navigator.userAgent || '';
+    const isMobile = /android|iphone|ipad|ipod|mobile/i.test(userAgent);
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+    return isMobile || isStandalone;
+}
+
+function stopPortalIntroduction() {
+    if (portalIntroAudio) {
+        try {
+            portalIntroAudio.pause();
+            portalIntroAudio.currentTime = 0;
+        } catch (error) {}
+        portalIntroAudio = null;
+    }
+
+    if (window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+    }
+
+    portalIntroUtterance = null;
+}
+
+async function playPortalIntroductionAudio(status, reason) {
+    try {
+        portalIntroAudio = new Audio(PORTAL_INTRO_AUDIO_URL);
+        portalIntroAudio.preload = 'auto';
+        setPortalIntroSpeakingState('Teacher introduction is playing.');
+
+        portalIntroAudio.onended = () => {
+            portalIntroAudio = null;
+            resetPortalIntroButton();
+            if (status) status.textContent = '';
+        };
+        portalIntroAudio.onerror = () => {
+            portalIntroAudio = null;
+            resetPortalIntroButton();
+            if (status) status.textContent = 'Your browser blocked the introduction audio. Please tap once more.';
+        };
+
+        await portalIntroAudio.play();
+        return true;
+    } catch (error) {
+        resetPortalIntroButton();
+        if (status) {
+            status.textContent = reason
+                ? `${reason} Please tap Hear Introduction once more.`
+                : 'Introduction audio was blocked. Please tap Hear Introduction once more.';
+        }
+        return false;
+    }
+}
+
+function speakPortalIntroductionWithSynthesis(status, attempt) {
+    return new Promise((resolve, reject) => {
+        const selectedVoice = getPortalIntroVoice();
+        const utterance = new SpeechSynthesisUtterance(PORTAL_INTRO_SPEECH_TEXT);
+        let started = false;
+        let settled = false;
+        portalIntroUtterance = utterance;
+
+        utterance.lang = selectedVoice?.lang || 'en-IN';
+        if (selectedVoice) utterance.voice = selectedVoice;
+        utterance.pitch = 0.72;
+        utterance.rate = 0.82;
+        utterance.volume = 1;
+
+        const settle = (handler, value) => {
+            if (settled) return;
+            settled = true;
+            handler(value);
+        };
+
+        utterance.onstart = () => {
+            started = true;
+            setPortalIntroSpeakingState('Teacher introduction is playing.');
+        };
+
+        utterance.onend = () => {
+            portalIntroUtterance = null;
+            resetPortalIntroButton();
+            if (status) status.textContent = '';
+            settle(resolve);
+        };
+
+        utterance.onerror = (event) => {
+            portalIntroUtterance = null;
+            resetPortalIntroButton();
+            settle(reject, new Error(event.error || 'Speech was blocked'));
+        };
+
+        window.speechSynthesis.speak(utterance);
+
+        setTimeout(() => {
+            if (!started && !window.speechSynthesis.speaking && !window.speechSynthesis.pending) {
+                portalIntroUtterance = null;
+                resetPortalIntroButton();
+                settle(reject, new Error(attempt > 1 ? 'Mobile speech was blocked.' : 'Speech did not start.'));
+            }
+        }, 1200);
+    });
+}
+
+async function speakPortalIntroduction() {
+    const speakButton = document.getElementById('portalIntroSpeakBtn');
+    const status = document.getElementById('portalIntroSpeechStatus');
+
+    if (speakButton) speakButton.disabled = true;
+    if (status) status.textContent = 'Starting introduction...';
+
+    stopPortalIntroduction();
+
+    if (shouldUsePortalIntroMp3First()) {
+        await playPortalIntroductionAudio(status);
         return;
     }
 
-    // Get visitor's country using a free IP geolocation service
-    fetch('https://ipapi.co/json/')
-        .then(response => response.json())
-        .then(data => {
-            // Send visitor data to our counter API
-            return fetch('/api/visitor-counter', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    countryCode: data.country_code || 'Unknown',
-                    ipAddress: data.ip || 'Unknown',
-                    userAgent: navigator.userAgent,
-                    pageUrl: window.location.href,
-                    timestamp: new Date().toISOString()
-                })
-            });
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log('✅ Visitor counted:', data);
-            // Mark this page as counted in this session
-            sessionStorage.setItem(sessionKey, 'true');
-            
-            // Add a subtle animation to the counter
-            const counterImg = document.querySelector('img[alt="page hit counter"]');
-            if (counterImg) {
-                counterImg.style.transform = 'scale(1.05)';
-                setTimeout(() => {
-                    counterImg.style.transform = 'scale(1)';
-                }, 200);
-            }
-            
-            // Update counter display with actual count
-            updateCounterDisplay(data.globalCount, data.indiaCount);
-        })
-        .catch(error => {
-            console.error('❌ Visitor counter error:', error);
-            // Still mark as counted to avoid retries
-            sessionStorage.setItem(sessionKey, 'true');
-        });
+    if (!('speechSynthesis' in window) || !('SpeechSynthesisUtterance' in window)) {
+        await playPortalIntroductionAudio(status, 'Speech is not supported in this browser.');
+        return;
+    }
+
+    await waitForPortalIntroVoices();
+
+    try {
+        await speakPortalIntroductionWithSynthesis(status, 1);
+    } catch (firstError) {
+        try {
+            window.speechSynthesis.cancel();
+            await new Promise((resolve) => setTimeout(resolve, 120));
+            if (status) status.textContent = 'Starting introduction again...';
+            await speakPortalIntroductionWithSynthesis(status, 2);
+        } catch (secondError) {
+            await playPortalIntroductionAudio(status, 'Speech was blocked.');
+        }
+    }
 }
 
+function initPortalIntroductionSpeech() {
+    const speakButton = document.getElementById('portalIntroSpeakBtn');
+    if (!speakButton) return;
+
+    speakButton.addEventListener('click', speakPortalIntroduction);
+    if (window.speechSynthesis) {
+        window.speechSynthesis.getVoices();
+        window.speechSynthesis.addEventListener('voiceschanged', getPortalIntroVoice);
+    }
+    window.addEventListener('pagehide', stopPortalIntroduction);
+}
+
+// Initialize visitor counter with text display
+function initVisitorCounter() {
+    loadVisitorCounter();
+}
+
+const VISITOR_COUNTER_FALLBACK = {
+    totalVisitors: 630,
+    indiaCount: 127,
+    activeNow: 0
+};
+
+const FIREBASE_COUNTER_PATH = 'sirgangulyVisitorCounter';
+let firebaseCounterStarted = false;
+let firebaseCounterConfigPromise = null;
+let firebaseCounterModulesPromise = null;
+
 // Function to update counter display with actual numbers
-function updateCounterDisplay(globalCount, indiaCount) {
-    // No-op: we no longer render local numeric fallback.
-    // The site should display ONLY the FreeCounterStat image counter.
-    return;
+function getVisitorId() {
+    let visitorId = localStorage.getItem('visitorId');
+    if (!visitorId) {
+        visitorId = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+        localStorage.setItem('visitorId', visitorId);
+    }
+    return visitorId;
+}
+
+function updateCounterDisplay(totalVisitors, indiaCount, activeNow) {
+    const counter = document.querySelector('.visitor-counter-display');
+    if (!counter) return;
+
+    const total = typeof totalVisitors === 'string'
+        ? totalVisitors
+        : (Number(totalVisitors) || 0).toLocaleString();
+    const india = typeof indiaCount === 'number'
+        ? indiaCount.toLocaleString()
+        : '--';
+    const active = typeof activeNow === 'number'
+        ? activeNow.toLocaleString()
+        : '--';
+
+    counter.innerHTML = `
+        <span class="visitor-count-value" style="display:block;white-space:nowrap;line-height:1.25;">Total Visitors: ${total}</span>
+        <span class="visitor-count-value" style="display:block;white-space:nowrap;line-height:1.25;">Indian Visitor: ${india}</span>
+        <span class="visitor-count-value" style="display:block;white-space:nowrap;line-height:1.25;">Active now: ${active}</span>
+    `;
+}
+
+function updateCounterFallback() {
+    updateCounterDisplay(
+        VISITOR_COUNTER_FALLBACK.totalVisitors,
+        VISITOR_COUNTER_FALLBACK.indiaCount,
+        VISITOR_COUNTER_FALLBACK.activeNow
+    );
+}
+
+function hasFirebaseCounterConfig() {
+    const config = window.SIRGANGULY_FIREBASE_CONFIG;
+    return Boolean(
+        config &&
+        config.apiKey &&
+        config.authDomain &&
+        config.databaseURL &&
+        config.projectId &&
+        config.appId
+    );
+}
+
+function ensureFirebaseCounterConfig() {
+    if (hasFirebaseCounterConfig()) return Promise.resolve(true);
+    if (firebaseCounterConfigPromise) return firebaseCounterConfigPromise;
+
+    firebaseCounterConfigPromise = new Promise((resolve) => {
+        const script = document.createElement('script');
+        script.src = '/firebase-config.js?v=20260516';
+        script.async = true;
+        script.onload = () => resolve(hasFirebaseCounterConfig());
+        script.onerror = () => resolve(false);
+        document.head.appendChild(script);
+    });
+
+    return firebaseCounterConfigPromise;
+}
+
+function getFirebaseVisitorKey() {
+    return getVisitorId().replace(/[.#$\[\]/]/g, '_');
+}
+
+function loadFirebaseCounterModules() {
+    if (!firebaseCounterModulesPromise) {
+        firebaseCounterModulesPromise = Promise.all([
+            import('https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js'),
+            import('https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js')
+        ]).then(([app, database]) => ({ app, database }));
+    }
+
+    return firebaseCounterModulesPromise;
+}
+
+function countSnapshotChildren(snapshot) {
+    let count = 0;
+    snapshot.forEach(() => {
+        count++;
+    });
+    return count;
+}
+
+async function startFirebaseCounter(countVisit) {
+    if (firebaseCounterStarted) return false;
+    const hasConfig = await ensureFirebaseCounterConfig();
+    if (!hasConfig) return false;
+    firebaseCounterStarted = true;
+
+    try {
+        const { app, database } = await loadFirebaseCounterModules();
+        const firebaseApp = app.getApps().length
+            ? app.getApps()[0]
+            : app.initializeApp(window.SIRGANGULY_FIREBASE_CONFIG);
+        const db = database.getDatabase(firebaseApp);
+        const statsRef = database.ref(db, `${FIREBASE_COUNTER_PATH}/stats`);
+        const activeRef = database.ref(db, `${FIREBASE_COUNTER_PATH}/active`);
+        const myActiveRef = database.ref(db, `${FIREBASE_COUNTER_PATH}/active/${getFirebaseVisitorKey()}`);
+
+        let latestStats = { ...VISITOR_COUNTER_FALLBACK };
+        let latestActiveNow = VISITOR_COUNTER_FALLBACK.activeNow;
+        const renderLatest = () => {
+            updateCounterDisplay(
+                latestStats.totalVisitors,
+                latestStats.indiaCount,
+                latestActiveNow
+            );
+        };
+
+        database.onValue(statsRef, (snapshot) => {
+            const stats = snapshot.val() || {};
+            latestStats = {
+                totalVisitors: Number(stats.totalVisitors) || VISITOR_COUNTER_FALLBACK.totalVisitors,
+                indiaCount: Number(stats.indiaCount) || VISITOR_COUNTER_FALLBACK.indiaCount
+            };
+            renderLatest();
+        });
+
+        database.onValue(activeRef, (snapshot) => {
+            latestActiveNow = countSnapshotChildren(snapshot);
+            renderLatest();
+        });
+
+        database.onValue(database.ref(db, '.info/connected'), async (snapshot) => {
+            if (snapshot.val() !== true) return;
+
+            await database.onDisconnect(myActiveRef).remove();
+            await database.set(myActiveRef, {
+                lastSeen: database.serverTimestamp(),
+                page: window.location.pathname || '/'
+            });
+        });
+
+        setInterval(() => {
+            database.update(myActiveRef, {
+                lastSeen: database.serverTimestamp(),
+                page: window.location.pathname || '/'
+            }).catch(() => {});
+        }, 30000);
+
+        if (countVisit) {
+            const isIndia = isLikelyIndianVisitor();
+
+            await database.runTransaction(statsRef, (stats) => {
+                const current = stats || {};
+                const totalVisitors = Number(current.totalVisitors) || VISITOR_COUNTER_FALLBACK.totalVisitors;
+                const indiaCount = Number(current.indiaCount) || VISITOR_COUNTER_FALLBACK.indiaCount;
+
+                return {
+                    totalVisitors: totalVisitors + 1,
+                    indiaCount: indiaCount + (isIndia ? 1 : 0),
+                    lastUpdated: database.serverTimestamp()
+                };
+            });
+        }
+
+        return true;
+    } catch (error) {
+        firebaseCounterStarted = false;
+        console.log('Firebase visitor counter unavailable');
+        return false;
+    }
 }
 
 // Function to initialize mobile-friendly counter
 function initMobileCounter() {
-    // No-op for numeric fallback. The external image is injected by
-    // loadFreeCounterStatImage() on every page load.
+    const counter = document.querySelector('.visitor-counter-display');
+    if (!counter || counter.textContent.trim()) return;
+
+    counter.innerHTML = '<span class="visitor-count-value">Loading...</span>';
 }
 
-// Function to fetch and display real visitor count
-async function fetchVisitorCount() {
+async function detectVisitorCountry() {
     try {
-        const response = await fetch('/api/visitor-counter', {
+        const response = await fetch('https://ipapi.co/json/', { cache: 'no-store' });
+        if (!response.ok) return {};
+        const data = await response.json();
+
+        return {
+            countryCode: data.country_code || 'UNKNOWN',
+            ipAddress: data.ip || ''
+        };
+    } catch (error) {
+        return {};
+    }
+}
+
+function isLikelyIndianVisitor() {
+    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const languages = navigator.languages && navigator.languages.length
+        ? navigator.languages
+        : [navigator.language];
+
+    return timeZone === 'Asia/Kolkata' ||
+        timeZone === 'Asia/Calcutta' ||
+        languages.some((language) => /-IN\b/i.test(language || ''));
+}
+
+async function updateVisitorApi(countVisit) {
+    if (firebaseCounterStarted) return true;
+
+    try {
+        const location = countVisit ? await detectVisitorCountry() : {};
+        const activityResponse = await fetch('/api/visitor-counter', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                countryCode: 'FETCH',
-                ipAddress: '0.0.0.0',
-                userAgent: 'Counter Display'
+                countryCode: location.countryCode || 'HEARTBEAT',
+                ipAddress: location.ipAddress,
+                visitorId: getVisitorId(),
+                userAgent: navigator.userAgent,
+                countVisit
             })
+        });
+
+        if (activityResponse.ok) {
+            const activityData = await activityResponse.json();
+            updateCounterDisplay(activityData.totalVisitors, activityData.indiaCount, activityData.activeNow);
+            return true;
+        }
+    } catch (error) {
+        console.log('Visitor activity API unavailable');
+    }
+
+    return false;
+}
+
+// Function to fetch and display live visitor counts
+async function loadVisitorCounter() {
+    if (window.__visitorCounterLoading) return;
+    window.__visitorCounterLoading = true;
+
+    const sessionKey = 'visitorCounted';
+    const shouldCountVisit = sessionStorage.getItem(sessionKey) !== 'true';
+    const firebaseStarted = await startFirebaseCounter(shouldCountVisit);
+
+    if (firebaseStarted) {
+        if (shouldCountVisit) {
+            sessionStorage.setItem(sessionKey, 'true');
+        }
+        window.__visitorCounterLoading = false;
+        return;
+    }
+
+    const apiUpdated = await updateVisitorApi(shouldCountVisit);
+
+    if (apiUpdated) {
+        if (shouldCountVisit) {
+            sessionStorage.setItem(sessionKey, 'true');
+        }
+        window.__visitorCounterLoading = false;
+        return;
+    }
+
+    try {
+        const response = await fetch('https://gangulysnotes.goatcounter.com/counter/TOTAL.json', {
+            cache: 'no-store'
         });
         
         if (response.ok) {
             const data = await response.json();
-            updateCounterDisplay(data.globalCount, data.indiaCount);
-            console.log('✅ Visitor count updated:', data);
+            updateCounterDisplay(data.count || '--');
+            window.__visitorCounterLoading = false;
+            console.log('✅ GoatCounter visitor count updated:', data);
+            return;
         }
     } catch (error) {
-        console.log('ℹ️ Using default visitor count');
+        console.log('ℹ️ GoatCounter visitor count unavailable');
     }
+
+    updateCounterFallback();
+    window.__visitorCounterLoading = false;
 }
 
 // Check if Font Awesome loaded and apply fallbacks if needed
@@ -213,8 +644,10 @@ function checkFontAwesome() {
 // Initialize mobile counter on load
 if (typeof window !== 'undefined') {
     window.addEventListener('load', function() {
+        initPortalIntroductionSpeech();
         initMobileCounter();
-        fetchVisitorCount(); // Fetch real visitor count
+        loadVisitorCounter();
+        setInterval(() => updateVisitorApi(false), 30000);
         checkFontAwesome(); // Check Font Awesome loading
     });
     window.addEventListener('resize', initMobileCounter);
@@ -222,61 +655,13 @@ if (typeof window !== 'undefined') {
 
 // Run counter when page loads
 if (typeof window !== 'undefined') {
-    // Count visitor immediately
+    // Display visitor total immediately
     initVisitorCounter();
-    
-    // Also count when page becomes visible (for mobile apps, tabs, etc.)
+
+    // Refresh the display when returning to the tab.
     document.addEventListener('visibilitychange', function() {
         if (!document.hidden) {
-            // Small delay to ensure page is fully loaded
             setTimeout(initVisitorCounter, 1000);
         }
     });
-}
-
-// Inject FreeCounterStat counter image dynamically with cache-busting
-function loadFreeCounterStatImage() {
-    const container = document.querySelector('.visitor-counter-display');
-    if (!container) return;
-
-    // Clear previous content to avoid duplicates
-    container.innerHTML = '';
-
-    const img = document.createElement('img');
-    img.alt = 'page hit counter';
-    img.style.height = 'auto';
-    img.style.width = 'auto';
-    img.style.maxWidth = '100%';
-    img.style.borderRadius = '3px';
-
-    // Your counter code id from freecounterstat
-    const counterId = '39r6espucml7h4sesyx8f8j2cplpfr41';
-
-    // Try primary domain first, then fallback
-    const srcs = [
-        `https://counter1.optistats.ovh/private/freecounterstat.php?c=${counterId}&_=${Date.now()}`,
-        `https://counter2.optistats.ovh/private/freecounterstat.php?c=${counterId}&_=${Date.now()}`,
-        `https://counter3.optistats.ovh/private/freecounterstat.php?c=${counterId}&_=${Date.now()}`
-    ];
-
-    let idx = 0;
-    function tryNext() {
-        if (idx >= srcs.length) {
-            // If all fail, fall back to local custom counter (already handled by updateCounterDisplay)
-            return;
-        }
-        img.src = srcs[idx++];
-    }
-
-    img.onerror = () => tryNext();
-
-    // Start loading
-    tryNext();
-
-    container.appendChild(img);
-}
-
-// Ensure the external counter loads each time a page opens
-if (typeof window !== 'undefined') {
-    window.addEventListener('load', loadFreeCounterStatImage);
 }

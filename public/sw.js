@@ -1,15 +1,22 @@
 // Service Worker for Avatar AI Assistant PWA
 // Created by Susanto Ganguly (Sir Ganguly)
 
-const CACHE_NAME = 'avatar-ai-v1.0.0';
-const STATIC_CACHE = 'avatar-ai-static-v1.0.0';
-const DYNAMIC_CACHE = 'avatar-ai-dynamic-v1.0.0';
+const CACHE_NAME = 'sirganguly-v20260520-static-avatar';
+const STATIC_CACHE = 'sirganguly-static-v20260520-static-avatar';
+const DYNAMIC_CACHE = 'sirganguly-dynamic-v20260520-static-avatar';
 
 // Files to cache immediately
 const STATIC_FILES = [
   '/',
+  '/index.html',
+  '/ai-voice-assistant.html',
+  '/student-registration.html',
   '/offline.html',
   '/manifest.json',
+  '/icon-192.png',
+  '/icon-512.png',
+  '/audio/portal-introduction.wav',
+  '/sirganguly.png',
   '/assets/icons/icon-192x192.png',
   '/assets/icons/icon-512x512.png',
   '/assets/avatars/computer-teacher.png',
@@ -82,6 +89,27 @@ self.addEventListener('fetch', (event) => {
 
   // Skip API calls (they should always go to network)
   if (url.pathname.startsWith('/api/')) {
+    return;
+  }
+
+  // AI avatar pages must never be replaced by the generic offline page.
+  // If an older PWA cache is present, force a live network navigation for the
+  // teacher route and old AI entry points so students reach the real assistant.
+  if (
+    request.mode === 'navigate' &&
+    (url.pathname === '/computer-teacher' ||
+      url.pathname === '/ai-voice-assistant.html' ||
+      url.pathname === '/ai.html')
+  ) {
+    event.respondWith(fetch(request, { cache: 'reload' }).catch(() => caches.match('/ai-voice-assistant.html')));
+    return;
+  }
+
+  // Never show the offline HTML page for PDFs. If a PDF can't be fetched,
+  // allow the request to fail naturally (browser will show its own error),
+  // instead of confusing users with the app's offline screen.
+  if (url.pathname.toLowerCase().endsWith('.pdf')) {
+    event.respondWith(fetch(request));
     return;
   }
 
@@ -213,7 +241,7 @@ self.addEventListener('push', (event) => {
     const data = event.data.json();
     const options = {
       body: data.body || 'New message from your AI Avatar',
-      icon: '/assets/icons/icon-192x192.png',
+      icon: '/icon-192.png',
       badge: '/assets/icons/icon-72x72.png',
       vibrate: [100, 50, 100],
       data: {
@@ -249,7 +277,7 @@ self.addEventListener('notificationclick', (event) => {
   if (event.action === 'explore') {
     // Open the app
     event.waitUntil(
-      clients.openWindow('/')
+      clients.openWindow('/index.html')
     );
   } else if (event.action === 'close') {
     // Just close the notification

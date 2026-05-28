@@ -71,6 +71,103 @@
 }
 
 @layer components {
+  .intro-gate {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    color: #ffffff;
+    background:
+      linear-gradient(rgba(6, 16, 32, 0.74), rgba(15, 23, 42, 0.84)),
+      url('/sirganguly.png') center / cover no-repeat,
+      linear-gradient(135deg, #0f172a, #115e59 52%, #7f1d1d);
+  }
+
+  .intro-gate__content {
+    width: min(760px, 100%);
+    text-align: center;
+    padding: 28px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    background: rgba(15, 23, 42, 0.62);
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.34);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+
+  .intro-gate__eyebrow {
+    margin: 0 0 16px;
+    font-size: 0.84rem;
+    font-weight: 700;
+    letter-spacing: 0;
+    text-transform: uppercase;
+    color: #facc15;
+  }
+
+  .intro-gate h1 {
+    margin: 0 auto 22px;
+    max-width: 680px;
+    font-size: clamp(1.65rem, 4vw, 3rem);
+    line-height: 1.12;
+    font-weight: 800;
+  }
+
+  .intro-gate blockquote {
+    margin: 0 auto 22px;
+    max-width: 620px;
+    color: #e0f2fe;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: clamp(1.15rem, 3vw, 1.75rem);
+    line-height: 1.38;
+  }
+
+  .intro-gate blockquote p {
+    margin: 8px 0;
+  }
+
+  .intro-gate__belief {
+    margin: 0 auto 26px;
+    max-width: 640px;
+    color: rgba(255, 255, 255, 0.88);
+    font-size: 1rem;
+    line-height: 1.65;
+  }
+
+  .intro-gate__button {
+    min-height: 48px;
+    padding: 0 22px;
+    border: 1px solid rgba(255, 255, 255, 0.24);
+    border-radius: 8px;
+    color: #082f49;
+    background: #facc15;
+    font-weight: 800;
+    box-shadow: 0 10px 28px rgba(250, 204, 21, 0.26);
+    transition: transform 160ms ease, background 160ms ease, box-shadow 160ms ease;
+  }
+
+  .intro-gate__button:hover,
+  .intro-gate__button:focus-visible {
+    background: #fde047;
+    transform: translateY(-1px);
+    box-shadow: 0 14px 32px rgba(250, 204, 21, 0.34);
+    outline: none;
+  }
+
+  .intro-gate__button:active {
+    transform: translateY(0);
+  }
+
+  @media (max-width: 640px) {
+    .intro-gate {
+      padding: 16px;
+    }
+
+    .intro-gate__content {
+      padding: 22px 18px;
+    }
+  }
+
   /* Loading animations */
   .loading-spinner {
     @apply w-8 h-8 border-4 border-white/30 border-t-white rounded-full animate-spin;
@@ -115,7 +212,7 @@
     border: 1px solid rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    max-width: 120px;
+    max-width: 170px;
     transition: all 0.3s ease;
     /* Subtle glow effect */
     box-shadow: 
@@ -172,7 +269,7 @@
       left: 6px;
       font-size: 8px;
       padding: 3px 5px;
-      max-width: 100px;
+      max-width: 145px;
     }
     
     .visitor {
@@ -191,7 +288,7 @@
       left: 4px;
       font-size: 7px;
       padding: 2px 4px;
-      max-width: 90px;
+      max-width: 135px;
     }
     
     .visitor {

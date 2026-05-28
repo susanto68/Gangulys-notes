@@ -72,6 +72,69 @@ export default function Home() {
   useEffect(() => {
     // Check if visitor already counted in this session
     const sessionKey = 'visitorCounted';
+    let heartbeatInterval;
+
+    const getVisitorId = () => {
+      let visitorId = localStorage.getItem('visitorId');
+      if (!visitorId) {
+        visitorId = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+        localStorage.setItem('visitorId', visitorId);
+      }
+      return visitorId;
+    };
+
+    const updateLiveStats = (data) => {
+      const totalElement = document.getElementById('total-count');
+      const activeElement = document.getElementById('active-count');
+
+      if (totalElement && typeof data.totalVisitors === 'number') {
+        totalElement.innerText = data.totalVisitors.toLocaleString();
+      }
+
+      if (activeElement && typeof data.activeNow === 'number') {
+        activeElement.innerText = data.activeNow.toLocaleString();
+      }
+    };
+
+    const fetchCurrentStats = async () => {
+      try {
+        const response = await fetch('/api/visitor-counter');
+        if (response.ok) {
+          const data = await response.json();
+          updateLiveStats(data);
+
+          const globalElement = document.getElementById("global-count");
+          const indiaElement = document.getElementById("india-count");
+          if (globalElement && typeof data.globalCount === 'number') globalElement.innerText = data.globalCount;
+          if (indiaElement && typeof data.indiaCount === 'number') indiaElement.innerText = data.indiaCount;
+        }
+      } catch (error) {
+        console.warn('Unable to refresh visitor stats:', error);
+      }
+    };
+
+    const sendHeartbeat = async () => {
+      try {
+        const response = await fetch('/api/visitor-counter', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            countryCode: 'HEARTBEAT',
+            visitorId: getVisitorId(),
+            userAgent: navigator.userAgent,
+            countVisit: false
+          })
+        });
+
+        if (response.ok) {
+          updateLiveStats(await response.json());
+        }
+      } catch (error) {
+        console.warn('Unable to update active visitor heartbeat:', error);
+      }
+    };
     
     // Reset session on page refresh for testing purposes
     const isPageRefresh = performance.navigation.type === 1 || 
@@ -113,7 +176,12 @@ export default function Home() {
         if (statusElement) {
           statusElement.innerHTML = '🔄 Showing current counts';
         }
-        return;
+        fetchCurrentStats();
+        sendHeartbeat();
+        heartbeatInterval = setInterval(sendHeartbeat, 30000);
+        return () => {
+          if (heartbeatInterval) clearInterval(heartbeatInterval);
+        };
       }
 
     // Wait for DOM to be ready
@@ -212,7 +280,9 @@ export default function Home() {
             body: JSON.stringify({
               countryCode: data.country_code,
               ipAddress: data.ip,
-              userAgent: navigator.userAgent
+              userAgent: navigator.userAgent,
+              visitorId: getVisitorId(),
+              countVisit: true
             })
           })
           .then(res => res.json())
@@ -223,6 +293,7 @@ export default function Home() {
               // Update display with new counts from API
               updateCounter('global', apiResponse.globalCount);
               updateCounter('india', apiResponse.indiaCount);
+              updateLiveStats(apiResponse);
               
               // Update status message
               const statusElement = document.querySelector('.visitor.status');
@@ -261,6 +332,7 @@ export default function Home() {
 
           // Mark this visitor as counted for this session
           sessionStorage.setItem(sessionKey, 'true');
+          heartbeatInterval = setInterval(sendHeartbeat, 30000);
           console.log('✅ Visitor counted and session marked');
         })
         .catch(error => {
@@ -270,9 +342,14 @@ export default function Home() {
           globalCount++; // Assume global visitor
           updateCounter('global', globalCount);
           updateCounter('india', indiaCount);
+          updateLiveStats({
+            totalVisitors: globalCount + indiaCount,
+            activeNow: 1
+          });
           
           // Mark this visitor as counted for this session
           sessionStorage.setItem(sessionKey, 'true');
+          heartbeatInterval = setInterval(sendHeartbeat, 30000);
           console.log('✅ Visitor counted (fallback) and session marked');
           
           // Update status message
@@ -283,7 +360,10 @@ export default function Home() {
         });
     }, 1000); // Wait 1 second for DOM to be ready
 
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+      if (heartbeatInterval) clearInterval(heartbeatInterval);
+    };
   }, []);
 
   // Initialize speech synthesis
@@ -331,8 +411,11 @@ export default function Home() {
         setIsLoading(false)
         console.log('📱 Loading complete, checking welcome message...')
 
+        const welcomePlayed = typeof window !== 'undefined' &&
+          sessionStorage.getItem('welcomePlayed') === 'true'
+
         // Play welcome greeting after loading only if not played yet
-        if (!hasPlayedWelcome) {
+        if (!welcomePlayed) {
           console.log('🎤 Scheduling welcome message...')
           welcomeTimeoutRef.current = setTimeout(() => {
             playWelcomeGreeting()
@@ -352,7 +435,7 @@ export default function Home() {
         console.log('🧹 Cleaned up welcome timeout')
       }
     }
-  }, [playWelcomeGreeting]) // Removed hasPlayedWelcome from dependencies to prevent loops
+  }, [playWelcomeGreeting])
 
   if (isLoading) {
     return <LoadingScreen />
@@ -385,11 +468,14 @@ export default function Home() {
         <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900">
           {/* Visitor Counters */}
           <div id="visitor-counters">
-            <div className="visitor global">
-              🌍 <b>Global:</b> <span id="global-count" data-count="503">503</span>
+            <div className="visitor total">
+              👥 <b>Total Visitors:</b> <span id="total-count" data-count="630">630</span>
             </div>
             <div className="visitor india">
-              🇮🇳 <b>India:</b> <span id="india-count" data-count="127">127</span>
+              🇮🇳 <b>Indian Visitor:</b> <span id="india-count" data-count="127">127</span>
+            </div>
+            <div className="visitor active-now">
+              🟢 <b>Active now:</b> <span id="active-count" data-count="0">0</span>
             </div>
             <div className="visitor status" style={{fontSize: '8px', opacity: 0.6, marginTop: '2px'}}>
               📍 Detecting...
@@ -411,7 +497,7 @@ export default function Home() {
             {/* Quick Links to Portal and Java Lab */}
             <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 px-4">
               <Link
-                href="/ai-voice-assistant.html"
+                href="/ai-voice-assistant.html?v=20260520-static-avatar"
                 className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-semibold text-white shadow-lg bg-gradient-to-b from-sky-400 to-indigo-900 hover:from-sky-300 hover:to-indigo-800 transition"
               >
                 <img src="/assets/icons/icon-72x72.png" alt="AI" className="w-7 h-7 rounded" />

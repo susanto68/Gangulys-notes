@@ -1,8 +1,9 @@
 {
-  "name": "Ganguly's Educational Notes",
-  "short_name": "Sir Ganguly",
-  "description": "ICSE and ISC Computer Science Notes by Sir Ganguly - Class 6 to 12",
-  "start_url": "/",
+  "name": "SirGanguly",
+  "short_name": "SirGanguly",
+  "description": "Educational notes, program labs, tutorial videos, and AI avatar support by Sir Ganguly.",
+  "id": "/index.html",
+  "start_url": "/index.html",
   "display": "standalone",
   "theme_color": "#66a6ff",
   "background_color": "#ffffff",
@@ -23,19 +24,5 @@
       "purpose": "any maskable"
     }
   ],
-  "categories": ["education", "learning", "study"],
-  "screenshots": [
-    {
-      "src": "/assets/screenshots/mobile-1.png",
-      "sizes": "540x720",
-      "type": "image/png",
-      "form_factor": "narrow"
-    },
-    {
-      "src": "/assets/screenshots/desktop-1.png",
-      "sizes": "1280x720",
-      "type": "image/png",
-      "form_factor": "wide"
-    }
-  ]
+  "categories": ["education", "learning", "study"]
 }
