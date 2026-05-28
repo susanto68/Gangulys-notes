@@ -398,10 +398,40 @@
         state.speaking = false;
         setStatus('Ready for the next question.', 'Online');
       };
-      utterance.onerror = () => {
+      
+      let retryActive = false;
+      utterance.onerror = (e) => {
+        console.warn('Speech Synthesis Error, attempting fallback retry:', e);
         state.speaking = false;
-        setStatus('Speech was blocked. Tap Read Again to hear the answer.', 'Online');
+        
+        // If it failed with a specific voice (e.g. Edge Natural online voice), retry using the browser default voice
+        if (!retryActive && utterance.voice !== null) {
+          retryActive = true;
+          console.log('Retrying speech synthesis using browser default voice...');
+          const retryUtterance = new SpeechSynthesisUtterance(speechText);
+          retryUtterance.lang = 'en-US';
+          retryUtterance.voice = null;
+          retryUtterance.rate = 0.94;
+          retryUtterance.pitch = 0.88;
+          retryUtterance.volume = 1;
+          retryUtterance.onstart = () => {
+            state.speaking = true;
+            setStatus('Sir Ganguly is speaking (Fallback Voice)...', 'Speaking');
+          };
+          retryUtterance.onend = () => {
+            state.speaking = false;
+            setStatus('Ready for the next question.', 'Online');
+          };
+          retryUtterance.onerror = () => {
+            state.speaking = false;
+            setStatus('Speech was blocked. Tap Read Again to hear the answer.', 'Online');
+          };
+          window.speechSynthesis.speak(retryUtterance);
+        } else {
+          setStatus('Speech was blocked. Tap Read Again to hear the answer.', 'Online');
+        }
       };
+      
       window.speechSynthesis.speak(utterance);
     }
 
@@ -539,6 +569,8 @@
 
     function unlockSpeech() {
       if (window.speechSynthesis) {
+        // Resume queue in case browser has suspended or paused it (required for Safari & Edge)
+        window.speechSynthesis.resume();
         const u = new SpeechSynthesisUtterance(" ");
         u.volume = 0;
         window.speechSynthesis.speak(u);
