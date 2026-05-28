@@ -271,7 +271,7 @@
     
     <header>
         <h1>Educational Notes Portal</h1>
-        <p>Welcome to your comprehensive study resource</p>
+        <p class="header-subtitle">Welcome to your comprehensive study resource</p>
 
         <section class="portal-introduction" aria-labelledby="portalIntroTitle">
             <img src="sirganguly.png" alt="Sir Ganguly" class="portal-introduction-photo">
@@ -282,9 +282,18 @@
                     <p>&ldquo;Where knowledge is free...&rdquo;</p>
                 </blockquote>
                 <p class="portal-introduction-belief">This portal believes that education and knowledge should reach every learner without barriers.</p>
-                <button id="portalIntroSpeakBtn" class="portal-introduction-speak" type="button">
-                    <i class="fas fa-volume-up"></i> Hear Introduction
-                </button>
+                <div class="speak-controls">
+                    <button id="portalIntroSpeakBtn" class="portal-introduction-speak" type="button">
+                        <i class="fas fa-volume-up"></i> Hear Introduction
+                    </button>
+                    <div class="audio-wave-container" id="audioWaveContainer">
+                        <div class="wave-bar"></div>
+                        <div class="wave-bar"></div>
+                        <div class="wave-bar"></div>
+                        <div class="wave-bar"></div>
+                        <div class="wave-bar"></div>
+                    </div>
+                </div>
                 <div id="portalIntroSpeechStatus" class="portal-introduction-status" aria-live="polite"></div>
             </div>
         </section>
@@ -308,39 +317,103 @@
     </header>
 
     <main class="container">
-         
-        <div class="class-buttons">
-            <a href="ai-voice-assistant.html" class="class-btn featured-ai" style="background: linear-gradient(to bottom, #7dd3fc, #1e3a8a); box-shadow: 0 6px 18px rgba(30,58,138,0.35);">
-                <img src="assets/icons/icon-72x72.png" alt="AI" class="class-btn-image" />
-                <span class="class-btn-label">Talk to my AI Avatar</span>
-            </a>
-            <a
-            href="/pdf/Holiday%20Homework(2026-27).pdf"
-            class="class-btn holiday-btn"
-          >
-            <i class="fas fa-book-open"></i>
-            <span class="class-btn-label">Holiday Homework 2026-27</span>
-          </a>
-            <a href="videos.html" class="class-btn"><i class="fas fa-video"></i> Tutorial Videos</a>
-            <a href="Java_program.html" class="class-btn"><i class="fas fa-code"></i> Java Programs</a>
-            <a href="java-lab/index.html" class="class-btn"><i class="fas fa-play"></i> Run java Program Lab</a>
-            <a href="python-lab/index.html" class="class-btn"><i class="fab fa-python"></i> Python Programs</a>
-            <a href="c-lab/index.html" class="class-btn"><i class="fas fa-code"></i> C Programs</a>
-            <a href="cpp-lab/index.html" class="class-btn"><i class="fas fa-code"></i> C++ Programs</a>
-            <a href="class6.html" class="class-btn"><i class="fas fa-book"></i> Class 6</a>
-            <a href="class7.html" class="class-btn"><i class="fas fa-book"></i> Class 7</a>
-            <a href="class8.html" class="class-btn"><i class="fas fa-book"></i> Class 8</a>
-            <a href="class9.html" class="class-btn"><i class="fas fa-book"></i> Class 9</a>
-            <a href="class10.html" class="class-btn"><i class="fas fa-book"></i> Class 10</a>
-            <a href="class11.html" class="class-btn"><i class="fas fa-book"></i> Class 11</a>
-            <a href="class12.html" class="class-btn"><i class="fas fa-book"></i> Class 12</a>
-            <a href="Motivational_Words.html" class="class-btn spectrum-btn"><i class="fas fa-star"></i> <span>Motivational Lines for Students</span></a>
-           <a href="https://youtu.be/BLdADlEEdtQ?si=s1N5cLYkTv717mMx" 
-   class="class-btn spectrum-btn spectrum-btn--hindi" 
-   target="_blank" 
-   rel="noopener noreferrer">
-   <i class="fas fa-book"></i> ध्यान के साथ अपने लक्ष्य की ओर बढ़ें।
-</a>
+        <div class="dashboard-grid">
+            
+            <!-- Category: AI & Interactive Coding (Google Blue Theme) -->
+            <section class="dashboard-category category-blue">
+                <h2 class="category-header"><i class="fas fa-robot"></i> AI & Interactive Coding Labs</h2>
+                <div class="category-grid">
+                    <a href="ai-voice-assistant.html" class="class-btn card-ai">
+                        <img src="assets/icons/icon-72x72.png" alt="AI Avatar" class="class-btn-image" />
+                        <span class="class-btn-label">Talk to my AI Avatar</span>
+                    </a>
+                    <a href="java-lab/index.html" class="class-btn card-lab-java">
+                        <i class="fas fa-play"></i>
+                        <span class="class-btn-label">Run Java Program Lab</span>
+                    </a>
+                    <a href="python-lab/index.html" class="class-btn card-lab-python">
+                        <i class="fab fa-python"></i>
+                        <span class="class-btn-label">Python Compiler Lab</span>
+                    </a>
+                    <a href="c-lab/index.html" class="class-btn card-lab-c">
+                        <i class="fas fa-code"></i>
+                        <span class="class-btn-label">C Compiler Lab</span>
+                    </a>
+                    <a href="cpp-lab/index.html" class="class-btn card-lab-cpp">
+                        <i class="fas fa-code"></i>
+                        <span class="class-btn-label">C++ Compiler Lab</span>
+                    </a>
+                </div>
+            </section>
+
+            <!-- Category: Syllabus & Notes (Google Green Theme) -->
+            <section class="dashboard-category category-green">
+                <h2 class="category-header"><i class="fas fa-graduation-cap"></i> Syllabus & Class Notes</h2>
+                <div class="category-grid">
+                    <a href="/pdf/Holiday%20Homework(2026-27).pdf" class="class-btn card-holiday">
+                        <i class="fas fa-book-open"></i>
+                        <span class="class-btn-label">Holiday Homework 2026-27</span>
+                    </a>
+                    <a href="class6.html" class="class-btn card-class">
+                        <i class="fas fa-book"></i>
+                        <span class="class-btn-label">Class 6 Notes</span>
+                    </a>
+                    <a href="class7.html" class="class-btn card-class">
+                        <i class="fas fa-book"></i>
+                        <span class="class-btn-label">Class 7 Notes</span>
+                    </a>
+                    <a href="class8.html" class="class-btn card-class">
+                        <i class="fas fa-book"></i>
+                        <span class="class-btn-label">Class 8 Notes</span>
+                    </a>
+                    <a href="class9.html" class="class-btn card-class">
+                        <i class="fas fa-book"></i>
+                        <span class="class-btn-label">Class 9 Notes</span>
+                    </a>
+                    <a href="class10.html" class="class-btn card-class">
+                        <i class="fas fa-book"></i>
+                        <span class="class-btn-label">Class 10 Notes</span>
+                    </a>
+                    <a href="class11.html" class="class-btn card-class">
+                        <i class="fas fa-book"></i>
+                        <span class="class-btn-label">Class 11 Notes</span>
+                    </a>
+                    <a href="class12.html" class="class-btn card-class">
+                        <i class="fas fa-book"></i>
+                        <span class="class-btn-label">Class 12 Notes</span>
+                    </a>
+                </div>
+            </section>
+
+            <!-- Category: Video Tutorials & Programming (Google Red Theme) -->
+            <section class="dashboard-category category-red">
+                <h2 class="category-header"><i class="fas fa-laptop-code"></i> Video Tutorials & Programming List</h2>
+                <div class="category-grid">
+                    <a href="videos.html" class="class-btn card-videos">
+                        <i class="fas fa-video"></i>
+                        <span class="class-btn-label">Tutorial Videos</span>
+                    </a>
+                    <a href="Java_program.html" class="class-btn card-programs">
+                        <i class="fas fa-laptop-code"></i>
+                        <span class="class-btn-label">Java Programs List</span>
+                    </a>
+                </div>
+            </section>
+
+            <!-- Category: Mindfulness & Inspiration (Google Yellow Theme) -->
+            <section class="dashboard-category category-yellow">
+                <h2 class="category-header"><i class="fas fa-spa"></i> Mindfulness & Inspiration</h2>
+                <div class="category-grid">
+                    <a href="Motivational_Words.html" class="class-btn card-motivation">
+                        <i class="fas fa-star"></i>
+                        <span class="class-btn-label">Motivational Lines</span>
+                    </a>
+                    <a href="https://youtu.be/BLdADlEEdtQ?si=s1N5cLYkTv717mMx" class="class-btn card-meditation" target="_blank" rel="noopener noreferrer">
+                        <i class="fas fa-spa"></i>
+                        <span class="class-btn-label">ध्यान और लक्ष्य (YouTube)</span>
+                    </a>
+                </div>
+            </section>
             
         </div>
     </main>

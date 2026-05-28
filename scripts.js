@@ -149,19 +149,27 @@ function waitForPortalIntroVoices() {
 
 function resetPortalIntroButton() {
     const speakButton = document.getElementById('portalIntroSpeakBtn');
+    const wave = document.getElementById('audioWaveContainer');
     if (speakButton) {
         speakButton.disabled = false;
         speakButton.innerHTML = '<i class="fas fa-volume-up"></i> Hear Introduction';
+    }
+    if (wave) {
+        wave.classList.remove('speaking');
     }
 }
 
 function setPortalIntroSpeakingState(message) {
     const speakButton = document.getElementById('portalIntroSpeakBtn');
+    const wave = document.getElementById('audioWaveContainer');
     const status = document.getElementById('portalIntroSpeechStatus');
 
     if (speakButton) {
         speakButton.disabled = true;
         speakButton.innerHTML = '<i class="fas fa-volume-up"></i> Speaking...';
+    }
+    if (wave) {
+        wave.classList.add('speaking');
     }
     if (status) status.textContent = message || 'Teacher introduction is playing.';
 }
