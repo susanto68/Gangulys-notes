@@ -537,20 +537,31 @@
       };
     }
 
+    function unlockSpeech() {
+      if (window.speechSynthesis) {
+        const u = new SpeechSynthesisUtterance(" ");
+        u.volume = 0;
+        window.speechSynthesis.speak(u);
+      }
+    }
+
     questionForm.addEventListener('submit', event => {
       event.preventDefault();
+      unlockSpeech();
       askTeacher(questionInput.value);
     });
 
     questionInput.addEventListener('keydown', event => {
       if (event.key === 'Enter' && !event.shiftKey) {
         event.preventDefault();
+        unlockSpeech();
         askTeacher(questionInput.value);
       }
     });
 
     talkBtn.addEventListener('click', () => {
       showError('');
+      unlockSpeech();
       if (state.recognition) state.recognition.start();
     });
 
