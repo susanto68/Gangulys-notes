@@ -1,6 +1,17 @@
 # Educational Notes Portal - Ganguly's
 
-Welcome to Ganguly's Educational Notes Portal! This project provides a simple web interface to access educational notes for various classes.
+> [!WARNING]
+> **CRITICAL REPOSITORY STRUCTURE POLICY - PLEASE READ BEFORE MODIFYING**
+> 
+> This repository is dedicated **strictly** to the **Classic Notes Project** (`sirganguly.com`), which is a pure static HTML, CSS, and JS website served directly from the root directory. 
+> 
+> A previous merge accidentally brought the Next.js modern AI project (`ai.sirganguly.com`) into this repository's root, causing serious conflict, path duplicates, and broken builds. This has been resolved by **archiving the Next.js AI project inside `_modern_ai_project_archive/`** and restoring the static Classic Notes site to the root.
+> 
+> **MANDATORY RULES FOR DEVELOPERS & AI ASSISTANTS:**
+> 1. **Do NOT** try to move the Next.js files back to the root or re-integrate them.
+> 2. The root folder **must** remain pure HTML/CSS/JS (no framework files like `pages/`, `components/`, `package.json` in the root).
+> 3. All future updates to Classic Notes must be done directly on the root static files.
+> 4. Keep the AI project archived in `_modern_ai_project_archive/` unless explicitly instructed otherwise by the owner.
 
 ## Project Structure
 
