@@ -18,32 +18,33 @@
     <style>
         /* Base counter styles */
         .visitor-counter {
-            transition: all 0.3s ease !important;
-            background: rgba(255, 255, 255, 0.84) !important;
-            border: 1px solid rgba(255, 255, 255, 0.92) !important;
-            border-radius: 8px !important;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+            transition: all 0.2s ease !important;
+            background: #ffffff !important;
+            border: 3.5px solid #1e293b !important;
+            border-radius: 18px !important;
+            box-shadow: 0 5px 0 #1e293b !important;
+            font-family: "Fredoka", system-ui, sans-serif !important;
         }
         
         .visitor-counter h3 {
-            color: #000 !important;
-            font-weight: bold !important;
+            color: #1e293b !important;
+            font-weight: 900 !important;
         }
         
         /* Desktop styles */
         @media (min-width: 769px) {
             .visitor-counter {
-                top: 10px !important;
-                left: 10px !important;
-                padding: 6px 8px !important;
-                min-width: 128px !important;
-                max-width: 190px !important;
-                font-size: 12px !important;
+                top: 15px !important;
+                left: 15px !important;
+                padding: 10px 14px !important;
+                min-width: 150px !important;
+                max-width: 210px !important;
+                font-size: 13px !important;
             }
             
             .visitor-counter:hover {
-                transform: none;
-                box-shadow: none !important;
+                transform: translateY(-2px);
+                box-shadow: 0 7px 0 #1e293b !important;
             }
         }
         
@@ -52,23 +53,26 @@
             .visitor-counter {
                 top: 6px !important;
                 left: 6px !important;
-                padding: 3px 5px !important;
-                min-width: 88px !important;
-                max-width: 108px !important;
-                font-size: 8px !important;
+                padding: 4px 6px !important;
+                min-width: 96px !important;
+                max-width: 116px !important;
+                font-size: 9px !important;
                 z-index: 1001 !important;
-                line-height: 1.05 !important;
+                line-height: 1.1 !important;
+                border: 2.5px solid #1e293b !important;
+                box-shadow: 0 3px 0 #1e293b !important;
+                border-radius: 12px !important;
             }
             
             .visitor-counter h3 {
-                font-size: 7px !important;
-                margin: 0 0 1px 0 !important;
+                font-size: 8px !important;
+                margin: 0 0 2px 0 !important;
                 line-height: 1 !important;
             }
             
             .visitor-count-value {
-                font-size: 8px !important;
-                line-height: 1.12 !important;
+                font-size: 8.5px !important;
+                line-height: 1.15 !important;
             }
         }
         
