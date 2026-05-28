@@ -160,33 +160,6 @@ export default function AvatarChat() {
     }
   }
 
-  // Handle speech recognition result - simplified like working example
-  useEffect(() => {
-    if (transcript && !isListening) {
-      console.log('🎤 Speech recognized:', transcript)
-      setCurrentText(transcript)
-      setNoSpeechDetected(false)
-      // Call API with transcript immediately
-      handleApiCall(transcript)
-      resetTranscript()
-    }
-  }, [transcript, isListening, resetTranscript, handleApiCall])
-
-  // Handle speech recognition errors
-  useEffect(() => {
-    if (speechError) {
-      setShowError(true)
-      setNoSpeechDetected(true)
-      
-      const timer = setTimeout(() => {
-    setShowError(false)
-    clearSpeechError()
-        setNoSpeechDetected(false)
-      }, 8000)
-      return () => clearTimeout(timer)
-    }
-  }, [speechError, clearSpeechError])
-
   // API call function - simplified like the working example
   const handleApiCall = useCallback(async (prompt) => {
     if (!prompt || !avatarConfig) return
@@ -261,6 +234,33 @@ export default function AvatarChat() {
       setApiProcessing(false)
     }
   }, [avatarConfig, avatar, sessionId])
+
+  // Handle speech recognition result - simplified like working example
+  useEffect(() => {
+    if (transcript && !isListening) {
+      console.log('🎤 Speech recognized:', transcript)
+      setCurrentText(transcript)
+      setNoSpeechDetected(false)
+      // Call API with transcript immediately
+      handleApiCall(transcript)
+      resetTranscript()
+    }
+  }, [transcript, isListening, resetTranscript, handleApiCall])
+
+  // Handle speech recognition errors
+  useEffect(() => {
+    if (speechError) {
+      setShowError(true)
+      setNoSpeechDetected(true)
+      
+      const timer = setTimeout(() => {
+    setShowError(false)
+    clearSpeechError()
+        setNoSpeechDetected(false)
+      }, 8000)
+      return () => clearTimeout(timer)
+    }
+  }, [speechError, clearSpeechError])
 
   // Cleanup on component unmount
   useEffect(() => {
