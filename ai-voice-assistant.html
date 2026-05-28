@@ -458,10 +458,53 @@
         }
         requestAnimationFrame(() => speakText(nextAnswer));
       } catch (error) {
-        const message = error.message || FRIENDLY_ERROR;
-        renderAnswer(message, '', '');
-        showError(message);
-        setStatus('Please try again.', 'Online');
+        console.warn('API call failed, falling back to local Computer Teacher knowledge base:', error);
+        const lowerQuestion = cleanQuestion.toLowerCase();
+        let answer = "";
+        let code = "";
+        let language = "";
+
+        if (lowerQuestion.includes('loop')) {
+          answer = "A loop is a programming construct that repeats a block of code as long as a specified condition is true. In Java, we have three main types of loops: the 'for' loop (used when we know the exact number of iterations), the 'while' loop (used when the number of iterations is not known beforehand), and the 'do-while' loop (which executes at least once).";
+          code = "// Example of a 'for' loop printing numbers 1 to 5\nfor (int i = 1; i <= 5; i++) {\n    System.out.println(\"Number: \" + i);\n}";
+          language = "java";
+        } else if (lowerQuestion.includes('class') || lowerQuestion.includes('object') || lowerQuestion.includes('oop')) {
+          answer = "Object-Oriented Programming (OOP) is a programming paradigm based on the concept of 'objects', which can contain data and code. A Class is a blueprint or template from which individual objects are created. An Object is an instance of a class that has states (attributes) and behaviors (methods).";
+          code = "// Defining a simple Class\nclass Student {\n    String name;\n    int age;\n    \n    void introduce() {\n        System.out.println(\"Hello, I am \" + name);\n    }\n}\n\n// Creating an Object in main method\npublic class Main {\n    public static void main(String[] args) {\n        Student obj = new Student();\n        obj.name = \"Rahul\";\n        obj.introduce();\n    }\n}";
+          language = "java";
+        } else if (lowerQuestion.includes('variable')) {
+          answer = "A variable is a container (a reserved memory location) that stores a value while a Java program is executed. Each variable must be declared with a specific data type (like int, double, char, String, or boolean), which determines the size and layout of the variable's memory.";
+          code = "// Declaring and initializing different variables in Java\nint age = 15;\ndouble marks = 94.5;\nchar grade = 'A';\nString name = \"Ganguly\";\nboolean isPass = true;";
+          language = "java";
+        } else if (lowerQuestion.includes('compiler') || lowerQuestion.includes('interpreter') || lowerQuestion.includes('compil')) {
+          answer = "A compiler is a translator program that translates high-level programming code (like Java source code) into low-level machine code all at once before execution. An interpreter translates and executes the code line-by-line. Java is unique because it uses both: it compiles source code into Bytecode (.class file), which is then interpreted by the Java Virtual Machine (JVM).";
+          code = "Source Code (MyFile.java) \n       │\n       ▼  [Compiler: javac]\nBytecode (MyFile.class) \n       │\n       ▼  [Interpreter: JVM]\nMachine Code (Executed)";
+          language = "text";
+        } else if (lowerQuestion.includes('array')) {
+          answer = "An array is a collection of similar types of elements that have a contiguous memory location. It is a fixed-size data structure in Java. Indexing starts at 0, meaning the first element is at index 0, the second at index 1, and so on.";
+          code = "// Declaring and initializing an array in Java\nint[] numbers = {10, 20, 30, 40, 50};\n\n// Accessing elements\nSystem.out.println(\"First element: \" + numbers[0]); // Prints 10\n\n// Printing all elements using a loop\nfor (int i = 0; i < numbers.length; i++) {\n    System.out.println(numbers[i]);\n}";
+          language = "java";
+        } else if (lowerQuestion.includes('function') || lowerQuestion.includes('method')) {
+          answer = "A method (or function) is a block of code which only runs when it is called. You can pass data, known as parameters, into a method. Methods are used to perform certain actions, and they are also known as functions. They help in reusability of code.";
+          code = "// Defining a method to add two numbers\npublic static int addNumbers(int a, int b) {\n    return a + b;\n}\n\n// Calling the method in main\npublic static void main(String[] args) {\n    int result = addNumbers(5, 10);\n    System.out.println(\"Sum is: \" + result); // Prints 15\n}";
+          language = "java";
+        } else if (lowerQuestion.includes('program') || lowerQuestion.includes('code') || lowerQuestion.includes('example') || lowerQuestion.includes('java')) {
+          answer = "Here is a standard, complete Java program structure. It includes a class definition, the main method (which is the entry point of any Java program), and a print statement. Remember, in Java, the file name must match the public class name!";
+          code = "public class MyFirstProgram {\n    public static void main(String[] args) {\n        // Printing a welcome message to the console\n        System.out.println(\"Welcome to Ganguly's Computer Class!\");\n        \n        int num1 = 10;\n        int num2 = 20;\n        int sum = num1 + num2;\n        System.out.println(\"The sum of numbers is: \" + sum);\n    }\n}";
+          language = "java";
+        } else {
+          answer = "That's a wonderful question! While I am running in local offline mode right now, I can help you with core computer science topics like Loops, Classes, Objects, Variables, Arrays, Methods, or complete Java programs. Please ask me about one of those topics, and I'll explain it step-by-step!";
+          code = "";
+          language = "";
+        }
+
+        renderAnswer(answer, code, language);
+        questionInput.value = '';
+        setStatus('Answer ready (Local Mode).', 'Online');
+        if (state.code) {
+          setTimeout(() => codeCard.scrollIntoView({ behavior: 'smooth', block: 'start' }), 350);
+        }
+        requestAnimationFrame(() => speakText(answer));
       } finally {
         state.thinking = false;
         sendBtn.disabled = false;
