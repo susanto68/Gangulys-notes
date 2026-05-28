@@ -167,10 +167,8 @@ function setPortalIntroSpeakingState(message) {
 }
 
 function shouldUsePortalIntroMp3First() {
-    const userAgent = navigator.userAgent || '';
-    const isMobile = /android|iphone|ipad|ipod|mobile/i.test(userAgent);
-    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-    return isMobile || isStandalone;
+    // Always return true to use the high-quality pre-recorded audio file for premium, clean voice output
+    return true;
 }
 
 function stopPortalIntroduction() {
@@ -314,6 +312,47 @@ function initPortalIntroductionSpeech() {
         window.speechSynthesis.addEventListener('voiceschanged', getPortalIntroVoice);
     }
     window.addEventListener('pagehide', stopPortalIntroduction);
+
+    // Dynamic Autoplay and User Interaction Unlocker
+    let hasPlayed = false;
+
+    const triggerAutoplay = async () => {
+        if (hasPlayed) return;
+        hasPlayed = true;
+
+        // Remove the interaction event listeners immediately so it only triggers once
+        document.removeEventListener('click', triggerAutoplay);
+        document.removeEventListener('touchstart', triggerAutoplay);
+        document.removeEventListener('pointerdown', triggerAutoplay);
+        document.removeEventListener('keydown', triggerAutoplay);
+
+        try {
+            await speakPortalIntroduction();
+        } catch (e) {
+            console.log('Interaction autoplay failed:', e);
+            hasPlayed = false; // Reset if it truly failed
+        }
+    };
+
+    // 1. Try to play immediately on window load (Chrome allows it if site has high media engagement)
+    setTimeout(async () => {
+        try {
+            if (!hasPlayed) {
+                // If it starts playing successfully, mark it as played
+                const played = await speakPortalIntroduction();
+                hasPlayed = true;
+            }
+        } catch (err) {
+            // Autoplay blocked by browser policy, fallback to first interaction
+            console.log('Immediate autoplay was blocked, waiting for first user interaction to play...');
+        }
+    }, 400);
+
+    // 2. Add global interaction listeners as fallback to play on the absolute first click, touch, or keypress anywhere on screen
+    document.addEventListener('click', triggerAutoplay);
+    document.addEventListener('touchstart', triggerAutoplay);
+    document.addEventListener('pointerdown', triggerAutoplay);
+    document.addEventListener('keydown', triggerAutoplay);
 }
 
 // Initialize visitor counter with text display
