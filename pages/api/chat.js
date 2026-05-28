@@ -1,13 +1,15 @@
 import { AVATAR_CONFIG } from '../../lib/avatars'
 import { getCompleteSystemPrompt } from '../../context/prompts.js'
-import { GoogleGenerativeAI } from '@google/generative-ai'
+import OpenAI from 'openai'
 
-// Initialize Google Gemini client
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY)
+// Initialize Groq client using OpenAI SDK
+const groq = new OpenAI({
+  apiKey: process.env.GROQ_API_KEY,
+  baseURL: "https://api.groq.com/openai/v1",
+})
 
 // In-memory conversation storage with enhanced session management
 const conversationHistory = new Map()
-const sessionContexts = new Map()
 
 // Performance optimization: Cache system prompts
 const systemPromptCache = new Map()
@@ -740,23 +742,6 @@ const addToConversationHistory = (avatarType, sessionId, role, content) => {
   conversationHistory.set(key, history)
 }
 
-// Get or create session context for Gemini with performance optimization
-const getSessionContext = (avatarType, sessionId) => {
-  const key = `${avatarType}-${sessionId}`
-  if (!sessionContexts.has(key)) {
-    sessionContexts.set(key, genAI.getGenerativeModel({ model: 'gemini-2.0-flash-exp' }).startChat({
-      history: [],
-      generationConfig: {
-        maxOutputTokens: 2048, // Reduced from 4096 for faster responses
-        temperature: 0.7,
-        topP: 0.8,
-        topK: 40,
-      },
-    }))
-  }
-  return sessionContexts.get(key)
-}
-
 // Clean up old sessions (older than 1 hour instead of 24 hours)
 const cleanupOldSessions = () => {
   const now = Date.now()
@@ -767,7 +752,6 @@ const cleanupOldSessions = () => {
       const lastMessage = history[history.length - 1]
       if (now - lastMessage.timestamp > oneHour) {
         conversationHistory.delete(key)
-        sessionContexts.delete(key)
       }
     }
   }
@@ -893,9 +877,9 @@ export default async function handler(req, res) {
       })
     }
 
-    // Check for Gemini API key
-    if (!process.env.GEMINI_API_KEY) {
-      console.error('❌ No Gemini API key found. Please set GEMINI_API_KEY environment variable')
+    // Check for Groq API key
+    if (!process.env.GROQ_API_KEY) {
+      console.error('❌ No Groq API key found. Please set GROQ_API_KEY environment variable')
       
       // Generate intelligent fallback response
       const fallbackResponse = generateIntelligentFallback(avatarType, prompt)
@@ -915,7 +899,7 @@ export default async function handler(req, res) {
       })
     }
 
-    console.log('🔑 Using Google Gemini API')
+    console.log('🔑 Using Groq API')
 
     // Log successful validation
     console.log('API Request validated successfully:', {
@@ -934,30 +918,39 @@ export default async function handler(req, res) {
     // Get cached system prompt for better performance
     const systemPrompt = getCachedSystemPrompt(avatarType)
     
-    // Get or create Gemini chat session
-    const chat = getSessionContext(avatarType, sessionId)
+    // Construct messages array for OpenAI/Groq API
+    const messages = [
+      { role: 'system', content: systemPrompt }
+    ]
     
-    // Simplified prompt construction for better performance
-    const fullPrompt = `${systemPrompt}
+    // Add history
+    history.forEach(msg => {
+      messages.push({ role: msg.role === 'user' ? 'user' : 'assistant', content: msg.content })
+    })
+    
+    // Add current user prompt
+    messages.push({ role: 'user', content: `User Question: ${prompt}\n\nPlease provide a comprehensive, educational response with examples and step-by-step explanations when appropriate.` })
 
-User Question: ${prompt}
+    console.log(`🔗 Calling Groq API with optimized context...`)
 
-Please provide a comprehensive, educational response with examples and step-by-step explanations when appropriate.`
-
-    console.log(`🔗 Calling Gemini API with optimized context...`)
-
-    // Call Gemini API with timeout
+    // Call Groq API with timeout
     const result = await Promise.race([
-      chat.sendMessage(fullPrompt),
+      groq.chat.completions.create({
+        model: 'llama-3.1-8b-instant',
+        messages: messages,
+        temperature: 0.7,
+        max_tokens: 2048,
+        top_p: 0.8,
+      }),
       new Promise((_, reject) => 
         setTimeout(() => reject(new Error('API timeout')), 25000) // 25 second timeout
       )
     ])
     
-    const aiResponse = result.response.text().trim()
+    const aiResponse = result.choices[0]?.message?.content?.trim()
 
     if (!aiResponse) {
-      console.error('❌ No response received from Gemini')
+      console.error('❌ No response received from Groq')
       throw new Error('No response received from AI service')
     }
 
