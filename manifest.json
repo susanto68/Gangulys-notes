@@ -1,22 +1,28 @@
 {
-  "name": "Udaan – उड़ान",
-  "short_name": "Udaan",
-  "description": "A Flight Towards Your Dreams – Motivation for Students",
-  "start_url": "/",
+  "name": "SirGanguly",
+  "short_name": "SirGanguly",
+  "description": "Educational notes, program labs, tutorial videos, and AI avatar support by Sir Ganguly.",
+  "id": "/index.html",
+  "start_url": "/index.html",
   "display": "standalone",
-  "background_color": "#66a6ff",
-  "theme_color": "#89f7fe",
+  "theme_color": "#66a6ff",
+  "background_color": "#ffffff",
   "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "en",
   "icons": [
     {
-      "src": "icon-192.png",
+      "src": "/icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
-      "src": "icon-512.png",
+      "src": "/icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
-  ]
+  ],
+  "categories": ["education", "learning", "study"]
 }

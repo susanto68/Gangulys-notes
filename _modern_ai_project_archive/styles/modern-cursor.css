@@ -1,0 +1,199 @@
+/* Modern Cursor Styles */
+.modern-cursor {
+  position: fixed;
+  width: 30px;
+  height: 30px;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.8) 0%, rgba(99, 102, 241, 0.4) 70%, transparent 100%);
+  border: 2px solid rgba(99, 102, 241, 0.9);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transition: all 0.1s ease;
+  mix-blend-mode: screen;
+  filter: drop-shadow(0 0 10px rgba(99, 102, 241, 0.6));
+}
+
+.modern-cursor.clicking {
+  transform: scale(0.8);
+  background: radial-gradient(circle, rgba(239, 68, 68, 0.8) 0%, rgba(239, 68, 68, 0.4) 70%, transparent 100%);
+  border-color: rgba(239, 68, 68, 0.9);
+  filter: drop-shadow(0 0 15px rgba(239, 68, 68, 0.8));
+}
+
+.cursor-trail {
+  position: fixed;
+  width: 16px;
+  height: 16px;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.3) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9998;
+  transition: all 0.3s ease;
+  mix-blend-mode: screen;
+}
+
+/* Touch Ripple Effects for Mobile */
+.touch-ripple {
+  position: fixed;
+  width: 50px;
+  height: 50px;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.4) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9997;
+  animation: ripple-expand 1s ease-out forwards;
+  mix-blend-mode: screen;
+}
+
+@keyframes ripple-expand {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(3);
+    opacity: 0;
+  }
+}
+
+/* Voice Fallback Message Styles */
+.voice-fallback-message {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 10000;
+  animation: slide-in-right 0.5s ease-out;
+}
+
+.voice-fallback-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(15, 23, 42, 0.95);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  border-radius: 12px;
+  padding: 16px 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  max-width: 320px;
+}
+
+.voice-fallback-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.voice-fallback-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: white;
+  flex: 1;
+}
+
+.voice-fallback-text strong {
+  font-size: 14px;
+  font-weight: 600;
+  color: #fbbf24;
+}
+
+.voice-fallback-text span {
+  font-size: 12px;
+  color: #94a3b8;
+  line-height: 1.4;
+}
+
+.voice-fallback-close {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.voice-fallback-close:hover {
+  background: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+}
+
+/* Animations */
+@keyframes slide-in-right {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Hide default cursor on desktop when modern cursor is active */
+body:not(.mobile) {
+  cursor: none;
+}
+
+/* Ensure clickable elements show pointer on hover */
+body:not(.mobile) a:hover,
+body:not(.mobile) button:hover,
+body:not(.mobile) [role="button"]:hover {
+  cursor: none;
+}
+
+/* Mobile-specific adjustments */
+@media (max-width: 768px) {
+  .voice-fallback-message {
+    bottom: 16px;
+    right: 16px;
+    left: 16px;
+  }
+  
+  .voice-fallback-content {
+    padding: 14px 16px;
+  }
+  
+  .voice-fallback-text strong {
+    font-size: 13px;
+  }
+  
+  .voice-fallback-text span {
+    font-size: 11px;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .modern-cursor {
+    border-width: 3px;
+    filter: drop-shadow(0 0 8px rgba(99, 102, 241, 1));
+  }
+  
+  .voice-fallback-content {
+    border-width: 2px;
+    background: rgba(15, 23, 42, 1);
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .modern-cursor,
+  .cursor-trail,
+  .touch-ripple {
+    transition: none;
+    animation: none;
+  }
+  
+  .voice-fallback-message {
+    animation: none;
+  }
+}

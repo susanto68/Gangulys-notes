@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Educational Notes - Ganguly's</title>
+    <link rel="stylesheet" href="styles.css?v=20260516-home-blue-white">
+    <!-- Font Awesome with fallbacks -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" 
+          onerror="this.onerror=null; this.href='https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css';">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    
+    <!-- Mobile-friendly visitor counter styles -->
+    <style>
+        /* Base counter styles */
+        .visitor-counter {
+            transition: all 0.3s ease !important;
+            background: rgba(255, 255, 255, 0.84) !important;
+            border: 1px solid rgba(255, 255, 255, 0.92) !important;
+            border-radius: 8px !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+        }
+        
+        .visitor-counter h3 {
+            color: #000 !important;
+            font-weight: bold !important;
+        }
+        
+        /* Desktop styles */
+        @media (min-width: 769px) {
+            .visitor-counter {
+                top: 10px !important;
+                left: 10px !important;
+                padding: 6px 8px !important;
+                min-width: 128px !important;
+                max-width: 190px !important;
+                font-size: 12px !important;
+            }
+            
+            .visitor-counter:hover {
+                transform: none;
+                box-shadow: none !important;
+            }
+        }
+        
+        /* Mobile styles - much smaller and positioned to not overlap */
+        @media (max-width: 768px) {
+            .visitor-counter {
+                top: 6px !important;
+                left: 6px !important;
+                padding: 3px 5px !important;
+                min-width: 88px !important;
+                max-width: 108px !important;
+                font-size: 8px !important;
+                z-index: 1001 !important;
+                line-height: 1.05 !important;
+            }
+            
+            .visitor-counter h3 {
+                font-size: 7px !important;
+                margin: 0 0 1px 0 !important;
+                line-height: 1 !important;
+            }
+            
+            .visitor-count-value {
+                font-size: 8px !important;
+                line-height: 1.12 !important;
+            }
+        }
+        
+        /* Remove any link styling from counter display */
+        .visitor-counter-display {
+            cursor: default !important;
+            pointer-events: none !important;
+        }
+        
+        .visitor-counter-display * {
+            cursor: default !important;
+            pointer-events: none !important;
+        }
+
+        .install-pwa-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin: 10px auto 0;
+            padding: 8px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            border-radius: 999px;
+            background: linear-gradient(180deg, #3b82f6 0%, #1e3a8a 58%, #172554 100%);
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            box-shadow:
+                0 7px 0 #172554,
+                0 15px 24px rgba(23, 37, 84, 0.3),
+                inset 0 2px 0 rgba(255, 255, 255, 0.35);
+            transform: translateY(0);
+            transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+        }
+
+        .install-pwa-btn.is-visible {
+            display: inline-flex;
+        }
+
+        .install-pwa-btn:hover,
+        .install-pwa-btn:focus-visible {
+            filter: brightness(1.06);
+            transform: translateY(-4px) scale(1.02);
+            box-shadow:
+                0 11px 0 #172554,
+                0 21px 30px rgba(23, 37, 84, 0.36),
+                inset 0 2px 0 rgba(255, 255, 255, 0.42);
+        }
+
+        .install-pwa-btn:active {
+            transform: translateY(4px) scale(0.99);
+            box-shadow:
+                0 3px 0 #172554,
+                0 9px 16px rgba(23, 37, 84, 0.28),
+                inset 0 2px 0 rgba(255, 255, 255, 0.25);
+        }
+
+        .install-pwa-help {
+            max-width: 420px;
+            margin: 4px auto 0;
+            color: #1e3a8a;
+            font-size: 11px;
+            font-weight: 600;
+            line-height: 1.35;
+            min-height: 12px;
+        }
+
+        .install-guide {
+            display: none;
+            max-width: 460px;
+            margin: 10px auto 0;
+            padding: 12px 14px;
+            border: 1px solid rgba(30, 58, 138, 0.18);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.88);
+            color: #0f172a;
+            text-align: left;
+            box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+        }
+
+        .install-guide.is-visible {
+            display: block;
+        }
+
+        .install-guide strong {
+            display: block;
+            margin-bottom: 6px;
+            color: #1e3a8a;
+            font-size: 14px;
+        }
+
+        .install-guide ol {
+            margin: 0;
+            padding-left: 18px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        
+        /* Fallback icons if Font Awesome fails to load */
+        .fa-whatsapp::before,
+        .fa-whatsapp-square::before {
+            content: "📱";
+            font-family: Arial, sans-serif !important;
+            font-size: 1.2em !important;
+        }
+        
+        .fa-download::before {
+            content: "⬇️";
+            font-family: Arial, sans-serif !important;
+            font-size: 1.2em !important;
+        }
+        
+        .fa-external-link-alt::before,
+        .fa-external-link::before {
+            content: "🔗";
+            font-family: Arial, sans-serif !important;
+            font-size: 1.2em !important;
+        }
+        
+        .fa-file-pdf::before {
+            content: "📄";
+            font-family: Arial, sans-serif !important;
+            font-size: 1.2em !important;
+        }
+        
+        .fa-home::before {
+            content: "🏠";
+            font-family: Arial, sans-serif !important;
+            font-size: 1.2em !important;
+        }
+        
+        /* Very small screens */
+        @media (max-width: 480px) {
+            .visitor-counter {
+                top: 5px !important;
+                left: 5px !important;
+                padding: 2px 4px !important;
+                min-width: 76px !important;
+                max-width: 92px !important;
+            }
+            
+            .visitor-counter h3 {
+                font-size: 6px !important;
+            }
+            
+            .visitor-count-value {
+                font-size: 7px !important;
+            }
+        }
+    </style>
+
+<!-- Manifest -->
+<link rel="manifest" href="manifest.json">
+
+<!-- PWA Meta Tags -->
+<meta name="theme-color" content="#66a6ff">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Sir Ganguly">
+<meta name="mobile-web-app-capable" content="yes">
+
+<!-- Apple Touch Icons -->
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="apple-touch-icon" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" sizes="512x512" href="icon-512.png">
+
+<!-- Favicon -->
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+
+<!-- Service Worker Registration -->
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+      // Keep only the main /sw.js registration below; this older worker cached CSS/JS too aggressively.
+      return
+      navigator.serviceWorker.register('/service-worker.js')
+        .then(reg => console.log("✅ Service Worker Registered"))
+        .catch(err => console.log("❌ Service Worker Error", err));
+    });
+  }
+</script>
+
+
+
+
+    
+</head>
+<body>
+    <!-- Visitor Counter - Mobile Friendly -->
+    <div class="visitor-counter" style="position: fixed; top: 8px; left: 8px; z-index: 1000;">
+        <div style="text-align: center;">
+            <h3 style="color: #000; margin: 0 0 3px 0; font-size: 10px; font-weight: bold; line-height: 1;">No Of Visitors</h3>
+            <div class="visitor-counter-display" style="display: inline-block; text-decoration: none; cursor: default;">
+                <span class="visitor-count-value">Loading...</span>
+            </div>
+        </div>
+    </div>
+    
+    <header>
+        <h1>Educational Notes Portal</h1>
+        <p>Welcome to your comprehensive study resource</p>
+
+        <section class="portal-introduction" aria-labelledby="portalIntroTitle">
+            <img src="sirganguly.png" alt="Sir Ganguly" class="portal-introduction-photo">
+            <div class="portal-introduction-copy">
+                <p id="portalIntroTitle" class="portal-introduction-title">The vision behind this effort is inspired by the words of Rabindranath Tagore:</p>
+                <blockquote class="portal-introduction-quote">
+                    <p>&ldquo;Where the mind is without fear and the head is held high...&rdquo;</p>
+                    <p>&ldquo;Where knowledge is free...&rdquo;</p>
+                </blockquote>
+                <p class="portal-introduction-belief">This portal believes that education and knowledge should reach every learner without barriers.</p>
+                <button id="portalIntroSpeakBtn" class="portal-introduction-speak" type="button">
+                    <i class="fas fa-volume-up"></i> Hear Introduction
+                </button>
+                <div id="portalIntroSpeechStatus" class="portal-introduction-status" aria-live="polite"></div>
+            </div>
+        </section>
+        
+        <div class="whatsapp-feedback">
+            <a href="https://wa.me/919835379900?text=Hi! I have feedback about the educational notes portal." class="whatsapp-btn" target="_blank" rel="noopener noreferrer">
+                <i class="fab fa-whatsapp"></i> Share Feedback via WhatsApp
+            </a>
+        </div>
+        <div class="student-registration-link">
+            <a href="student-registration.html" class="student-register-btn">
+                <i class="fas fa-user-plus"></i> Get Free Updates
+            </a>
+            <div class="student-register-help">Tap here to register yourself for advanced <span class="free-help-word">free</span> help, updates, and future guidance.</div>
+        </div>
+        <button id="installPwaBtn" class="install-pwa-btn" type="button">
+            <i class="fas fa-download"></i> Download SirGanguly App
+        </button>
+        <div id="installPwaHelp" class="install-pwa-help" aria-live="polite"></div>
+        <div id="installGuide" class="install-guide" aria-live="polite"></div>
+    </header>
+
+    <main class="container">
+         
+        <div class="class-buttons">
+            <a href="https://ai.sirganguly.com" class="class-btn featured-ai" style="background: linear-gradient(to bottom, #7dd3fc, #1e3a8a); box-shadow: 0 6px 18px rgba(30,58,138,0.35);">
+                <img src="assets/icons/icon-72x72.png" alt="AI" class="class-btn-image" />
+                <span class="class-btn-label">Talk to my AI Avatar</span>
+            </a>
+            <a
+            href="/pdf/Holiday%20Homework(2026-27).pdf"
+            class="class-btn holiday-btn"
+          >
+            <i class="fas fa-book-open"></i>
+            <span class="class-btn-label">Holiday Homework 2026-27</span>
+          </a>
+            <a href="videos.html" class="class-btn"><i class="fas fa-video"></i> Tutorial Videos</a>
+            <a href="Java_program.html" class="class-btn"><i class="fas fa-code"></i> Java Programs</a>
+            <a href="java-lab/index.html" class="class-btn"><i class="fas fa-play"></i> Run java Program Lab</a>
+            <a href="python-lab/index.html" class="class-btn"><i class="fab fa-python"></i> Python Programs</a>
+            <a href="c-lab/index.html" class="class-btn"><i class="fas fa-code"></i> C Programs</a>
+            <a href="cpp-lab/index.html" class="class-btn"><i class="fas fa-code"></i> C++ Programs</a>
+            <a href="class6.html" class="class-btn"><i class="fas fa-book"></i> Class 6</a>
+            <a href="class7.html" class="class-btn"><i class="fas fa-book"></i> Class 7</a>
+            <a href="class8.html" class="class-btn"><i class="fas fa-book"></i> Class 8</a>
+            <a href="class9.html" class="class-btn"><i class="fas fa-book"></i> Class 9</a>
+            <a href="class10.html" class="class-btn"><i class="fas fa-book"></i> Class 10</a>
+            <a href="class11.html" class="class-btn"><i class="fas fa-book"></i> Class 11</a>
+            <a href="class12.html" class="class-btn"><i class="fas fa-book"></i> Class 12</a>
+            <a href="Motivational_Words.html" class="class-btn spectrum-btn"><i class="fas fa-star"></i> <span>Motivational Lines for Students</span></a>
+           <a href="https://youtu.be/BLdADlEEdtQ?si=s1N5cLYkTv717mMx" 
+   class="class-btn spectrum-btn spectrum-btn--hindi" 
+   target="_blank" 
+   rel="noopener noreferrer">
+   <i class="fas fa-book"></i> ध्यान के साथ अपने लक्ष्य की ओर बढ़ें।
+</a>
+            
+        </div>
+    </main>
+
+    <footer style="font-size: 8px; padding: 5px; text-align: center;">
+     <p>&copy; 2024 Ganguly's Educational Notes. All rights reserved.</p>
+ </footer>
+ 
+ <!-- Error Modal -->
+ <div id="errorModal" class="error-modal">
+     <div class="error-modal-content">
+         <p id="errorMessage" class="error-message"></p>
+         <button onclick="closeErrorModal()" class="close-button">Close</button>
+     </div>
+ </div>
+ 
+ <script>
+     window.goatcounter = { allow_local: true };
+ </script>
+ <script>
+     let deferredInstallPrompt = null;
+     const installPwaBtn = document.getElementById('installPwaBtn');
+     const installPwaHelp = document.getElementById('installPwaHelp');
+     const installGuide = document.getElementById('installGuide');
+
+     function isAppInstalled() {
+         return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+     }
+
+     function showInstallHelp(message) {
+         if (installPwaHelp) installPwaHelp.textContent = message;
+     }
+
+     function showInstallGuide(title, steps) {
+         if (!installGuide) return;
+         installGuide.innerHTML = `<strong>${title}</strong><ol>${steps.map(step => `<li>${step}</li>`).join('')}</ol>`;
+         installGuide.classList.add('is-visible');
+     }
+
+     function showDeviceInstallGuide() {
+         const ua = navigator.userAgent || '';
+         const isIOS = /iphone|ipad|ipod/i.test(ua);
+         const isAndroid = /android/i.test(ua);
+
+         if (isIOS) {
+             showInstallHelp('On iPhone or iPad, use Safari Share to add the app.');
+             showInstallGuide('Install on iPhone or iPad', [
+                 'Open this website in Safari.',
+                 'Tap the Share button.',
+                 'Tap Add to Home Screen.',
+                 'Tap Add.'
+             ]);
+             return;
+         }
+
+         if (isAndroid) {
+             showInstallHelp('On Android, use Chrome menu to install the app.');
+             showInstallGuide('Install on Android mobile', [
+                 'Open this website in Chrome.',
+                 'Tap the three dots menu.',
+                 'Tap Install app or Add to Home screen.',
+                 'Tap Install.'
+             ]);
+             return;
+         }
+
+         showInstallHelp('On computer, use Chrome or Edge install option.');
+         showInstallGuide('Install on computer', [
+             'Open this website in Chrome or Edge.',
+             'Click the install icon in the address bar.',
+             'If you do not see it, open browser menu.',
+             'Choose Install SirGanguly or Apps, then install this site.'
+         ]);
+     }
+
+     if (isAppInstalled()) {
+         if (installPwaBtn) installPwaBtn.textContent = 'SirGanguly App Installed';
+     } else {
+         showInstallHelp('Tap this button to install the app on your mobile.');
+     }
+
+     window.addEventListener('beforeinstallprompt', event => {
+         event.preventDefault();
+         deferredInstallPrompt = event;
+         showInstallHelp('Ready to install. Tap Download SirGanguly App.');
+         if (installGuide) installGuide.classList.remove('is-visible');
+     });
+
+     if (installPwaBtn) {
+         installPwaBtn.addEventListener('click', async () => {
+             if (!deferredInstallPrompt) {
+                 showDeviceInstallGuide();
+                 return;
+             }
+             deferredInstallPrompt.prompt();
+             const choice = await deferredInstallPrompt.userChoice;
+             deferredInstallPrompt = null;
+             if (choice.outcome === 'accepted') {
+                 showInstallHelp('Installing SirGanguly app...');
+             } else {
+                 showInstallHelp('Installation cancelled. You can tap Download again anytime.');
+             }
+         });
+     }
+
+     window.addEventListener('appinstalled', () => {
+         deferredInstallPrompt = null;
+         if (installPwaBtn) installPwaBtn.textContent = 'SirGanguly App Installed';
+         showInstallHelp('SirGanguly app has been installed on this device.');
+     });
+ </script>
+ <script
+     data-goatcounter="https://gangulysnotes.goatcounter.com/count"
+     async
+     src="https://gc.zgo.at/count.js"></script>
+<script src="scripts.js?v=20260517-static-intro-audio"></script>
+ 
+ <!-- PWA Service Worker Registration -->
+ <script>
+     document.addEventListener('click', event => {
+         const aiLink = event.target.closest('a[href*="ai-voice-assistant.html"], a[href^="/computer-teacher"]');
+         if (aiLink) {
+             sessionStorage.setItem('sirgangulyLastNavigationTarget', aiLink.getAttribute('href'));
+         }
+     });
+
+     if ('serviceWorker' in navigator) {
+         window.addEventListener('load', () => {
+             navigator.serviceWorker.register('/sw.js')
+                 .then(registration => {
+                     console.log('✅ Service Worker registered successfully:', registration.scope);
+                 })
+                 .catch(error => {
+                     console.log('❌ Service Worker registration failed:', error);
+                 });
+         });
+     }
+ </script>
+</body>
+</html>

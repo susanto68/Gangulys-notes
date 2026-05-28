@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Test Page</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .test-section { margin: 20px 0; padding: 20px; border: 1px solid #ccc; border-radius: 8px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .warning { background-color: #fff3cd; border-color: #ffeaa7; }
+        button { padding: 10px 20px; margin: 5px; border: none; border-radius: 5px; cursor: pointer; }
+        .success-btn { background-color: #28a745; color: white; }
+        .error-btn { background-color: #dc3545; color: white; }
+        .warning-btn { background-color: #ffc107; color: black; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Project Health Check</h1>
+    
+    <div class="test-section">
+        <h2>1️⃣ Server Connectivity Test</h2>
+        <button onclick="testServer()" class="success-btn">Test Server</button>
+        <div id="server-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>2️⃣ Main Page Test</h2>
+        <button onclick="testMainPage()" class="success-btn">Test Main Page</button>
+        <div id="main-page-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>3️⃣ Avatar Page Test</h2>
+        <button onclick="testAvatarPage()" class="success-btn">Test Avatar Page</button>
+        <div id="avatar-page-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>4️⃣ Speech API Test</h2>
+        <button onclick="testSpeechAPI()" class="warning-btn">Test Speech API</button>
+        <div id="speech-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>5️⃣ Direct Navigation</h2>
+        <a href="http://localhost:3000" target="_blank" class="success-btn" style="text-decoration: none; display: inline-block;">Open Main Page</a>
+        <a href="http://localhost:3000/history-teacher" target="_blank" class="success-btn" style="text-decoration: none; display: inline-block; margin-left: 10px;">Open History Teacher</a>
+    </div>
+
+    <script>
+        function showResult(elementId, message, type) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `<div class="${type}">${message}</div>`;
+        }
+
+        async function testServer() {
+            try {
+                const response = await fetch('http://localhost:3000');
+                if (response.ok) {
+                    showResult('server-result', '✅ Server is running and responding', 'success');
+                } else {
+                    showResult('server-result', `❌ Server error: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                showResult('server-result', `❌ Connection failed: ${error.message}`, 'error');
+            }
+        }
+
+        async function testMainPage() {
+            try {
+                const response = await fetch('http://localhost:3000');
+                const html = await response.text();
+                
+                let results = [];
+                if (html.includes('Avatar AI Assistant')) {
+                    results.push('✅ Main page title found');
+                } else {
+                    results.push('❌ Main page title not found');
+                }
+                
+                if (html.includes('history-teacher')) {
+                    results.push('✅ Avatar selection found');
+                } else {
+                    results.push('❌ Avatar selection not found');
+                }
+                
+                if (html.includes('🧪 Test Speech')) {
+                    results.push('✅ Test speech button found');
+                } else {
+                    results.push('❌ Test speech button not found');
+                }
+                
+                showResult('main-page-result', results.join('<br>'), results.some(r => r.includes('❌')) ? 'error' : 'success');
+            } catch (error) {
+                showResult('main-page-result', `❌ Test failed: ${error.message}`, 'error');
+            }
+        }
+
+        async function testAvatarPage() {
+            try {
+                const response = await fetch('http://localhost:3000/history-teacher');
+                const html = await response.text();
+                
+                let results = [];
+                if (html.includes('History Teacher')) {
+                    results.push('✅ Avatar page loads');
+                } else {
+                    results.push('❌ Avatar page not loading');
+                }
+                
+                if (html.includes('Speech Control')) {
+                    results.push('✅ Speech controls found');
+                } else {
+                    results.push('❌ Speech controls not found');
+                }
+                
+                if (html.includes('🧪 Test Speech')) {
+                    results.push('✅ Debug button found');
+                } else {
+                    results.push('❌ Debug button not found');
+                }
+                
+                showResult('avatar-page-result', results.join('<br>'), results.some(r => r.includes('❌')) ? 'error' : 'success');
+            } catch (error) {
+                showResult('avatar-page-result', `❌ Test failed: ${error.message}`, 'error');
+            }
+        }
+
+        function testSpeechAPI() {
+            if ('speechSynthesis' in window) {
+                showResult('speech-result', '✅ Speech synthesis supported in browser', 'success');
+                
+                if ('SpeechSynthesisUtterance' in window) {
+                    showResult('speech-result', '✅ SpeechSynthesisUtterance supported<br>✅ Speech API ready for testing', 'success');
+                } else {
+                    showResult('speech-result', '❌ SpeechSynthesisUtterance not supported', 'error');
+                }
+            } else {
+                showResult('speech-result', '❌ Speech synthesis not supported in browser', 'error');
+            }
+        }
+
+        // Auto-run server test on page load
+        window.onload = function() {
+            testServer();
+        };
+    </script>
+</body>
+</html>

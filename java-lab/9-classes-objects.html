@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BlueJ Lab — Classes and Objects</title>
+  <link rel="stylesheet" href="lab.css">
+</head>
+<body>
+  <div class="lab-container">
+    <header>
+      <h1>9) Classes and Objects</h1>
+      <p>Define a simple class and create its object to call a method.</p>
+      <a class="back-link" href="index.html">← All Topics</a>
+    </header>
+
+    <div class="card editor">
+      <div class="controls">
+        <button id="runBtn" class="run-btn">▶ Run Program</button>
+      </div>
+
+      <label for="code">Java Code</label>
+      <textarea id="code" class="code-area">class Student {
+    String name;
+    void show() { System.out.println("Hello, " + name); }
+}
+public class Main {
+    public static void main(String[] args) {
+        Student s = new Student();
+        s.name = "Riya";
+        s.show();
+    }
+}
+</textarea>
+
+      <label for="stdin">Program Input (optional)</label>
+      <textarea id="stdin" class="stdin-area" placeholder="Input passed to the program via standard input (stdin)"></textarea>
+
+      <label for="output">Output</label>
+      <pre id="output" class="output"></pre>
+    </div>
+  </div>
+
+  <script src="lab.js"></script>
+</body>
+</html>
+
+

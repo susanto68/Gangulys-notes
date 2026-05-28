@@ -1,0 +1,28 @@
+{
+  "rewrites": [
+    {
+      "source": "/computer-teacher",
+      "destination": "/ai-voice-assistant.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/pdf/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/(.*\\.html)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "name": "sirganguly-backend",
+  "version": "1.0.0",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js"
+  },
+  "dependencies": {
+    "cors": "^2.x",
+    "dotenv": "^17.x",
+    "express": "^4.x",
+    "openai": "^4.x"
+  }
+}

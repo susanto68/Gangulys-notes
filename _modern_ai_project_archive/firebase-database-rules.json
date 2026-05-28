@@ -1,0 +1,20 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "sirgangulyVisitorCounter": {
+      "stats": {
+        ".read": true,
+        ".write": true,
+        ".validate": "newData.hasChildren(['totalVisitors', 'indiaCount', 'lastUpdated']) && newData.child('totalVisitors').isNumber() && newData.child('indiaCount').isNumber() && newData.child('lastUpdated').isNumber() && (!data.exists() || (newData.child('totalVisitors').val() >= data.child('totalVisitors').val() && newData.child('indiaCount').val() >= data.child('indiaCount').val()))"
+      },
+      "active": {
+        ".read": true,
+        "$visitorId": {
+          ".write": true,
+          ".validate": "newData.val() === null || (newData.hasChildren(['lastSeen', 'page']) && newData.child('lastSeen').isNumber() && newData.child('page').isString())"
+        }
+      }
+    }
+  }
+}

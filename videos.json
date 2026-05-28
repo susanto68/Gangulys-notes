@@ -1,0 +1,703 @@
+{
+  "channel": {
+    "name": "Knowledge Boat",
+    "id": "UCDfuhmBFk-0QThd7axr1Mlg"
+  },
+  "categories": [
+    {
+      "id": "PLy3FphGsVt9ovBGrEP0Vnk0mPH0Kanv74",
+      "title": "Arrays | ICSE Computer Applications | Java & BlueJ",
+      "videos": [
+        {
+          "id": "bTxIzBglb-s",
+          "title": "2D Array Sum: Row-Wise Column-Wise & Sum of All Elements | Java & BlueJ | ICSE Computer Applications",
+          "description": "In this lesson we will learn about computing row-wise sum, column-wise sum and sum of all elements of a Double Dimensional array. We will walkthrough a Java program in BlueJ which will show us how we can find the sum of each row, each column and sum of all elements of a Double Dimensional array.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-2d-array-sum\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-2d-array-sum",
+          "publishedAt": "2020-07-03T11:58:24Z",
+          "thumbnail": "https://i.ytimg.com/vi/bTxIzBglb-s/maxresdefault.jpg",
+          "position": 11
+        },
+        {
+          "id": "4Rh_GuZLnVU",
+          "title": "2D Array-Creation with new Operator & Accepting User Data | Java & BlueJ | ICSE Computer Application",
+          "description": "In this video we will learn about creating a Double Dimensional Array using the new operator and assigning values to each of its elements. After that we will write a program in BlueJ to accept user input in a Double Dimensional Array created using the new operator.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-2d-array-new-op\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-2d-array-new-op",
+          "publishedAt": "2020-07-03T11:58:24Z",
+          "thumbnail": "https://i.ytimg.com/vi/4Rh_GuZLnVU/maxresdefault.jpg",
+          "position": 10
+        },
+        {
+          "id": "hY9w-tsMbY8",
+          "title": "2D Array: Declaration Initialization & Matrix Form | Java & BlueJ | ICSE Computer Applications",
+          "description": "In this video we will learn about Double Dimensional Arrays. We will see how we can declare and initialize a double dimensional array and print all of its elements in Matrix form.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-2d-array-initialize\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-2d-array-initialize",
+          "publishedAt": "2020-07-03T11:58:24Z",
+          "thumbnail": "https://i.ytimg.com/vi/hY9w-tsMbY8/maxresdefault.jpg",
+          "position": 9
+        },
+        {
+          "id": "8uO662LA98o",
+          "title": "Selection Sort in Java BlueJ Explained | ICSE Computer Applications",
+          "description": "Selection Sort divides the array into two parts sorted sub-array and unsorted sub-array. In each pass, it finds the minimum element of the unsorted sub-array and swaps it with the leftmost unsorted element moving the sorted sub-array one element to the right.\n\nThis lesson will explain us Selection Sort technique of sorting arrays. We will first understand Selection Sort through a real-world example and then go over the Selection Sort Java program in BlueJ to develop a thorough understanding of Selection Sort.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-selection-sort\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-selection-sort",
+          "publishedAt": "2020-07-03T11:58:24Z",
+          "thumbnail": "https://i.ytimg.com/vi/8uO662LA98o/maxresdefault.jpg",
+          "position": 8
+        },
+        {
+          "id": "CTqKGxx7LtE",
+          "title": "Bubble Sort in Java BlueJ Explained | ICSE Computer Applications Class 10",
+          "description": "Sorting means arranging the elements of the array in either ascending or descending order.  When things are sorted, it makes it easier for us to find them quickly. In Bubble Sort, we compare adjacent elements and swap them if they are in the wrong order.\n\nThis lesson explains Bubble Sort technique of sorting arrays. We will first understand Bubble Sort through a real-world example and then go over the Bubble Sort Java program in BlueJ to develop a thorough understanding of Bubble Sort.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-bubble-sort\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-bubble-sort",
+          "publishedAt": "2020-07-03T11:58:24Z",
+          "thumbnail": "https://i.ytimg.com/vi/CTqKGxx7LtE/maxresdefault.jpg",
+          "position": 7
+        },
+        {
+          "id": "LuuI1j_g7fk",
+          "title": "Binary Search in Arrays | Java & BlueJ | ICSE Computer Applications",
+          "description": "The precondition to using Binary Search is that the array should be sorted. Binary Search is similar to how we search for a word in the dictionary. In Binary search, we divide the array successively into 2 halves and search for the element either in the first half or in the second half.\n\nThis lesson will explain us Binary Search technique of searching in arrays. We will first understand Binary Search through a real-world example and then go over the Binary Search Java program in BlueJ to develop a thorough understanding of Binary Search.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-binary-search\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-binary-search",
+          "publishedAt": "2020-07-03T11:58:24Z",
+          "thumbnail": "https://i.ytimg.com/vi/LuuI1j_g7fk/maxresdefault.jpg",
+          "position": 6
+        },
+        {
+          "id": "NG7M_SJqJhM",
+          "title": "Linear Search in Arrays | Java & BlueJ | ICSE Computer Applications",
+          "description": "In linear search, we start at the beginning of the array and check to see if the first element is the element we are looking for. If it isn’t we move to next element in the list and repeat the process until we have found our item or we reach the end of the array.\n\nThis lesson explains linear search technique of searching in arrays. We will first understand linear search through an example and then go over the linear search Java program in BlueJ to develop a thorough understanding of linear search.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-linear-search\n👉 Visit KnowledgeBoat - https://bit.ly/vist-kboat-linear-search",
+          "publishedAt": "2020-07-03T11:58:24Z",
+          "thumbnail": "https://i.ytimg.com/vi/NG7M_SJqJhM/maxresdefault.jpg",
+          "position": 5
+        },
+        {
+          "id": "md3lbs-VMzs",
+          "title": "Searching in Arrays | Java & BlueJ | ICSE Computer Applications",
+          "description": "Searching is a common activity in programming. As arrays hold a collection of values, often in our programs we need to check if a particular value is present in our array or not. There are many ways to search an array but ICSE has prescribed Linear Search and Binary Search techniques for Class 10.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-array-search\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-array-search",
+          "publishedAt": "2020-07-03T11:58:24Z",
+          "thumbnail": "https://i.ytimg.com/vi/md3lbs-VMzs/maxresdefault.jpg",
+          "position": 4
+        },
+        {
+          "id": "83QrG3G51Ls",
+          "title": "Single Dimensional Array: Accepting User Input | Java & BlueJ | ICSE Computer Applications",
+          "description": "In this lesson, we will learn how to accept user input in an array. For this we will write a very simple program which will accept n numbers from the user, store them in a single-dimensional array and print the array along with the sum of all the numbers.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-sda-input\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-sda-input",
+          "publishedAt": "2020-07-03T11:58:24Z",
+          "thumbnail": "https://i.ytimg.com/vi/83QrG3G51Ls/maxresdefault.jpg",
+          "position": 3
+        },
+        {
+          "id": "0NAUGcp3uGc",
+          "title": "Single Dimensional Array: Creation with new Operator | Java & BlueJ | ICSE Computer Applications",
+          "description": "Creating the array with new operator is a 2-step process. First declare the array - int arr[]. Then use the new operator to create the array - arr = new int[6]. This first statement just tells the compiler that we intend to use arr as an int array. It doesn’t create any array. The second statement actually creates the array.\n\nIn this lesson, we will learn about creating an array using the new operator. We will also learn about default values of arrays of different data types and how we can assign values to individual elements of the array.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-sda-new-operator\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-sda-new-operator",
+          "publishedAt": "2020-07-03T11:58:24Z",
+          "thumbnail": "https://i.ytimg.com/vi/0NAUGcp3uGc/maxresdefault.jpg",
+          "position": 2
+        },
+        {
+          "id": "ROSxCIXsqlQ",
+          "title": "Single Dimensional Array: Declaration Initialization Access Elements | Java & BlueJ | ICSE Comp Apps",
+          "description": "In this lesson we will learn about how to declare and initialize a single dimensional array and access each of its elements.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-sda-initialize\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-sda-initialize",
+          "publishedAt": "2020-07-03T11:58:24Z",
+          "thumbnail": "https://i.ytimg.com/vi/ROSxCIXsqlQ/maxresdefault.jpg",
+          "position": 1
+        },
+        {
+          "id": "BXyK73PyhHk",
+          "title": "Introduction to Arrays | Java & BlueJ | ICSE Computer Applications",
+          "description": "In this video, we will discuss the very important and interesting topic of Arrays. We will start by understanding the need of arrays in programming. Then we will look at some real-world examples to understand the utility of arrays in our day-to-day lives. We will also learn about the different type of Arrays and their uses.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-arrays-intro\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-arrays-intro",
+          "publishedAt": "2020-07-03T11:58:24Z",
+          "thumbnail": "https://i.ytimg.com/vi/BXyK73PyhHk/maxresdefault.jpg",
+          "position": 0
+        }
+      ]
+    },
+    {
+      "id": "PLy3FphGsVt9qkY9oRMgoJzWguWCV0fTU-",
+      "title": "Conditional Statements in Java | ICSE Computer Applications | Java & BlueJ",
+      "videos": [
+        {
+          "id": "nTvRHXoGxcE",
+          "title": "Nested switch and Differences between if and switch statement",
+          "description": "In this video, we will learn how to write nested switch statements. We will walkthrough a BlueJ program which will show us the usage of nested switch. We will complete our discussion of switch statements by looking at how it differs from if statement.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-nested-switch\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-nested-switch",
+          "publishedAt": "2020-07-06T04:55:36Z",
+          "thumbnail": "https://i.ytimg.com/vi/nTvRHXoGxcE/maxresdefault.jpg",
+          "position": 9
+        },
+        {
+          "id": "BiEtITQF1CQ",
+          "title": "Fall Through in switch | ICSE Computer Applications | Java & BlueJ",
+          "description": "This video explains the concept of Fall Through in switch. We will look at the usage of break statements in switch and also walkthrough an example BlueJ program which will show us how to correctly use fall through in switch statements.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-switch-fallthrough\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-switch-fallthrough",
+          "publishedAt": "2020-07-06T04:55:36Z",
+          "thumbnail": "https://i.ytimg.com/vi/BiEtITQF1CQ/maxresdefault.jpg",
+          "position": 8
+        },
+        {
+          "id": "eb7pqlzNWbE",
+          "title": "switch Statement | ICSE Computer Applications | Java & BlueJ",
+          "description": "In this video, we will learn about Java's switch statement. We will walkthrough an example BlueJ program which will help us understand the syntax and working of the switch statement.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-switch-stmt\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-switch-stmt",
+          "publishedAt": "2020-07-06T04:55:36Z",
+          "thumbnail": "https://i.ytimg.com/vi/eb7pqlzNWbE/maxresdefault.jpg",
+          "position": 7
+        },
+        {
+          "id": "7MHfNp5H7CY",
+          "title": "if else if Ladder | ICSE Computer Applications | Java & BlueJ",
+          "description": "In this video, we will learn how to use the if-else-if ladder construct to take a decision by testing multiple conditions. We will walkthrough a BlueJ program which assigns grades to student based on their marks. This program will help us to understand the working of if-else-if ladder.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-if-else-if-ladder\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-if-else-if",
+          "publishedAt": "2020-07-06T04:55:36Z",
+          "thumbnail": "https://i.ytimg.com/vi/7MHfNp5H7CY/maxresdefault.jpg",
+          "position": 6
+        },
+        {
+          "id": "ZZaCiogIGDk",
+          "title": "Nested ifs | ICSE Computer Applications | Java & BlueJ",
+          "description": "This video explains the use of nested if-else construct in Java. We will walkthrough a BlueJ program which will categorize a user based on his or her age to understand the working of if-else construct.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-nested-if\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-nested-if",
+          "publishedAt": "2020-07-06T04:55:36Z",
+          "thumbnail": "https://i.ytimg.com/vi/ZZaCiogIGDk/maxresdefault.jpg",
+          "position": 5
+        },
+        {
+          "id": "LjGOSVV65ns",
+          "title": "Special Number Program | ICSE Computer Applications | Java & BlueJ",
+          "description": "In this video, we will look at a Java program which checks if a 2-digit number is a special number or not. A special 2-digit number is such that when the sum of its digits is added to the product of its digits, the result is equal to the original 2-digit number. 59 is a special number. 5+9=14, 5x9=45. 14+45=59.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-special-number\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-special-number",
+          "publishedAt": "2020-07-06T04:55:36Z",
+          "thumbnail": "https://i.ytimg.com/vi/LjGOSVV65ns/maxresdefault.jpg",
+          "position": 4
+        },
+        {
+          "id": "yYxRP49LYic",
+          "title": "Buzz Number Program | ICSE Computer Applications | Java & BlueJ",
+          "description": "In this video, we will look at a Java program which checks if a number is a Buzz number or not. 747 is a Buzz number as it ends in 7, 63 is a Buzz number as it is divisible by 7. 83 is not a Buzz number. It is not divisible by 7 and doesn't end in 7.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-buzz-number\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-buzz-number",
+          "publishedAt": "2020-07-06T04:55:36Z",
+          "thumbnail": "https://i.ytimg.com/vi/yYxRP49LYic/maxresdefault.jpg",
+          "position": 3
+        },
+        {
+          "id": "4HVi-tRkiQU",
+          "title": "Extract Digits Program | ICSE Computer Applications | Java & BlueJ",
+          "description": "In this video, we will learn about the method of extracting digits of a number. When you divide a number by 10, the remainder is the digit in the unit’s place. You got your digit, now if you perform integer division on the number by 10, it will truncate the number by removing the digit you just extracted.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-digit-extract\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-digit-extract",
+          "publishedAt": "2020-07-06T04:55:36Z",
+          "thumbnail": "https://i.ytimg.com/vi/4HVi-tRkiQU/maxresdefault.jpg",
+          "position": 2
+        },
+        {
+          "id": "CYAOETk3UKc",
+          "title": "if Statement | ICSE Computer Applications | Java & BlueJ",
+          "description": "In this video, we will learn about if statement in Java. We will develop intuition about if by looking at simple real-world examples of decision making. Afterwards, we will learn its syntax and go through a few BlueJ programs to understand its working.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-if-stmt\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-if-stmt",
+          "publishedAt": "2020-07-06T04:55:36Z",
+          "thumbnail": "https://i.ytimg.com/vi/CYAOETk3UKc/maxresdefault.jpg",
+          "position": 1
+        },
+        {
+          "id": "NoWVCG4br0k",
+          "title": "Control Statements Introduction | ICSE Computer Applications | Java & BlueJ",
+          "description": "This video introduces Control Statements in Java. We will look at the definition of control statements and understand its different categories. \n\nProgramming languages provide statements to alter the control flow of the program and these statements are known as control statements. In Java, control statements can be categorized as Selection, Iteration, Jump.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-cond-stmt-intro\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-cond-stmt-intro",
+          "publishedAt": "2020-07-06T04:55:36Z",
+          "thumbnail": "https://i.ytimg.com/vi/NoWVCG4br0k/maxresdefault.jpg",
+          "position": 0
+        }
+      ]
+    },
+    {
+      "id": "PLy3FphGsVt9qXSuRNyMKM6J_mi3JobyRJ",
+      "title": "Elementary Concept of Objects & Classes | ICSE Computer Applications | Java & BlueJ",
+      "videos": [
+        {
+          "id": "RrXjwbTnTnU",
+          "title": "Real World Example - Objects & Classes | ICSE Computer Applications | Java & BlueJ",
+          "description": "In this lesson, we will learn how to model a real-world problem into Objects and Classes. We will walkthrough an example of a dog adoption website and see how to model dogs using Objects and Classes.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-objects\n👉 Visit KnowledgeBoat - https://bit.ly/kboat-objects-example",
+          "publishedAt": "2020-07-05T06:09:57Z",
+          "thumbnail": "https://i.ytimg.com/vi/RrXjwbTnTnU/maxresdefault.jpg",
+          "position": 1
+        },
+        {
+          "id": "ViZ9yKOAMJM",
+          "title": "Introduction to Objects & Classes | ICSE Computer Applications | Java & BlueJ",
+          "description": "Classes and Objects are at the heart of Object-Oriented Programming. Object is an entity having a specific identity, specific characteristics and specific behavior. A Class is a blueprint that represents a set of objects that share common characteristics and behaviour.\n\nThis lesson explains the concept of Objects and Classes in Object-Oriented programming by going through several real-world examples. By the end of this lesson you will be able to identify the objects around you and categorize them in classes.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-objects\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-objects",
+          "publishedAt": "2020-07-05T06:09:57Z",
+          "thumbnail": "https://i.ytimg.com/vi/ViZ9yKOAMJM/maxresdefault.jpg",
+          "position": 0
+        }
+      ]
+    },
+    {
+      "id": "PLy3FphGsVt9oLiJo3LdYuA-xdOzr9evab",
+      "title": "Introduction to Java",
+      "videos": [
+        {
+          "id": "LazwGWWpo2g",
+          "title": "Code Blocks & Tokens | ICSE Computer Applications | Java & BlueJ",
+          "description": "Code blocks and tokens are fundamental units of all Java programs. A group of statements enclosed within curly braces is called a Code Block. A token is the smallest element of a program that is meaningful to the compiler.\n\nThis video explains the fundamental units of all Java programs - Code Blocks and Tokens. It shows how if and for statements use code blocks and introduces all the different tokens in Java.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-tokens\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-code-blocks",
+          "publishedAt": "2020-07-09T22:53:37Z",
+          "thumbnail": "https://i.ytimg.com/vi/LazwGWWpo2g/maxresdefault.jpg",
+          "position": 6
+        },
+        {
+          "id": "d3SG5uNzrt8",
+          "title": "Second Java Program | ICSE Computer Applications | Java & BlueJ",
+          "description": "This video introduces variables and shows a few new ways to write output to console window. We will go through a simple Java program to understand these concepts. We will also execute this program in BlueJ and see the output.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-second-java-program\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-second-java-program",
+          "publishedAt": "2020-07-09T22:53:37Z",
+          "thumbnail": "https://i.ytimg.com/vi/d3SG5uNzrt8/maxresdefault.jpg",
+          "position": 5
+        },
+        {
+          "id": "PhsnxviGTv8",
+          "title": "Introduction to BlueJ | ICSE Computer Applications",
+          "description": "BlueJ is an IDE specifically for beginners. It is designed for teaching. It has negligible learning curve, you will get started with it fairly quickly.\n\nThis lesson introduces BlueJ IDE. By the end of this lesson, you will know how to write, compile and run Java programs in BlueJ.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-bluej-intro\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-bluej-intro",
+          "publishedAt": "2020-07-09T22:53:37Z",
+          "thumbnail": "https://i.ytimg.com/vi/PhsnxviGTv8/maxresdefault.jpg",
+          "position": 4
+        },
+        {
+          "id": "SsP7xSgGkd4",
+          "title": "What is IDE? | ICSE Computer Applications",
+          "description": "IDE stands for Integrated Development Environment. It helps software developer to write code and then compile, test and debug it. This short lesson provides a basic introduction to IDE. It highlights the benefits of using IDE like developer productivity and efficiency.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-what-is-ide\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-what-is-ide",
+          "publishedAt": "2020-07-09T22:53:37Z",
+          "thumbnail": "https://i.ytimg.com/vi/SsP7xSgGkd4/maxresdefault.jpg",
+          "position": 3
+        },
+        {
+          "id": "nOWkyPEwdYc",
+          "title": "First Java Program | ICSE Computer Applications | Java & BlueJ",
+          "description": "In this video we will go through a short and simple Java program to understand its basic building blocks. This short Java program will print \"Hello Java\" on the console. Although this program is quite short, it introduces several key features that are common to all Java programs.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-first-java-program\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-first-java-program",
+          "publishedAt": "2020-07-09T22:53:37Z",
+          "thumbnail": "https://i.ytimg.com/vi/nOWkyPEwdYc/maxresdefault.jpg",
+          "position": 2
+        },
+        {
+          "id": "ZYjccCZF-u0",
+          "title": "Bytecode & Java Virtual Machine | ICSE Computer Applications | Java & BlueJ",
+          "description": "Java’s Bytecode and Java Virtual Machine (JVM) is the magic behind its platform independence and Write Once Run Anywhere promise. Bytecode is platform independent intermediate level code, it is understood and executed by the JVM.\n\nThis video explains how Java code is compiled and executed. It goes into the details of Bytecode and JVM and shows how Java achieves its platform independence.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-bytecode-jvm\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-bytecode-jvm",
+          "publishedAt": "2020-07-09T22:53:37Z",
+          "thumbnail": "https://i.ytimg.com/vi/ZYjccCZF-u0/maxresdefault.jpg",
+          "position": 1
+        },
+        {
+          "id": "-EgyHD-qCEo",
+          "title": "The Java Story | ICSE Computer Applications | Java & BlueJ",
+          "description": "This video provides a quick overview of Java’s history. In 1991, Sun Microsystems brought together its top engineering minds to explore opportunities in consumer electronics. James Gosling, Patrick Naughton, Mike Sheridan and a few others formed the Green team.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-java-story\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-java-story",
+          "publishedAt": "2020-07-09T22:53:37Z",
+          "thumbnail": "https://i.ytimg.com/vi/-EgyHD-qCEo/maxresdefault.jpg",
+          "position": 0
+        }
+      ]
+    },
+    {
+      "id": "PLy3FphGsVt9pocNej5Csj-pQtb3Wn6SHi",
+      "title": "Iteration & Jump Statements in Java | ICSE Computer Applications | Java & BlueJ",
+      "videos": [
+        {
+          "id": "sVNzQutsHok",
+          "title": "Common Loop Mistakes to Avoid | ICSE Computer Applications | Java & BlueJ",
+          "description": "This video discusses the common mistakes because of which we end up creating infinite loops instead of finite ones. Whenever you are writing loops, be very careful that you don’t make such mistakes and end up creating an infinite loop instead of a finite one. Together, we will write loops in BlueJ and see how easy it is to overlook the basics and make such mistakes.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-loop-mistakes\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-loop-mistakes",
+          "publishedAt": "2020-07-06T05:13:55Z",
+          "thumbnail": "https://i.ytimg.com/vi/sVNzQutsHok/maxresdefault.jpg",
+          "position": 16
+        },
+        {
+          "id": "cCTQ_q1bSA4",
+          "title": "Finite & Infinite Loops | ICSE Computer Applications | Java & BlueJ",
+          "description": "In this video, we will learn about finite and infinite loops in Java. We will walkthrough a few example BlueJ programs which will show us the practical applications of infinite loops.\n\nA loop which iterates for a finite number of iterations is termed as a Finite loop. A loop which continues iterating indefinitely and never stops is termed as an infinite loop. A loop becomes an infinite loop when its condition always evaluates to true.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-infinite-loop\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-infinite-loop",
+          "publishedAt": "2020-07-06T05:13:55Z",
+          "thumbnail": "https://i.ytimg.com/vi/cCTQ_q1bSA4/maxresdefault.jpg",
+          "position": 15
+        },
+        {
+          "id": "o0BJPfQ2y_0",
+          "title": "Delay Loops | ICSE Computer Applications | Java & BlueJ",
+          "description": "In this video, we will learn about delay loops in Java and their use cases. We will walkthrough an example BlueJ program to see delay loops in action. A delay loop is a special case of empty loops. Sometimes we need to add some delay between actions in our programs. Delay loops help us do that. It pauses the execution of the program for some finite amount of time.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-delay-loop\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-delay-loop",
+          "publishedAt": "2020-07-06T05:13:55Z",
+          "thumbnail": "https://i.ytimg.com/vi/o0BJPfQ2y_0/maxresdefault.jpg",
+          "position": 14
+        },
+        {
+          "id": "f_OgCU5g9t8",
+          "title": "Empty Loops | ICSE Computer Applications | Java & BlueJ",
+          "description": "In this video, we will learn about empty loops in Java and their use cases. We will walkthrough an example BlueJ program which will use an empty loop to compute the sum of numbers from 1 to 5. A loop with an empty body is called an empty loop. In Java, all the three loops can have an empty body. \n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-empty-loop\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-empty-loop",
+          "publishedAt": "2020-07-06T05:13:55Z",
+          "thumbnail": "https://i.ytimg.com/vi/f_OgCU5g9t8/maxresdefault.jpg",
+          "position": 13
+        },
+        {
+          "id": "7Kdrml-Rp34",
+          "title": "continue Statement | ICSE Computer Applications | Java & BlueJ",
+          "description": "In this video, we will learn about continue statement in Java. We will walkthrough an example BlueJ program to develop a deep understanding of the usage and working of continue statement.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-continue-stmt\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-continue-stmt",
+          "publishedAt": "2020-07-06T05:13:55Z",
+          "thumbnail": "https://i.ytimg.com/vi/7Kdrml-Rp34/maxresdefault.jpg",
+          "position": 12
+        },
+        {
+          "id": "3QO0OB5jQJ0",
+          "title": "break Statement: Determine Early Loop Termination | ICSE Computer Applications | Java & BlueJ",
+          "description": "This video shows us how to find out if the loop ended early by executing the break statement or it ended because of its condition becoming false. We will write the code of prime number program from scratch to understand the use cases of break statement.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-early-break\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-early-break",
+          "publishedAt": "2020-07-06T05:13:55Z",
+          "thumbnail": "https://i.ytimg.com/vi/3QO0OB5jQJ0/maxresdefault.jpg",
+          "position": 11
+        },
+        {
+          "id": "mvhntVHUZ1U",
+          "title": "break Statement | ICSE Computer Applications | Java & BlueJ",
+          "description": "In this video, we will learn about break statement in Java. We will walkthrough an example BlueJ program to develop a deep understanding of the usage and working of break statement.\n\nThe break statement causes the program control to jump out of the loop bypassing the conditional expression and any remaining code in the body of the loop. Execution of the program resumes from the statement after the for loop.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-break-intro\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-break-stmt",
+          "publishedAt": "2020-07-06T05:13:55Z",
+          "thumbnail": "https://i.ytimg.com/vi/mvhntVHUZ1U/maxresdefault.jpg",
+          "position": 10
+        },
+        {
+          "id": "SxX1rboCwS0",
+          "title": "for Loop Variations | ICSE Computer Applications | Java & BlueJ",
+          "description": "The initialization, condition and increment/decrement part of the for loop are independent of each other. Because of this, we can use the for loop in a variety of ways. This video shows us a few common variations of the for loop.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-for-variations\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-for-variations",
+          "publishedAt": "2020-07-06T05:13:55Z",
+          "thumbnail": "https://i.ytimg.com/vi/SxX1rboCwS0/maxresdefault.jpg",
+          "position": 9
+        },
+        {
+          "id": "W03D9WLEz-Y",
+          "title": "Multiple Counter Variables in for Loop | ICSE Computer Applications | Java & BlueJ",
+          "description": "This video shows us how to use multiple statements in the initialization and increment/decrement part of the for loop. This helps in managing for loops with more than one loop control variables. We will look at a BlueJ program to learn how to code such loops.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-for-multi-counter\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-for-multi-counter",
+          "publishedAt": "2020-07-06T05:13:55Z",
+          "thumbnail": "https://i.ytimg.com/vi/W03D9WLEz-Y/maxresdefault.jpg",
+          "position": 8
+        },
+        {
+          "id": "momngygR_y4",
+          "title": "for Loop",
+          "description": "In this video, we will learn about Java’s for loop. We will walkthrough an example BlueJ program which will help us understand the syntax and working of the for loop.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-for-loop\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-for-loop",
+          "publishedAt": "2020-07-06T05:13:55Z",
+          "thumbnail": "https://i.ytimg.com/vi/momngygR_y4/maxresdefault.jpg",
+          "position": 7
+        },
+        {
+          "id": "wDHimZxj87E",
+          "title": "do-while Loop | ICSE Computer Applications | Java & BlueJ",
+          "description": "In this video, we will learn about Java’s do-while loop. We will walkthrough an example BlueJ program which will help us understand the syntax and working of the do-while loop.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-do-while\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-do-while",
+          "publishedAt": "2020-07-06T05:13:55Z",
+          "thumbnail": "https://i.ytimg.com/vi/wDHimZxj87E/maxresdefault.jpg",
+          "position": 6
+        },
+        {
+          "id": "54NJTzhYKuQ",
+          "title": "Spy Number Program | ICSE Computer Applications | Java & BlueJ",
+          "description": "In this video, we will look at Spy number program. A number is a spy number if its digits’ sum and product are equal. We will walkthrough the program step-by-step to understand the use of while loop for computing the sum and product of the number’s digits.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-spy-number\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-spy-number",
+          "publishedAt": "2020-07-06T05:13:55Z",
+          "thumbnail": "https://i.ytimg.com/vi/54NJTzhYKuQ/maxresdefault.jpg",
+          "position": 5
+        },
+        {
+          "id": "7WmzKc6UHhg",
+          "title": "Armstrong Number Program | ICSE Computer Applications | Java & BlueJ",
+          "description": "In this video, we will look at Armstrong number program. For a number to be Armstrong, it should be equal to the sum of cubes of its digits. We will walkthrough the program step-by-step to understand the use of while loop for computing the sum of cubes of the number’s digits.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-armstrong-number\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-armstrong-number",
+          "publishedAt": "2020-07-06T05:13:55Z",
+          "thumbnail": "https://i.ytimg.com/vi/7WmzKc6UHhg/maxresdefault.jpg",
+          "position": 4
+        },
+        {
+          "id": "W8lknlOJRSg",
+          "title": "Palindrome Number Program | ICSE Computer Applications | Java & BlueJ",
+          "description": "In this video, we will look at a Java program which checks if a number is a palindrome number or not. We will walkthrough the program step-by-step to understand the use of while loop for reversing the number.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-palindrome-number\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-palindrome-number",
+          "publishedAt": "2020-07-06T05:13:55Z",
+          "thumbnail": "https://i.ytimg.com/vi/W8lknlOJRSg/maxresdefault.jpg",
+          "position": 3
+        },
+        {
+          "id": "WAb2EZLP9gs",
+          "title": "Sum of Digits Program | ICSE Computer Applications | Java & BlueJ",
+          "description": "In this video, we will look at a Java program which accepts a number from the user and computes the sum of its digits. We will walkthrough the program step-by-step to understand the use of while loop for extracting all digits of the number and adding them.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-digit-sum\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-digit-sum",
+          "publishedAt": "2020-07-06T05:13:55Z",
+          "thumbnail": "https://i.ytimg.com/vi/WAb2EZLP9gs/maxresdefault.jpg",
+          "position": 2
+        },
+        {
+          "id": "pnhKK-4hEkM",
+          "title": "while Loop | ICSE Computer Applications | Java & BlueJ",
+          "description": "In this video, we will learn about Java’s while loop. We will walkthrough an example BlueJ program which will help us understand the syntax and working of the while loop.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-while-loops\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-while-loop",
+          "publishedAt": "2020-07-06T05:13:55Z",
+          "thumbnail": "https://i.ytimg.com/vi/pnhKK-4hEkM/maxresdefault.jpg",
+          "position": 1
+        },
+        {
+          "id": "Y5Iw5tcaFzc",
+          "title": "Loops Introduction | ICSE Computer Applications | Java & BlueJ",
+          "description": "This video will introduce us to the different looping constructs available in Java. It will also touch upon the importance and utility of loops in programming by walking us through a real-world example.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-loops-intro\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-loops-intro",
+          "publishedAt": "2020-07-06T05:13:55Z",
+          "thumbnail": "https://i.ytimg.com/vi/Y5Iw5tcaFzc/maxresdefault.jpg",
+          "position": 0
+        }
+      ]
+    },
+    {
+      "id": "PLy3FphGsVt9rXGNcF0eRtALFcbLlEoS64",
+      "title": "Nested for Loops | ICSE Computer Applications | Java & BlueJ",
+      "videos": [
+        {
+          "id": "5hNvYGg6_hk",
+          "title": "Pattern Programs - Part 3 | ICSE Computer Applications | Java & BlueJ",
+          "description": "This is the third video of solving pattern program series. In this video, we will understand Right-Angled Triangle based patterns and learn Floyd's triangle. By the end of this video you will be able to easily solve Right-Angled Triangle based patterns.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-pattern-3\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-pattern-3",
+          "publishedAt": "2020-07-06T07:10:24Z",
+          "thumbnail": "https://i.ytimg.com/vi/5hNvYGg6_hk/maxresdefault.jpg",
+          "position": 6
+        },
+        {
+          "id": "op4T_RXexJ4",
+          "title": "Pattern Programs - Part 2 | ICSE Computer Applications | Java & BlueJ",
+          "description": "This is the second video of solving pattern program series. In this video, we will understand Right-Angled Triangle based patterns and then write programs to solve many such patterns. By the end of this video you will have a good understanding of the approach needed to solve Right-Angled Triangle based patterns.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-pattern-2\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-pattern-2",
+          "publishedAt": "2020-07-06T07:10:24Z",
+          "thumbnail": "https://i.ytimg.com/vi/op4T_RXexJ4/maxresdefault.jpg",
+          "position": 5
+        },
+        {
+          "id": "N8UrGVEqb2k",
+          "title": "Pattern Programs - Part 1 | ICSE Computer Applications | Java & BlueJ",
+          "description": "This is the first video of solving pattern program series. In this video, we will learn the basics of solving patterns and then write programs to solve many rectangular patterns. By the end of this lesson you will be able to solve all kinds of rectangular patterns.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-pattern-1\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-pattern-1",
+          "publishedAt": "2020-07-06T07:10:24Z",
+          "thumbnail": "https://i.ytimg.com/vi/N8UrGVEqb2k/maxresdefault.jpg",
+          "position": 4
+        },
+        {
+          "id": "AwgK0TYsfZs",
+          "title": "Labelled continue Statement | ICSE Computer Applications | Java & BlueJ",
+          "description": "In this video, we will see how we can use a label with the continue statement to specify which of the enclosing loops to continue. We will walkthrough an example BlueJ program to develop a good understanding of the usage and working of labelled continue statement.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-labelled-continue\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-labelled-continue",
+          "publishedAt": "2020-07-06T07:10:24Z",
+          "thumbnail": "https://i.ytimg.com/vi/AwgK0TYsfZs/maxresdefault.jpg",
+          "position": 3
+        },
+        {
+          "id": "JnZ6VXhXLN0",
+          "title": "Labelled break Statement | ICSE Computer Applications | Java & BlueJ",
+          "description": "In this video, we will look at labelled break statement. We will first see how to break out of nested loops using multiple break statements and the challenges associated with it. Then we will use a single labelled break statement to break out of nested loops.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-labelled-break\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-labelled-break",
+          "publishedAt": "2020-07-06T07:10:24Z",
+          "thumbnail": "https://i.ytimg.com/vi/JnZ6VXhXLN0/maxresdefault.jpg",
+          "position": 2
+        },
+        {
+          "id": "dEcCP731FLk",
+          "title": "break Statement in Nested Loops | ICSE Computer Applications | Java & BlueJ",
+          "description": "In this video, we will look at break statement inside nested loops. We will walkthrough an example BlueJ program which will show us that break statement transfers the program control outside the inner loop but within the outer loop.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-nested-break\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-nested-break",
+          "publishedAt": "2020-07-06T07:10:24Z",
+          "thumbnail": "https://i.ytimg.com/vi/dEcCP731FLk/maxresdefault.jpg",
+          "position": 1
+        },
+        {
+          "id": "0Zqx_8I_t5A",
+          "title": "What is Nested Loop? | ICSE Computer Applications | Java & BlueJ",
+          "description": "This video introduces nested loops. We will learn nested loops through a real-world example and then we will write a program using nested loops to simulate the steps of the example in Java and BlueJ. A nested loop is essentially a loop within a loop. If I write a for loop inside another for loop  then it forms a nested loop.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-nested-loop\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-nested-loop",
+          "publishedAt": "2020-07-06T07:10:24Z",
+          "thumbnail": "https://i.ytimg.com/vi/0Zqx_8I_t5A/maxresdefault.jpg",
+          "position": 0
+        }
+      ]
+    },
+    {
+      "id": "PLy3FphGsVt9qiCh0vW48bBBRdpWtxGCo4",
+      "title": "Principles of Object Oriented Programming | ICSE Computer Applications | Java & BlueJ",
+      "videos": [
+        {
+          "id": "6QBj_AdsHMY",
+          "title": "Inheritance | ICSE Computer Applications | Java & BlueJ",
+          "description": "This video explains Inheritance and how it can model is-A relationships in software. It presents several real-world examples to show the practical use of Inheritance in our day-to-day lives. Inheritance enables new classes to receive or inherit the properties and methods of existing classes. It helps us to model is-a relationships in software.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-inheritance\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-inheritance",
+          "publishedAt": "2020-07-05T06:05:02Z",
+          "thumbnail": "https://i.ytimg.com/vi/6QBj_AdsHMY/maxresdefault.jpg",
+          "position": 3
+        },
+        {
+          "id": "WH5bEsI3BLM",
+          "title": "Polymorphism | ICSE Computer Applications | Java & BlueJ",
+          "description": "The word Polymorphism means having many forms. It provides the means to perform a single action in multiple different ways. This video will explain the object oriented concept of Polymorphism by going through a real-world example of it.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-polymorphism\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-polymorphism",
+          "publishedAt": "2020-07-05T06:05:02Z",
+          "thumbnail": "https://i.ytimg.com/vi/WH5bEsI3BLM/maxresdefault.jpg",
+          "position": 2
+        },
+        {
+          "id": "jFzKUeThMqo",
+          "title": "Encapsulation | ICSE Computer Applications | Java & BlueJ",
+          "description": "This video explains Encapsulation through several real-world examples to demonstrate its practical application. Encapsulation means wrapping characteristics and behaviours related to those characteristics into a single unit. It hides the implementation details from the outside world.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-encapsulation\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-encapsulation",
+          "publishedAt": "2020-07-05T06:05:02Z",
+          "thumbnail": "https://i.ytimg.com/vi/jFzKUeThMqo/maxresdefault.jpg",
+          "position": 1
+        },
+        {
+          "id": "cmbzICuIRAU",
+          "title": "Abstraction | ICSE Computer Applications | Java & BlueJ",
+          "description": "This lesson summarizes Object-Oriented concepts and dives deep into Abstraction. It explains Abstraction through several real-world examples to show its practical application. Abstraction refers to the act of representing essential features without including the background details or explanations. The core things here are essential features & not including background details.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-abstraction\n👉 Visit KnowledgeBoat - https://bit.ly/vist-kboat-abstraction",
+          "publishedAt": "2020-07-05T06:05:02Z",
+          "thumbnail": "https://i.ytimg.com/vi/cmbzICuIRAU/maxresdefault.jpg",
+          "position": 0
+        }
+      ]
+    },
+    {
+      "id": "PLy3FphGsVt9oz5zsxGNrufJy8b_CgibAm",
+      "title": "User Defined Methods | ICSE Computer Applications | Java & BlueJ",
+      "videos": [
+        {
+          "id": "--sK4vT3--c",
+          "title": "Solved Examples of Methods - Part 2 | ICSE Computer Applications | Java & BlueJ",
+          "description": "In this video, we see the different types of Java methods. We will get hands on and learn about writing method prototype based on the question, coding the method body and finally executing it in BlueJ.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-method-examples-2\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-method-examples-2",
+          "publishedAt": "2020-07-06T07:01:26Z",
+          "thumbnail": "https://i.ytimg.com/vi/--sK4vT3--c/maxresdefault.jpg",
+          "position": 7
+        },
+        {
+          "id": "p_TQZooGVEE",
+          "title": "Solved Examples of Methods - Part 1 | ICSE Computer Applications | Java & BlueJ",
+          "description": "In this video, we see the different types of Java methods. We will get hands on and learn about writing method prototype based on the question, coding the method body and finally executing it in BlueJ.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-method-examples-1\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-method-examples-1",
+          "publishedAt": "2020-07-06T07:01:26Z",
+          "thumbnail": "https://i.ytimg.com/vi/p_TQZooGVEE/maxresdefault.jpg",
+          "position": 6
+        },
+        {
+          "id": "x5Op0VdW5uM",
+          "title": "Static & Non-Static Methods | ICSE Computer Applications | Java & BlueJ",
+          "description": "In this video, we will learn about static & non-static methods in Java. We will walkthrough a few example programs in BlueJ to get an in-depth understanding of static and non-static methods.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-method-static\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-method-static",
+          "publishedAt": "2020-07-06T07:01:26Z",
+          "thumbnail": "https://i.ytimg.com/vi/x5Op0VdW5uM/maxresdefault.jpg",
+          "position": 5
+        },
+        {
+          "id": "LBeeMHy90d0",
+          "title": "Method Prototype & Signature | ICSE Computer Applications | Java & BlueJ",
+          "description": "In this video, we will learn about prototype and signature of a method in Java. We will look at the definitions of these terms and understand their significance through a number of examples.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-method-proto\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-method-proto",
+          "publishedAt": "2020-07-06T07:01:26Z",
+          "thumbnail": "https://i.ytimg.com/vi/LBeeMHy90d0/maxresdefault.jpg",
+          "position": 4
+        },
+        {
+          "id": "gOOdvkz_Bfc",
+          "title": "return Statement | ICSE Computer Applications | Java & BlueJ",
+          "description": "In this video, we will discuss about return statements. We will walkthrough many examples to understand the different ways in which return statement can be used in methods.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-return-stmt\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-return-stmt",
+          "publishedAt": "2020-07-06T07:01:26Z",
+          "thumbnail": "https://i.ytimg.com/vi/gOOdvkz_Bfc/maxresdefault.jpg",
+          "position": 3
+        },
+        {
+          "id": "leKDlIbiMU0",
+          "title": "Need of Methods | ICSE Computer Applications | Java & BlueJ",
+          "description": "In this video, we will discuss the benefits of using methods. We will take an in-depth look into Code Reuse and walkthrough an example to understand it in detail. We will also learn about Managing Complexity & Faster software development using methods.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-method-need\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-method-need",
+          "publishedAt": "2020-07-06T07:01:26Z",
+          "thumbnail": "https://i.ytimg.com/vi/leKDlIbiMU0/maxresdefault.jpg",
+          "position": 2
+        },
+        {
+          "id": "5lM939mJKkY",
+          "title": "Method Definition - Part 2 | ICSE Computer Applications | Java & BlueJ",
+          "description": "In this video, we will write our first Java methods, learn about formal and actual arguments and understand how methods are executed. We will walkthrough a Java program in BlueJ to see user defined methods in action.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-method-def-2\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-method-def-2",
+          "publishedAt": "2020-07-06T07:01:26Z",
+          "thumbnail": "https://i.ytimg.com/vi/5lM939mJKkY/maxresdefault.jpg",
+          "position": 1
+        },
+        {
+          "id": "0Q0r01v_wjI",
+          "title": "Method Definition - Part 1 | ICSE Computer Applications | Java & BlueJ",
+          "description": "This video introduces us to Methods in Java. We will learn about the general syntax of Methods and understand the different components of method definition.\n\nWe can define a method as a set of code that performs some specific task and is referred to by its name. It can be called at any point in the program by using its name. Methods help us define these actions in our programs.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-method-def-1\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-method-def-1",
+          "publishedAt": "2020-07-06T07:01:26Z",
+          "thumbnail": "https://i.ytimg.com/vi/0Q0r01v_wjI/maxresdefault.jpg",
+          "position": 0
+        }
+      ]
+    },
+    {
+      "id": "PLy3FphGsVt9rGSMlDooJ5tkWNkz1DefYi",
+      "title": "Values and Data Types",
+      "videos": [
+        {
+          "id": "ZUE9kynGvBA",
+          "title": "Constants | ICSE Computer Applications | Java & BlueJ",
+          "description": "This Video explains how to declare and use Constants in Java. Value of Constant does not change during program execution. We use final keyword to declare Constants in Java. Name of Constant is an identifier. By convention, name of constant should be uppercase.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-constant\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-constant",
+          "publishedAt": "2020-07-09T23:00:19Z",
+          "thumbnail": "https://i.ytimg.com/vi/ZUE9kynGvBA/maxresdefault.jpg",
+          "position": 12
+        },
+        {
+          "id": "kKrnCa5Lvas",
+          "title": "Scope & Lifetime Of Variables | ICSE Computer Applications | Java & BlueJ",
+          "description": "Scope refers to the visibility of the variables. It means in which parts of the program we can see and use our variable. Java has 2 types of scopes - class scope and method scope. This video explains about the scope and lifetimes of variables in Java. It focusses on method scope and includes BlueJ programs to show the concepts. \n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-variables-scope\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-variables-scope",
+          "publishedAt": "2020-07-09T23:00:19Z",
+          "thumbnail": "https://i.ytimg.com/vi/kKrnCa5Lvas/maxresdefault.jpg",
+          "position": 11
+        },
+        {
+          "id": "uc3GgA9rZhY",
+          "title": "Dynamic Initialization of Variables | ICSE Computer Applications | Java & BlueJ",
+          "description": "This video explains how to use dynamic expressions to initialize variables. We will look at several examples in BlueJ to understand dynamic initialization. Besides literals, dynamic expressions can also be used to initialize the variables. We can use literals, other variables and calls to other methods in the initialization expression.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-variables-dynamic\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-variables-dynamic",
+          "publishedAt": "2020-07-09T23:00:19Z",
+          "thumbnail": "https://i.ytimg.com/vi/uc3GgA9rZhY/maxresdefault.jpg",
+          "position": 10
+        },
+        {
+          "id": "rxzPcnkYstE",
+          "title": "Declaring & Initializing Variables | ICSE Computer Applications | Java & BlueJ",
+          "description": "In this video, we will learn how to declare and initialize variables in Java. We will also go through some examples in BlueJ, to strengthen our understanding of variables. A variable represents a memory location through a symbolic name which holds a known or unknown value of a particular data type. Variable’s name is used in the program to refer to its stored value.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-variables-declaration\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-variables-declaration",
+          "publishedAt": "2020-07-09T23:00:19Z",
+          "thumbnail": "https://i.ytimg.com/vi/rxzPcnkYstE/maxresdefault.jpg",
+          "position": 9
+        },
+        {
+          "id": "f06KR90QL-M",
+          "title": "Introduction to Variables | ICSE Computer Applications | Java & BlueJ",
+          "description": "This lesson introduces the concept of variables by looking at a real-world example. It aims to develop intuition about variables by showing their practical applications.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-variables-intro\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-variables-intro",
+          "publishedAt": "2020-07-09T23:00:19Z",
+          "thumbnail": "https://i.ytimg.com/vi/f06KR90QL-M/maxresdefault.jpg",
+          "position": 8
+        },
+        {
+          "id": "mqkG0O0wMJ0",
+          "title": "Character & String Literals | ICSE Computer Applications | Java & BlueJ",
+          "description": "This video explains Character and String literals with the help of concise BlueJ programs. It also shows how escape sequences can represent characters.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-literal-character\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-literal-character",
+          "publishedAt": "2020-07-09T23:00:19Z",
+          "thumbnail": "https://i.ytimg.com/vi/mqkG0O0wMJ0/maxresdefault.jpg",
+          "position": 7
+        },
+        {
+          "id": "zdoDyJIvyzM",
+          "title": "Floating Point & Boolean Literals | ICSE Computer Applications | Java & BlueJ",
+          "description": "This video explains Floating-Point and Boolean literals with the help of concise BlueJ programs. It shows how we can represent Floating-Point literals in standard and scientific notation.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-literal-floating\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-literal-floating",
+          "publishedAt": "2020-07-09T23:00:19Z",
+          "thumbnail": "https://i.ytimg.com/vi/zdoDyJIvyzM/maxresdefault.jpg",
+          "position": 6
+        },
+        {
+          "id": "ztuVB4SRshY",
+          "title": "Integer Literal | ICSE Computer Applications | Java & BlueJ",
+          "description": "This video explains integer literals with help of concise BlueJ programs. It talks about the different integer literals - binary, octal, decimal, hexadecimal. Any whole number value is an integer literal. Integer literals are most commonly used literals in a typical program. 2, 16, 18426, 24041973 are some examples of integer literals.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-literal-integer\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-literal-integer",
+          "publishedAt": "2020-07-09T23:00:19Z",
+          "thumbnail": "https://i.ytimg.com/vi/ztuVB4SRshY/maxresdefault.jpg",
+          "position": 5
+        },
+        {
+          "id": "PTaJFbyyyIc",
+          "title": "Boolean Data Type | ICSE Computer Applications | Java & BlueJ",
+          "description": "This video explains boolean data type. It will walk you through a simple BlueJ program to make its usage clear. This group contains one primitive data type Boolean. It stores the boolean values true or false. The size of boolean is 8 bits.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-datatypes-boolean\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-datatypes-boolean",
+          "publishedAt": "2020-07-09T23:00:19Z",
+          "thumbnail": "https://i.ytimg.com/vi/PTaJFbyyyIc/maxresdefault.jpg",
+          "position": 4
+        },
+        {
+          "id": "fp44k_wbCDE",
+          "title": "Character Data Type | ICSE Computer Applications | Java & BlueJ",
+          "description": "Java uses Unicode to represent characters. Unicode can represent nearly all languages of the world. Characters group contains one primitive data type, char. We use it to store a single character.\n\nThis video explains character data types. It teaches the concepts through simple BlueJ programs to make the usage clear.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-datatypes-character\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-datatypes-character",
+          "publishedAt": "2020-07-09T23:00:19Z",
+          "thumbnail": "https://i.ytimg.com/vi/fp44k_wbCDE/maxresdefault.jpg",
+          "position": 3
+        },
+        {
+          "id": "ZoPe5kDKh6U",
+          "title": "Floating-Point Data Types | ICSE Computer Applications | Java & BlueJ",
+          "description": "This video explains floating-point data types of Java - float & double. It teaches the data types with the help of simple BlueJ programs to make their usage clear. This group of primitive data types are used to store fractional numbers or real numbers.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-datatypes-floating\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-datatypes-floating",
+          "publishedAt": "2020-07-09T23:00:19Z",
+          "thumbnail": "https://i.ytimg.com/vi/ZoPe5kDKh6U/maxresdefault.jpg",
+          "position": 2
+        },
+        {
+          "id": "vt3ACYyhGSY",
+          "title": "Integer Data Type | ICSE Computer Applications | Java & BlueJ",
+          "description": "This video explains integer data types of Java - byte, short, int & long. It teaches the data types with the help of simple BlueJ programs to make their usage clear. \n\nIntegers contain 4 primitive data types - byte, short, int & long. All the data types in this group are used to store whole number values, they cannot store fractional numbers.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-datatypes-integer\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-datatypes-integer",
+          "publishedAt": "2020-07-09T23:00:19Z",
+          "thumbnail": "https://i.ytimg.com/vi/vt3ACYyhGSY/maxresdefault.jpg",
+          "position": 1
+        },
+        {
+          "id": "vAdxAgzlRvU",
+          "title": "Data Types Introduction | ICSE Computer Applications | Java & BlueJ",
+          "description": "In this video, we will go through an example to understand Data Types and their practical applications. It will also introduce us to the different Data Types in Java.\n\n👉 Subscribe to KnowledgeBoat - https://bit.ly/subscribe-kboat\n👉 Watch on KnowledgeBoat - https://bit.ly/kboat-datatypes-intro\n👉 Visit KnowledgeBoat - https://bit.ly/visit-kboat-datatypes-intro",
+          "publishedAt": "2020-07-09T23:00:19Z",
+          "thumbnail": "https://i.ytimg.com/vi/vAdxAgzlRvU/maxresdefault.jpg",
+          "position": 0
+        }
+      ]
+    }
+  ],
+  "generatedAt": "2025-10-13T16:31:41Z"
+}

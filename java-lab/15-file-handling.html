@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BlueJ Lab — File Handling</title>
+  <link rel="stylesheet" href="lab.css">
+</head>
+<body>
+  <div class="lab-container">
+    <header>
+      <h1>15) File Handling</h1>
+      <p>Write text to a file using FileWriter.</p>
+      <a class="back-link" href="index.html">← All Topics</a>
+    </header>
+
+    <div class="card editor">
+      <div class="controls">
+        <button id="runBtn" class="run-btn">▶ Run Program</button>
+      </div>
+
+      <label for="code">Java Code</label>
+      <textarea id="code" class="code-area">import java.io.*;
+public class Main {
+    public static void main(String[] args) throws Exception {
+        FileWriter fw = new FileWriter("sample.txt");
+        fw.write("File created successfully!");
+        fw.close();
+        System.out.println("File written successfully!");
+    }
+}
+</textarea>
+
+      <label for="stdin">Program Input (optional)</label>
+      <textarea id="stdin" class="stdin-area" placeholder="Input passed to the program via standard input (stdin)"></textarea>
+
+      <label for="output">Output</label>
+      <pre id="output" class="output"></pre>
+    </div>
+  </div>
+
+  <script src="lab.js"></script>
+</body>
+</html>
+
+

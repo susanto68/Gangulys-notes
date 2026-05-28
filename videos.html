@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tutorial Videos - Ganguly's</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+    
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#66a6ff">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Sir Ganguly">
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="icon-192.png">
+    <link rel="apple-touch-icon" sizes="512x512" href="icon-512.png">
+
+    <!-- YouTube-style tutorial video screen -->
+    <style>
+      body { background: #f8fafc; }
+      header { margin-bottom: 1rem; }
+      .video-page {
+        max-width: 1280px;
+        background: #ffffff;
+      }
+      .youtube-topbar {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 12px;
+        padding: 12px;
+        margin: -4px 0 18px;
+        background: rgba(255,255,255,0.96);
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+      }
+      .youtube-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-width: 210px;
+        font-size: 1.25rem;
+        font-weight: 800;
+        color: #0f172a;
+      }
+      .youtube-logo {
+        width: 34px;
+        height: 24px;
+        border-radius: 7px;
+        background: #ff0033;
+        color: #fff;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+      }
+      .video-search {
+        flex: 1 1 260px;
+        padding: 11px 14px;
+        border: 1px solid #cbd5e1;
+        border-radius: 999px;
+        font: inherit;
+      }
+      .video-search:focus {
+        outline: 2px solid #93c5fd;
+        border-color: #2563eb;
+      }
+      .btn {
+        padding: 10px 14px;
+        border: 0;
+        border-radius: 999px;
+        background: #2563eb;
+        color: #fff;
+        font: inherit;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      .btn:hover { background: #1d4ed8; }
+      .btn-secondary { background: #64748b; }
+      .btn-secondary:hover { background: #475569; }
+      .match-count {
+        color: #64748b;
+        font-size: 0.9rem;
+        font-weight: 700;
+      }
+      .video-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 22px 18px;
+        align-items: start;
+      }
+      .video-card {
+        min-width: 0;
+      }
+      .video-wrapper {
+        position: relative;
+        aspect-ratio: 16 / 9;
+        background: #000;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(15,23,42,0.14);
+        cursor: pointer;
+      }
+      .video-wrapper iframe {
+        position: absolute; inset: 0; width: 100%; height: 100%; border: 0; display: none;
+      }
+      .video-thumb { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+      .video-overlay {
+        position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0.0), rgba(0,0,0,0.35));
+      }
+      .play-btn {
+        position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+        width: 54px; height: 54px; border-radius: 50%;
+        background: rgba(255,255,255,0.94);
+        box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+        display: flex; align-items: center; justify-content: center; color: #1f2937;
+        font-size: 26px; line-height: 1;
+      }
+      .video-meta {
+        display: grid;
+        grid-template-columns: 36px 1fr;
+        gap: 10px;
+        padding: 10px 2px 0;
+      }
+      .channel-dot {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #2563eb, #0f172a);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+      }
+      .video-title {
+        margin: 0;
+        color: #0f172a;
+        font-size: 0.95rem;
+        font-weight: 700;
+        line-height: 1.35;
+      }
+      .video-subtitle {
+        margin-top: 4px;
+        color: #64748b;
+        font-size: 0.82rem;
+        line-height: 1.3;
+      }
+      @media (max-width: 420px) {
+        body { padding: 0; }
+        .video-page { margin: 0.75rem; padding: 0.9rem; }
+        .youtube-topbar { top: 4px; }
+        .youtube-title { min-width: 100%; }
+        .play-btn { width: 48px; height: 48px; font-size: 22px; }
+      }
+      /* Categories */
+      .category-section { margin: 28px 0 36px; }
+      .category-title { margin: 0 0 14px 2px; font-size: 1.2rem; font-weight: 800; color: #0f172a; }
+      .empty-state { text-align: center; color: #64748b; margin: 24px 0; font-weight: 600; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Educational Notes Portal</h1>
+      <p>Welcome to your comprehensive study resource</p>
+      <div class="whatsapp-feedback">
+        <a href="https://wa.me/919835379900?text=Hi! I have feedback about the Videos page." class="whatsapp-btn" target="_blank" rel="noopener noreferrer">
+          <i class="fab fa-whatsapp"></i> Share Feedback via WhatsApp
+        </a>
+      </div>
+      <div class="header-buttons">
+        <a href="index.html" class="nav-item back-btn"><i class="fas fa-arrow-left"></i> Back to Home</a> <br />
+        <a
+          href="https://drive.google.com/file/d/12KUzTpKzP3-XeMPkvu8OTTFCGHaP4g6y/view?usp=sharing"
+          class="full-form-btn"
+          >Full Form</a
+        >
+      </div>
+    </header>
+
+    <main class="container video-page">
+      <div class="youtube-topbar" role="region" aria-label="Tutorial videos controls">
+        <div class="youtube-title"><span class="youtube-logo">▶</span> Tutorial Videos</div>
+        <input class="video-search" type="search" id="videoSearch" placeholder="Search tutorial videos" aria-label="Search tutorial videos" />
+        <button id="clearSearch" class="btn btn-secondary" type="button" title="Clear search">Clear</button>
+        <span id="matchCount" class="match-count" aria-live="polite"></span>
+      </div>
+      <div id="categoryList"></div>
+      <p id="emptyState" class="empty-state" hidden>No videos match your search. Try a different query.</p>
+    </main>
+
+    <footer style="font-size: 12px; padding: 5px; text-align: center">
+      <p>&copy; 2024 Ganguly's Educational Notes. All rights reserved.</p>
+    </footer>
+
+    <script>
+      const categoryList = document.getElementById('categoryList');
+      const searchInput = document.getElementById('videoSearch');
+      const matchCountEl = document.getElementById('matchCount');
+      const clearBtn = document.getElementById('clearSearch');
+      const emptyState = document.getElementById('emptyState');
+
+      let catalog = null;
+      let currentQuery = '';
+
+      function getThumb(video) {
+        return video.thumbnail || `https://i.ytimg.com/vi/${video.id}/hqdefault.jpg`;
+      }
+
+      function getEmbed(video) {
+        return `https://www.youtube.com/embed/${video.id}?autoplay=1&rel=0`;
+      }
+
+      function normalize(value) {
+        return (value || '').toLowerCase();
+      }
+
+      function makeText(value) {
+        const span = document.createElement('span');
+        span.textContent = value || '';
+        return span.innerHTML;
+      }
+
+      function playVideo(wrapper) {
+        const iframe = wrapper.querySelector('iframe');
+        if (!iframe || iframe.getAttribute('src')) return;
+
+        iframe.setAttribute('src', iframe.getAttribute('data-src'));
+        iframe.style.display = 'block';
+        const thumb = wrapper.querySelector('.video-thumb');
+        const button = wrapper.querySelector('.play-btn');
+        const overlay = wrapper.querySelector('.video-overlay');
+        if (thumb) thumb.remove();
+        if (button) button.remove();
+        if (overlay) overlay.remove();
+      }
+
+      function makeCard(video, categoryTitle) {
+        const card = document.createElement('article');
+        card.className = 'video-card';
+        const safeTitle = makeText(video.title || 'Tutorial video');
+        const safeCategory = makeText(categoryTitle || 'Tutorials');
+
+        card.innerHTML = `
+          <div class="video-wrapper" role="button" tabindex="0" aria-label="Play ${safeTitle}">
+            <img class="video-thumb" loading="lazy" src="${getThumb(video)}" alt="${safeTitle}">
+            <div class="video-overlay"></div>
+            <div class="play-btn">&#9658;</div>
+            <iframe title="${safeTitle}" allowfullscreen data-src="${getEmbed(video)}"></iframe>
+          </div>
+          <div class="video-meta">
+            <div class="channel-dot">G</div>
+            <div>
+              <h3 class="video-title">${safeTitle}</h3>
+              <div class="video-subtitle">Ganguly's Tutorial Videos - ${safeCategory}</div>
+            </div>
+          </div>
+        `;
+
+        const wrapper = card.querySelector('.video-wrapper');
+        wrapper.addEventListener('click', () => playVideo(wrapper));
+        wrapper.addEventListener('keydown', (event) => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            playVideo(wrapper);
+          }
+        });
+
+        return card;
+      }
+
+      function makeCategorySection(category, videos) {
+        const section = document.createElement('section');
+        section.className = 'category-section';
+
+        const title = document.createElement('h2');
+        title.className = 'category-title';
+        title.textContent = `${category.title || 'Tutorials'} (${videos.length})`;
+
+        const grid = document.createElement('div');
+        grid.className = 'video-grid';
+        videos.forEach(video => grid.appendChild(makeCard(video, category.title)));
+
+        section.appendChild(title);
+        section.appendChild(grid);
+        return section;
+      }
+
+      function render() {
+        if (!catalog) return;
+        const query = normalize(currentQuery);
+        categoryList.innerHTML = '';
+        let totalMatches = 0;
+
+        (catalog.categories || []).forEach(category => {
+          const videos = (category.videos || []).filter(video => {
+            const searchable = `${video.title || ''} ${video.description || ''} ${category.title || ''}`;
+            return normalize(searchable).includes(query);
+          });
+
+          if (!videos.length) return;
+          totalMatches += videos.length;
+          categoryList.appendChild(makeCategorySection(category, videos));
+        });
+
+        matchCountEl.textContent = totalMatches ? `${totalMatches} videos` : '';
+        emptyState.hidden = totalMatches > 0;
+      }
+
+      function debounce(fn, ms) {
+        let timer;
+        return function(...args) {
+          clearTimeout(timer);
+          timer = setTimeout(() => fn.apply(this, args), ms);
+        };
+      }
+
+      const onSearch = debounce(() => {
+        currentQuery = searchInput.value || '';
+        render();
+      }, 150);
+
+      searchInput.addEventListener('input', onSearch);
+      clearBtn.addEventListener('click', () => {
+        searchInput.value = '';
+        currentQuery = '';
+        render();
+        searchInput.focus();
+      });
+
+      categoryList.textContent = 'Loading tutorial videos...';
+      fetch('videos.json')
+        .then(response => response.json())
+        .then(data => {
+          catalog = data;
+          render();
+        })
+        .catch(error => {
+          console.error('Failed to load videos.json', error);
+          categoryList.textContent = 'Unable to load tutorial videos right now.';
+        });
+    </script>
+  </body>
+</html>

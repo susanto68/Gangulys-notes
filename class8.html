@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class 8 Notes - Ganguly's</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="chapters.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#66a6ff">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Sir Ganguly">
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="icon-192.png">
+    <link rel="apple-touch-icon" sizes="512x512" href="icon-512.png">
+</head>
+<body>
+    <!-- Visitor Counter - Top Left (transparent) -->
+    <div class="visitor-counter" style="position: fixed; top: 8px; left: 8px; z-index: 1000; padding: 0;">
+        <div style="text-align: center;">
+            <h3 style="color: #000; margin: 0 0 3px 0; font-size: 10px; font-weight: bold; line-height: 1;">No Of Visitors</h3>
+            <div class="visitor-counter-display" style="display: inline-block; text-decoration: none; cursor: default;"></div>
+        </div>
+    </div>
+    
+    <header>
+        <h1>Class 8 Notes</h1>
+        <div class="whatsapp-feedback">
+            <a href="https://wa.me/919835379900?text=Hi! I have feedback about Class 8 notes." class="whatsapp-btn" target="_blank" rel="noopener noreferrer">
+                <i class="fab fa-whatsapp"></i> Share Feedback via WhatsApp
+            </a>
+        </div>
+        <div class="header-buttons">
+            <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Home</a> <br>
+            <a href="../pdf/class%208/full%20form.pdf" class="full-form-btn"><i class="fas fa-file-alt"></i> Full Form</a>
+        </div>
+    </header>
+   
+    <main class="container">
+        <div class="chapters-grid">
+            <a href="../pdf/class%208/Class%208%20ch-1%20_Operating%20system%20and%20GUI.pdf" class="chapter-btn" onclick="handlePDFClick(event, '../pdf/class%208/Class%208%20ch-1%20_Operating%20system%20and%20GUI.pdf')"><i class="fas fa-book-open"></i> <h2>Chapter 1:</h2> <br> <h4> Operating System and GUI</h4> </a>
+            <a href="../pdf/class%208/Class%208%20ch-2%20_%20Ms%20Excel%20formula%20and%20functions%20I.pdf" class="chapter-btn" onclick="handlePDFClick(event, '../pdf/class%208/Class%208%20ch-2%20_%20Ms%20Excel%20formula%20and%20functions%20I.pdf')"><i class="fas fa-book-open"></i> <h2>Chapter 2:</h2> <br> <h4> MS Excel Formula and Functions </h4> </a>    
+            <a href="../pdf/class%208/Class%208%20ch-3%20_%20Chart%20in%20Ms%20Excel.pdf" class="chapter-btn" onclick="handlePDFClick(event, '../pdf/class%208/Class%208%20ch-3%20_%20Chart%20in%20Ms%20Excel.pdf')"><i class="fas fa-book-open"></i> <h2>Chapter 3:</h2> <br> <h4> Charts in MS Excel </h4> </a>
+            <a href="../pdf/class%208/Class%208%20ch-4%20Algorithms%20and%20Flowchart.pdf" class="chapter-btn" onclick="handlePDFClick(event, '../pdf/class%208/Class%208%20ch-4%20Algorithms%20and%20Flowchart.pdf')"><i class="fas fa-book-open"></i> <h2>Chapter 4:</h2> <br> <h4> Algorithms and Flowchart</h4> </a>
+            <a href="../pdf/class%208/Class%208%20ch-5%20Program%20Coding%20in%20Java.pdf" class="chapter-btn" onclick="handlePDFClick(event, '../pdf/class%208/Class%208%20ch-5%20Program%20Coding%20in%20Java.pdf')"><i class="fas fa-book-open"></i> <h2>Chapter 5:</h2> <br> <h4> Program Coding in Java</h4> </a>
+            <a href="PDFS/CLASS 8/CLASS 8 CH-6.pdf" class="chapter-btn" onclick="handlePDFClick(event, 'PDFS/CLASS 8/CLASS 8 CH-6.pdf')"><i class="fas fa-tools"></i> Chapter 6: Under Construction<br> <marquee direction= "left" behaviour="scroll">You will get it soon </marquee> </a>
+            <a href="PDFS/CLASS 8/CLASS 8 CH-7.pdf" class="chapter-btn" onclick="handlePDFClick(event, 'PDFS/CLASS 8/CLASS 8 CH-7.pdf')"><i class="fas fa-tools"></i> Chapter 7: Under Construction<br> <marquee direction= "left" behaviour="scroll">You will get it soon </marquee> </a>
+            <a href="../pdf/class%208/class%208%20Computer%20ch-8_2025-26.pdf" class="chapter-btn" onclick="handlePDFClick(event, '../pdf/class%208/class%208%20Computer%20ch-8_2025-26.pdf')"><i class="fas fa-book-open"></i> <h2>Chapter 8:</h2> <br> <h4> Computer Applications (2025-26)</h4> </a>
+            <a href="PDFS/CLASS 8/CLASS 8 CH-9.pdf" class="chapter-btn" onclick="handlePDFClick(event, 'PDFS/CLASS 8/CLASS 8 CH-9.pdf')">Chapter 9: Under Construction<br> <marquee direction= "left" behaviour="scroll">You will get it soon </marquee> </a>
+            <a href="../pdf/class%208/Class%208%20Computer%20ch-10_2025-26.pdf" class="chapter-btn" onclick="handlePDFClick(event, '../pdf/class%208/Class%208%20Computer%20ch-10_2025-26.pdf')"><i class="fas fa-book-open"></i> <h2>Chapter 10:</h2> <br> <h4> Computer Applications Advanced (2025-26)</h4> </a>
+        </div>
+        </div>
+    </main>
+
+    <!-- Error Modal -->
+    <div id="errorModal" class="error-modal">
+        <div class="error-modal-content">
+            <p id="errorMessage" class="error-message"></p>
+            <button onclick="closeErrorModal()" class="close-button">Close</button>
+        </div>
+    </div>
+
+    <footer style="font-size: 12px; padding: 5px; text-align: center;">
+        <p>&copy; 2024 Ganguly's Educational Notes. All rights reserved.</p>
+    </footer>
+
+    <script src="scripts.js?v=20260516-direct-pdf"></script>
+</body>
+</html>

@@ -1,0 +1,319 @@
+.back-btn {
+  display: inline-block;
+  padding: 12px 24px;
+  font-size: 1rem;
+  color: #ffffff;
+  background: linear-gradient(to bottom, #87ceeb, #00008b);
+  text-decoration: none;
+  border-radius: 25px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  margin-bottom: 20px;
+}
+
+.back-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(to bottom, #6a9eda, #00006a);
+}
+
+.chapters-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  padding: 2rem;
+  perspective: 1000px;
+}
+
+.chapter-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #ffffff;
+  text-decoration: none;
+  text-align: center;
+  border-radius: 15px;
+  background: linear-gradient(to bottom, #87ceeb, #00008b);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2), 0 6px 6px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  border: none;
+  cursor: pointer;
+}
+
+.chapter-btn h2,
+.chapter-btn h4,
+.chapter-btn h5,
+.chapter-btn h6,
+.chapter-btn marquee {
+  margin: 0;
+  color: #ffffff;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.chapter-btn:hover {
+  transform: translateY(-5px) scale(1.03);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3), 0 10px 10px rgba(0, 0, 0, 0.25);
+  background: linear-gradient(to bottom, #6a9eda, #00006a);
+}
+
+.chapter-btn::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  transform: scale(0) translate(-50%, -50%);
+  transition: width 0.5s ease, height 0.5s ease, opacity 0.5s ease;
+  opacity: 0;
+}
+
+.chapter-btn:hover::after {
+  left: 100%;
+}
+
+.chapter-btn:active {
+  background: linear-gradient(to bottom, #003399, #000d26);
+  box-shadow: inset 0 5px 8px rgba(0, 0, 0, 0.6), 0 2px 5px rgba(0, 0, 0, 0.3);
+  transform: translateY(2px);
+}
+
+/* Submenu Styling */
+.submenu-container {
+  cursor: pointer;
+  position: relative;
+}
+
+.submenu-arrow {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  transition: transform 0.3s ease;
+  font-size: 1.2rem;
+}
+
+.submenu-container.active .submenu-arrow {
+  transform: translateY(-50%) rotate(180deg);
+}
+
+.submenu {
+  grid-column: 1 / -1;
+  display: none;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 1rem;
+  margin-top: 0.5rem;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.submenu.active {
+  display: block;
+}
+
+.submenu-item {
+  display: flex;
+  align-items: center;
+  padding: 0.8rem 1rem;
+  margin: 0.5rem 0;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: #ffffff;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.submenu-item:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateX(5px);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.submenu-item i {
+  margin-right: 0.8rem;
+  font-size: 1.1rem;
+  color: #ff6b6b;
+}
+
+.submenu-item span {
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+/* Section Divider Styling */
+.section-divider {
+  grid-column: 1 / -1;
+  text-align: center;
+  margin: 3rem 0 2rem 0;
+  padding: 1rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.section-divider h2 {
+  color: #ffffff;
+  font-size: 2rem;
+  margin: 0;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  font-weight: 600;
+}
+
+/* Coming Soon Styling */
+.coming-soon {
+  display: inline-block;
+  animation: pulse 2s infinite;
+  font-weight: bold;
+  color: #ffeb3b;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Coming Soon Page Styling */
+.chapters-grid .coming-soon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2rem;
+  text-align: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.coming-soon i {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.8;
+}
+
+.coming-soon h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.coming-soon p {
+  font-size: 1.1rem;
+  opacity: 0.9;
+  max-width: 400px;
+  line-height: 1.6;
+}
+
+/* Dedicated chapter page with PDF choice buttons (e.g. Class 9 Ch.1) */
+.chapter-pdf-page {
+  max-width: min(560px, 100%);
+  margin: 2rem auto 3rem;
+  padding: 1.5rem 1.25rem 2rem;
+  background: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
+}
+
+.chapter-pdf-page-intro {
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1a237e;
+  margin: 0 0 0.75rem;
+}
+
+.chapter-pdf-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.chapter-pdf-options--page {
+  margin-top: 0;
+  gap: 1.25rem;
+}
+
+/* Same gradient “chapter card” style as Class 9 grid; both PDF buttons match */
+.chapter-pdf-options--page .chapter-btn--pdf-choice {
+  width: 100%;
+  min-height: 6.5rem;
+  padding: 1.75rem 1.25rem;
+  font-size: 1rem;
+  line-height: 1.45;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.35);
+  word-break: break-word;
+  hyphens: auto;
+}
+
+@media screen and (max-width: 768px) {
+  .chapters-grid {
+    grid-template-columns: 1fr;
+    gap: 1.2rem;
+    padding: 1rem;
+  }
+
+  .chapter-btn {
+    padding: 1.5rem;
+    font-size: 1rem;
+  }
+
+  .chapter-btn h2 {
+    font-size: 1.2em;
+    margin-bottom: 0.3rem;
+  }
+
+  .chapter-btn h4,
+  .chapter-btn h5,
+  .chapter-btn h6 {
+    font-size: 0.9em;
+  }
+
+  .back-btn {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.9rem;
+  }
+
+  .chapters-grid .coming-soon {
+    padding: 2rem 1rem;
+  }
+
+  .coming-soon i {
+    font-size: 2.5rem;
+  }
+
+  .coming-soon h2 {
+    font-size: 1.5rem;
+  }
+
+  .coming-soon p {
+    font-size: 1rem;
+  }
+
+  .chapter-pdf-options--page .chapter-btn--pdf-choice {
+    min-height: 5.75rem;
+    font-size: 0.92rem;
+    padding: 1.35rem 1rem;
+  }
+}
