@@ -1924,6 +1924,13 @@ footer {
   text-transform: uppercase;
   letter-spacing: 0.05em;
   white-space: nowrap;
+  transition: margin-left 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+@media (min-width: 769px) and (max-width: 1250px) {
+  .network-nav-title {
+    margin-left: 175px !important;
+  }
 }
 
 .network-nav-links {
@@ -2032,6 +2039,7 @@ footer {
     font-size: 0.72rem;
     padding-right: 0.2rem;
     border-right: 1.5px solid rgba(255, 255, 255, 0.15);
+    margin-left: 110px !important;
   }
   .network-nav-links {
     flex: 1;
@@ -2070,6 +2078,7 @@ footer {
   border-radius: 18px !important;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35) !important;
   font-family: "Fredoka", system-ui, sans-serif !important;
+  z-index: 1200 !important;
 }
 
 .visitor-counter h3 {
@@ -2080,9 +2089,9 @@ footer {
 /* Desktop styles */
 @media (min-width: 769px) {
   .visitor-counter {
-    bottom: 15px !important;
+    top: 15px !important;
     left: 15px !important;
-    top: auto !important;
+    bottom: auto !important;
     padding: 10px 14px !important;
     min-width: 150px !important;
     max-width: 210px !important;
@@ -2098,14 +2107,14 @@ footer {
 /* Mobile styles - much smaller and positioned to not overlap */
 @media (max-width: 768px) {
   .visitor-counter {
-    bottom: 8px !important;
-    left: 8px !important;
-    top: auto !important;
+    top: 6px !important;
+    left: 6px !important;
+    bottom: auto !important;
     padding: 4px 6px !important;
     min-width: 96px !important;
     max-width: 116px !important;
     font-size: 9px !important;
-    z-index: 1001 !important;
+    z-index: 1200 !important;
     line-height: 1.1 !important;
     border: 1.5px solid rgba(255, 255, 255, 0.12) !important;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25) !important;
@@ -2139,9 +2148,9 @@ footer {
 /* Very small screens */
 @media (max-width: 480px) {
   .visitor-counter {
-    bottom: 6px !important;
-    left: 6px !important;
-    top: auto !important;
+    top: 5px !important;
+    left: 5px !important;
+    bottom: auto !important;
     padding: 2px 4px !important;
     min-width: 76px !important;
     max-width: 92px !important;
