@@ -1448,8 +1448,103 @@ footer {
   z-index: -8;
 }
 
+.planet-venus {
+  position: absolute;
+  width: 82px;
+  height: 82px;
+  border-radius: 50%;
+  background: 
+    radial-gradient(circle at 30% 30%, rgba(255,255,255,0.2) 0%, transparent 60%),
+    radial-gradient(circle at 35% 35%, #fef08a 0%, #fde047 30%, #eab308 65%, #713f12 100%);
+  box-shadow: inset -9px -9px 22px rgba(0, 0, 0, 0.95), 0 0 20px rgba(254, 224, 71, 0.2);
+  animation: floatPlanetVenus 58s linear infinite;
+  animation-delay: 25s;
+  opacity: 0;
+  z-index: -8;
+}
+
+.planet-mars {
+  position: absolute;
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  background: 
+    radial-gradient(circle at 30% 30%, rgba(255,255,255,0.2) 0%, transparent 55%),
+    radial-gradient(circle at 35% 35%, #fca5a5 0%, #ef4444 35%, #b91c1c 70%, #450a0a 100%);
+  box-shadow: inset -8px -8px 18px rgba(0, 0, 0, 0.95), 0 0 15px rgba(239, 68, 68, 0.2);
+  animation: floatPlanetMars 72s linear infinite;
+  animation-delay: 8s;
+  opacity: 0;
+  z-index: -8;
+}
+
+.planet-mars::after {
+  content: '';
+  position: absolute;
+  top: 5px;
+  left: 15px;
+  width: 14px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ffffff;
+  opacity: 0.85;
+  filter: blur(0.5px);
+}
+
+.planet-uranus {
+  position: absolute;
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #e0f2fe 0%, #7dd3fc 40%, #0284c7 75%, #0c4a6e 100%);
+  box-shadow: inset -9px -9px 20px rgba(0, 0, 0, 0.9), 0 0 18px rgba(125, 211, 252, 0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: floatPlanetUranus 88s linear infinite;
+  animation-delay: 42s;
+  opacity: 0;
+  z-index: -8;
+}
+
+.uranus-rings {
+  position: absolute;
+  width: 120px;
+  height: 12px;
+  border: 3px solid rgba(125, 211, 252, 0.35);
+  border-radius: 50%;
+  transform: rotate(85deg);
+  pointer-events: none;
+}
+
+.planet-neptune {
+  position: absolute;
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #dbeafe 0%, #3b82f6 35%, #1d4ed8 70%, #1e3a8a 100%);
+  box-shadow: inset -9px -9px 20px rgba(0, 0, 0, 0.9), 0 0 18px rgba(59, 130, 246, 0.2);
+  animation: floatPlanetNeptune 76s linear infinite;
+  animation-delay: 62s;
+  opacity: 0;
+  z-index: -8;
+}
+
+.planet-neptune::after {
+  content: '';
+  position: absolute;
+  top: 40%;
+  right: 25%;
+  width: 15px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(30, 58, 138, 0.6);
+  box-shadow: 0 0 5px rgba(59, 130, 246, 0.4);
+  opacity: 0.8;
+}
+
 /* Halley's Comets (Shooting Stars) */
-.comet-1, .comet-2 {
+.comet-1, .comet-2, .comet-3, .comet-4 {
   position: absolute;
   width: 180px;
   height: 2px;
@@ -1473,6 +1568,20 @@ footer {
   left: -300px;
   animation: flyHalleyComet2 32s linear infinite;
   animation-delay: 15s;
+}
+
+.comet-3 {
+  top: 30%;
+  left: -300px;
+  animation: flyHalleyComet1 26s linear infinite;
+  animation-delay: 9s;
+}
+
+.comet-4 {
+  top: 65%;
+  left: -300px;
+  animation: flyHalleyComet2 36s linear infinite;
+  animation-delay: 22s;
 }
 
 /* Keyframes for spatial transitions */
@@ -1668,5 +1777,113 @@ footer {
   100% {
     opacity: 1;
     transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes floatPlanetVenus {
+  0% {
+    left: -150px;
+    top: 40%;
+    transform: scale(0.3) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.85;
+  }
+  50% {
+    left: 50%;
+    top: 20%;
+    transform: scale(0.95) rotate(90deg);
+    opacity: 0.85;
+  }
+  90% {
+    opacity: 0.85;
+  }
+  100% {
+    left: 105%;
+    top: 5%;
+    transform: scale(0.3) rotate(180deg);
+    opacity: 0;
+  }
+}
+
+@keyframes floatPlanetMars {
+  0% {
+    right: -150px;
+    top: 75%;
+    transform: scale(0.25) rotate(0deg);
+    opacity: 0;
+  }
+  8% {
+    opacity: 0.8;
+  }
+  50% {
+    right: 45%;
+    top: 55%;
+    transform: scale(0.75) rotate(-180deg);
+    opacity: 0.8;
+  }
+  92% {
+    opacity: 0.8;
+  }
+  100% {
+    right: 105%;
+    top: 35%;
+    transform: scale(0.25) rotate(-360deg);
+    opacity: 0;
+  }
+}
+
+@keyframes floatPlanetUranus {
+  0% {
+    right: -180px;
+    top: 25%;
+    transform: scale(0.3) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.75;
+  }
+  50% {
+    right: 48%;
+    top: 52%;
+    transform: scale(0.85) rotate(100deg);
+    opacity: 0.75;
+  }
+  90% {
+    opacity: 0.75;
+  }
+  100% {
+    right: 105%;
+    top: 80%;
+    transform: scale(0.3) rotate(200deg);
+    opacity: 0;
+  }
+}
+
+@keyframes floatPlanetNeptune {
+  0% {
+    right: -150px;
+    top: 60%;
+    transform: scale(0.3);
+    opacity: 0;
+  }
+  8% {
+    opacity: 0.8;
+  }
+  50% {
+    right: 52%;
+    top: 30%;
+    transform: scale(0.8);
+    opacity: 0.8;
+  }
+  92% {
+    opacity: 0.8;
+  }
+  100% {
+    right: 105%;
+    top: 5%;
+    transform: scale(0.3);
+    opacity: 0;
   }
 }
