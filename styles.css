@@ -503,35 +503,71 @@ footer {
 
 @media (max-width: 768px) {
   header {
-    padding: 3.25rem 0.72rem 2.1rem;
-    clip-path: polygon(0 0, 100% 0, 100% 96%, 0 100%);
+    padding: 3rem 1rem 2rem;
   }
   header h1 {
-    font-size: 1.55rem;
+    font-size: 1.8rem;
     margin-bottom: 0.5rem;
   }
   header p {
-    font-size: 0.9rem;
+    font-size: 0.95rem;
   }
   .portal-introduction {
-    gap: 0.28rem;
-    margin-top: 0.45rem;
+    grid-template-columns: 1fr;
+    text-align: center;
+    gap: 1.8rem;
+    margin-top: 2rem;
+    padding: 2.2rem 1.2rem 1.8rem;
+    border-radius: 28px;
+    box-shadow: 0 6px 0 #1e293b;
+  }
+  .portal-introduction::before {
+    content: '';
+    position: absolute;
+    top: -14px;
+    left: calc(50% - 12px);
+    width: 24px;
+    height: 24px;
+    background: #ffffff;
+    border-left: 4px solid #1e293b;
+    border-top: 4px solid #1e293b;
+    transform: rotate(45deg);
+    z-index: 1;
   }
   .portal-introduction-photo {
-    width: 82px;
-    height: 82px;
+    width: 100px;
+    height: 100px;
+    margin: 0 auto;
+    border-radius: 50%;
+    box-shadow: 0 6px 0 #1e293b;
   }
   .portal-introduction-copy {
-    gap: 0.18rem;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .portal-introduction-belief {
+    text-align: center;
+    margin: 0.5rem 0;
+  }
+  .portal-introduction-quote {
+    border-left: none;
+    border-top: 5px solid #facc15;
+    padding-left: 0;
+    padding-top: 1.2rem;
+    margin: 0.8rem 0;
+  }
+  .portal-introduction-quote p {
+    text-align: center;
   }
   .portal-introduction-speak {
-    min-height: 34px;
-    padding: 0.43rem 0.78rem;
-    font-size: 0.84rem;
+    min-height: 44px;
+    padding: 0.6rem 1.4rem;
+    font-size: 0.9rem;
   }
   .container {
-    margin: 1rem;
-    padding: 1rem;
+    margin: 1.5rem 1rem;
+    padding: 1.8rem 1rem;
+    border-radius: 28px;
   }
   .video-wrapper {
     flex: 0 0 calc((100% - 16px) / 2);
