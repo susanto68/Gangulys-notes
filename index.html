@@ -19,15 +19,17 @@
         /* Base counter styles */
         .visitor-counter {
             transition: all 0.2s ease !important;
-            background: #ffffff !important;
-            border: 3.5px solid #1e293b !important;
+            background: rgba(15, 23, 42, 0.72) !important;
+            backdrop-filter: blur(12px) !important;
+            -webkit-backdrop-filter: blur(12px) !important;
+            border: 2px solid rgba(255, 255, 255, 0.12) !important;
             border-radius: 18px !important;
-            box-shadow: 0 5px 0 #1e293b !important;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35) !important;
             font-family: "Fredoka", system-ui, sans-serif !important;
         }
         
         .visitor-counter h3 {
-            color: #1e293b !important;
+            color: #60a5fa !important;
             font-weight: 900 !important;
         }
         
@@ -44,7 +46,7 @@
             
             .visitor-counter:hover {
                 transform: translateY(-2px);
-                box-shadow: 0 7px 0 #1e293b !important;
+                box-shadow: 0 12px 32px rgba(59, 130, 246, 0.25) !important;
             }
         }
         
@@ -59,8 +61,8 @@
                 font-size: 9px !important;
                 z-index: 1001 !important;
                 line-height: 1.1 !important;
-                border: 2.5px solid #1e293b !important;
-                box-shadow: 0 3px 0 #1e293b !important;
+                border: 1.5px solid rgba(255, 255, 255, 0.12) !important;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25) !important;
                 border-radius: 12px !important;
             }
             
@@ -73,6 +75,7 @@
             .visitor-count-value {
                 font-size: 8.5px !important;
                 line-height: 1.15 !important;
+                color: #ffffff !important;
             }
         }
         
@@ -288,6 +291,16 @@
     
 </head>
 <body>
+    <!-- Real Universe Background Elements -->
+    <div class="universe-bg">
+        <div class="stars-layer-1"></div>
+        <div class="stars-layer-2"></div>
+        <div class="planet-cyan"></div>
+        <div class="planet-emerald"></div>
+        <div class="comet-1"></div>
+        <div class="comet-2"></div>
+    </div>
+
     <!-- Visitor Counter - Mobile Friendly -->
     <div class="visitor-counter" style="position: fixed; top: 8px; left: 8px; z-index: 1000;">
         <div style="text-align: center;">
