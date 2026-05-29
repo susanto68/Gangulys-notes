@@ -1921,7 +1921,16 @@ footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
+  gap: 0.6rem;
+}
+
+/* Transparent spacer that reserves the space occupied by the fixed brand-visitor-widget overlay */
+.nav-brand-spacer {
+  flex: 0 0 auto;
+  width: 230px;
+  height: 1px;
+  pointer-events: none;
+  user-select: none;
 }
 
 .network-nav-title {
@@ -1935,8 +1944,8 @@ footer {
   text-transform: uppercase;
   letter-spacing: 0.05em;
   white-space: nowrap;
-  margin-left: 300px;
-  transition: margin-left 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+  margin-left: 0;
+  flex-shrink: 0;
 }
 
 .network-nav-links {
@@ -2038,14 +2047,19 @@ footer {
     flex-direction: row;
     align-items: center;
     justify-content: flex-start;
-    gap: 0.5rem;
+    gap: 0.4rem;
     overflow: hidden;
+    padding-left: 160px;
+  }
+  .nav-brand-spacer {
+    display: none;
   }
   .network-nav-title {
     font-size: 0.72rem;
-    padding-right: 0.2rem;
+    margin-left: 0 !important;
+    padding-right: 0.3rem;
     border-right: 1.5px solid rgba(255, 255, 255, 0.15);
-    margin-left: 210px !important;
+    flex-shrink: 0;
   }
   .network-nav-links {
     flex: 1;
@@ -2183,8 +2197,21 @@ footer {
 
 /* Very small screens override for nav title alignment */
 @media (max-width: 480px) {
+  .network-nav-container {
+    padding-left: 135px;
+  }
   .network-nav-title {
-    margin-left: 175px !important;
+    margin-left: 0 !important;
+    font-size: 0.68rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .network-nav-container {
+    padding-left: 120px;
+  }
+  .network-nav-title {
+    display: none;
   }
 }
 
@@ -2256,5 +2283,94 @@ footer {
     font-size: 8px;
   }
 }
+/* ==========================================================================
+   Brand-Visitor Widget - Responsive Position Overrides
+   ========================================================================== */
 
+@media (min-width: 769px) {
+  .brand-visitor-widget {
+    top: 8px !important;
+    left: 10px !important;
+    gap: 8px !important;
+  }
+}
 
+@media (max-width: 768px) {
+  .brand-visitor-widget {
+    top: 5px !important;
+    left: 6px !important;
+    gap: 5px !important;
+    max-width: 155px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .brand-visitor-widget {
+    top: 4px !important;
+    left: 5px !important;
+    gap: 4px !important;
+    max-width: 130px !important;
+  }
+}
+
+@media (max-width: 380px) {
+  .brand-visitor-widget {
+    top: 3px !important;
+    left: 4px !important;
+    gap: 3px !important;
+    max-width: 115px !important;
+  }
+  .brand-name {
+    display: none !important;
+  }
+}
+
+/* ==========================================================================
+   Comprehensive Mobile Layout Fixes
+   ========================================================================== */
+
+@media (max-width: 480px) {
+  .category-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  .class-btn {
+    height: auto;
+    min-height: 72px;
+    padding: 1rem 1.2rem;
+    font-size: 1rem;
+  }
+  .dashboard-category {
+    padding: 1.5rem 0.25rem;
+  }
+  .category-header {
+    font-size: 1.05rem;
+    margin-bottom: 1.2rem;
+  }
+  header h1 {
+    font-size: 1.4rem !important;
+  }
+  .header-subtitle {
+    font-size: 0.82rem !important;
+  }
+  .header-actions-container {
+    max-width: 100% !important;
+    padding: 0 0.5rem !important;
+  }
+  .whatsapp-btn, .student-register-btn, .install-pwa-btn, .install-pwa-link button {
+    font-size: 1rem !important;
+    min-height: 48px !important;
+    padding: 0.7rem 1rem !important;
+  }
+  footer {
+    font-size: 0.82rem;
+    padding: 1rem 0.75rem;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+  .category-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+}
