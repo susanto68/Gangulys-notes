@@ -244,15 +244,40 @@
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
 
-<!-- Service Worker Registration -->
+<!-- Service Worker & Client Cache Eviction -->
 <script>
+  // Force delete all old caches to bust aggressive browser/PWA caches instantly
+  if ('caches' in window) {
+    caches.keys().then(function(names) {
+      let evicted = false;
+      for (let name of names) {
+        if (!name.includes('v20260529')) {
+          caches.delete(name);
+          evicted = true;
+        }
+      }
+      if (evicted && !sessionStorage.getItem('sirgangulyCacheEvicted')) {
+        sessionStorage.setItem('sirgangulyCacheEvicted', 'true');
+        setTimeout(() => {
+          window.location.reload(true);
+        }, 150);
+      }
+    });
+  }
+
   if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function() {
-      // Keep only the main /sw.js registration below; this older worker cached CSS/JS too aggressively.
-      return
-      navigator.serviceWorker.register('/service-worker.js')
-        .then(reg => console.log("✅ Service Worker Registered"))
-        .catch(err => console.log("❌ Service Worker Error", err));
+    // Unregister legacy service-worker.js if present
+    navigator.serviceWorker.getRegistrations().then(function(registrations) {
+      for (let registration of registrations) {
+        if (registration.active && registration.active.scriptURL.includes('service-worker.js')) {
+          registration.unregister().then(() => {
+            console.log('🗑️ Legacy Service Worker unregistered');
+          });
+        } else {
+          // Trigger immediate updates on active sw.js
+          registration.update();
+        }
+      }
     });
   }
 </script>
@@ -533,7 +558,7 @@
      data-goatcounter="https://gangulysnotes.goatcounter.com/count"
      async
      src="https://gc.zgo.at/count.js"></script>
-<script src="scripts.js?v=20260517-static-intro-audio"></script>
+<script src="scripts.js?v=20260529-3d-cartoon"></script>
  
  <!-- PWA Service Worker Registration -->
  <script>
