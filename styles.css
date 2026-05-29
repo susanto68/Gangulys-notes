@@ -1241,60 +1241,126 @@ footer {
 .line-d2 { width: 100%; height: 1px; transform: rotate(-45deg); }
 
 /* Floating Planets (Google Earth style spherical nodes with dual-track animations) */
-.planet-cyan {
+.planet-earth {
   position: absolute;
-  top: 12%;
-  right: 8%;
-  width: 130px;
-  height: 130px;
+  width: 96px;
+  height: 96px;
   border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, #3b82f6 0%, #1e3a8a 60%, #090d16 100%);
+  background: 
+    radial-gradient(circle at 30% 30%, rgba(255,255,255,0.3) 0%, transparent 50%),
+    radial-gradient(circle at 35% 35%, #60a5fa 10%, #1d4ed8 45%, #1e3a8a 70%, #0b1329 100%);
   box-shadow: 
-    inset -10px -10px 30px rgba(0,0,0,0.85),
-    0 0 25px rgba(59, 130, 246, 0.22);
-  animation: floatPlanetCyan 20s ease-in-out infinite alternate, planetCyanZoom 2.5s cubic-bezier(0.16, 1, 0.3, 1) both;
-  opacity: 0.72;
-}
-
-.planet-emerald {
-  position: absolute;
-  bottom: 22%;
-  left: 6%;
-  width: 90px;
-  height: 90px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, #10b981 0%, #065f46 65%, #04100c 100%);
-  box-shadow: 
-    inset -8px -8px 25px rgba(0,0,0,0.85),
-    0 0 20px rgba(52, 211, 153, 0.18);
-  animation: floatPlanetEmerald 24s ease-in-out infinite alternate-reverse, planetEmeraldZoom 2.8s cubic-bezier(0.16, 1, 0.3, 1) both;
-  opacity: 0.6;
-}
-
-/* Flying Comets (Shooting Stars) */
-.comet-1, .comet-2 {
-  position: absolute;
-  width: 100px;
-  height: 1.5px;
-  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.7) 80%, #ffffff 100%);
-  border-radius: 50%;
-  transform: rotate(-35deg);
+    inset -12px -12px 30px rgba(0, 0, 0, 0.9), 
+    0 0 25px rgba(96, 165, 250, 0.35);
+  animation: floatPlanetEarth 65s linear infinite;
+  animation-delay: 0s;
   opacity: 0;
+  z-index: -8;
+}
+
+.planet-earth::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background-image: 
+    radial-gradient(circle at 40% 50%, #34d399 15%, transparent 35%),
+    radial-gradient(circle at 70% 30%, #10b981 12%, transparent 30%),
+    radial-gradient(circle at 25% 25%, #059669 8%, transparent 25%),
+    radial-gradient(circle at 60% 70%, rgba(255,255,255,0.4) 10%, transparent 28%),
+    radial-gradient(circle at 30% 60%, rgba(255,255,255,0.35) 12%, transparent 30%);
+  opacity: 0.65;
+  mix-blend-mode: source-over;
+}
+
+.planet-saturn {
+  position: absolute;
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #fef08a 0%, #eab308 30%, #ca8a04 60%, #451a03 100%);
+  box-shadow: inset -10px -10px 25px rgba(0, 0, 0, 0.9), 0 0 25px rgba(234, 179, 8, 0.25);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: floatPlanetSaturn 80s linear infinite;
+  animation-delay: 15s;
+  opacity: 0;
+  z-index: -8;
+}
+
+.saturn-rings {
+  position: absolute;
+  width: 150px;
+  height: 30px;
+  border: 8px solid rgba(234, 179, 8, 0.45);
+  border-top-color: rgba(234, 179, 8, 0.12); /* Transparency gap for realistic overlapping */
+  border-radius: 50%;
+  transform: rotate(-16deg);
+  box-shadow: 0 0 15px rgba(234, 179, 8, 0.12);
   pointer-events: none;
 }
 
+.planet-mercury {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #94a3b8 0%, #64748b 45%, #334155 75%, #0f172a 100%);
+  box-shadow: inset -6px -6px 15px rgba(0, 0, 0, 0.95), 0 0 12px rgba(148, 163, 184, 0.15);
+  animation: floatPlanetMercury 50s linear infinite;
+  animation-delay: 35s;
+  opacity: 0;
+  z-index: -8;
+}
+
+.planet-jupiter {
+  position: absolute;
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  background: 
+    radial-gradient(circle at 30% 30%, rgba(255,255,255,0.2) 0%, transparent 60%),
+    linear-gradient(180deg, 
+      #7c2d12 0%, #c2410c 15%, 
+      #ea580c 25%, #f97316 40%, 
+      #fdba74 55%, #f97316 70%, 
+      #c2410c 85%, #7c2d12 100%);
+  box-shadow: inset -15px -15px 35px rgba(0, 0, 0, 0.95), 0 0 30px rgba(249, 115, 22, 0.2);
+  animation: floatPlanetJupiter 95s linear infinite;
+  animation-delay: 50s;
+  opacity: 0;
+  z-index: -8;
+}
+
+/* Halley's Comets (Shooting Stars) */
+.comet-1, .comet-2 {
+  position: absolute;
+  width: 180px;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.8) 75%, #ffffff 100%);
+  border-radius: 50%;
+  transform: rotate(-32deg);
+  opacity: 0;
+  pointer-events: none;
+  filter: drop-shadow(0 0 4px rgba(255,255,255,0.6));
+}
+
 .comet-1 {
-  top: 10%;
-  left: -200px;
-  animation: flyComet 9s linear infinite;
-  animation-delay: 2s;
+  top: 15%;
+  left: -300px;
+  animation: flyHalleyComet1 22s linear infinite;
+  animation-delay: 4s;
 }
 
 .comet-2 {
-  top: 45%;
-  left: -200px;
-  animation: flyComet 14s linear infinite;
-  animation-delay: 7s;
+  top: 50%;
+  left: -300px;
+  animation: flyHalleyComet2 32s linear infinite;
+  animation-delay: 15s;
 }
 
 /* Keyframes for spatial transitions */
@@ -1308,24 +1374,112 @@ footer {
   100% { transform: scale(1); opacity: 1; }
 }
 
-@keyframes planetCyanZoom {
-  0% { transform: translate(150px, -150px) scale(0.1); opacity: 0; }
-  100% { transform: translate(0, 0) scale(1); opacity: 0.72; }
+@keyframes floatPlanetEarth {
+  0% {
+    left: -150px;
+    top: 80%;
+    transform: scale(0.3) rotate(0deg);
+    opacity: 0;
+  }
+  8% {
+    opacity: 0.85;
+  }
+  50% {
+    left: 45%;
+    top: 40%;
+    transform: scale(1.1) rotate(180deg);
+    opacity: 0.85;
+  }
+  92% {
+    opacity: 0.85;
+  }
+  100% {
+    left: 105%;
+    top: 10%;
+    transform: scale(0.3) rotate(360deg);
+    opacity: 0;
+  }
 }
 
-@keyframes planetEmeraldZoom {
-  0% { transform: translate(-150px, 150px) scale(0.1); opacity: 0; }
-  100% { transform: translate(0, 0) scale(1); opacity: 0.6; }
+@keyframes floatPlanetSaturn {
+  0% {
+    right: -200px;
+    top: 15%;
+    transform: scale(0.35) rotate(0deg);
+    opacity: 0;
+  }
+  8% {
+    opacity: 0.8;
+  }
+  50% {
+    right: 50%;
+    top: 45%;
+    transform: scale(1.0) rotate(-90deg);
+    opacity: 0.8;
+  }
+  92% {
+    opacity: 0.8;
+  }
+  100% {
+    right: 105%;
+    top: 85%;
+    transform: scale(0.35) rotate(-180deg);
+    opacity: 0;
+  }
 }
 
-@keyframes floatPlanetCyan {
-  0% { top: 12%; }
-  100% { top: 10%; }
+@keyframes floatPlanetMercury {
+  0% {
+    left: -100px;
+    top: 5%;
+    transform: scale(0.25);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.7;
+  }
+  50% {
+    left: 40%;
+    top: 25%;
+    transform: scale(0.7);
+    opacity: 0.7;
+  }
+  90% {
+    opacity: 0.7;
+  }
+  100% {
+    left: 105%;
+    top: 45%;
+    transform: scale(0.25);
+    opacity: 0;
+  }
 }
 
-@keyframes floatPlanetEmerald {
-  0% { bottom: 22%; }
-  100% { bottom: 24%; }
+@keyframes floatPlanetJupiter {
+  0% {
+    right: -250px;
+    top: 90%;
+    transform: scale(0.4) rotate(0deg);
+    opacity: 0;
+  }
+  8% {
+    opacity: 0.9;
+  }
+  50% {
+    right: 48%;
+    top: 50%;
+    transform: scale(1.4) rotate(120deg);
+    opacity: 0.9;
+  }
+  92% {
+    opacity: 0.9;
+  }
+  100% {
+    right: 105%;
+    top: 10%;
+    transform: scale(0.4) rotate(240deg);
+    opacity: 0;
+  }
 }
 
 @keyframes globeMeshStartup {
@@ -1344,27 +1498,52 @@ footer {
   100% { transform: translate(-50%, -50%) scale(1) rotate(360deg); }
 }
 
-@keyframes flyComet {
+@keyframes flyHalleyComet1 {
   0% {
-    left: -200px;
-    top: 15%;
-    transform: rotate(-35deg) scale(0);
+    left: -250px;
+    top: 5%;
+    transform: rotate(-32deg) scale(0.2);
     opacity: 0;
   }
-  4% {
-    opacity: 0.8;
-    transform: rotate(-35deg) scale(1);
+  6% {
+    opacity: 0.9;
+    transform: rotate(-32deg) scale(1);
   }
-  8% {
+  16% {
     left: 80%;
-    top: 60%;
-    transform: rotate(-35deg) scale(1);
+    top: 55%;
+    transform: rotate(-32deg) scale(0.8);
     opacity: 0;
   }
   100% {
-    left: 100%;
-    top: 70%;
-    transform: rotate(-35deg) scale(0);
+    left: 120%;
+    top: 80%;
+    transform: rotate(-32deg) scale(0);
+    opacity: 0;
+  }
+}
+
+@keyframes flyHalleyComet2 {
+  0% {
+    left: -250px;
+    top: 35%;
+    transform: rotate(-28deg) scale(0.3);
+    opacity: 0;
+  }
+  5% {
+    opacity: 0.85;
+    transform: rotate(-28deg) scale(0.9);
+  }
+  14% {
+    left: 75%;
+    top: 75%;
+    transform: rotate(-28deg) scale(0.7);
+    opacity: 0;
+  }
+  100% {
+    left: 120%;
+    top: 95%;
+    transform: rotate(-28deg) scale(0);
     opacity: 0;
   }
 }
