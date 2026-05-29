@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sir-ganguly-v5-clean-avatar';
+const CACHE_NAME = 'sir-ganguly-v6-mobile-buttons';
 const urlsToCache = [
   '/',
   '/index.html',
