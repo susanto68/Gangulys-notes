@@ -2080,8 +2080,9 @@ footer {
 /* Desktop styles */
 @media (min-width: 769px) {
   .visitor-counter {
-    top: 15px !important;
+    bottom: 15px !important;
     left: 15px !important;
+    top: auto !important;
     padding: 10px 14px !important;
     min-width: 150px !important;
     max-width: 210px !important;
@@ -2097,8 +2098,9 @@ footer {
 /* Mobile styles - much smaller and positioned to not overlap */
 @media (max-width: 768px) {
   .visitor-counter {
-    top: 6px !important;
-    left: 6px !important;
+    bottom: 8px !important;
+    left: 8px !important;
+    top: auto !important;
     padding: 4px 6px !important;
     min-width: 96px !important;
     max-width: 116px !important;
@@ -2137,8 +2139,9 @@ footer {
 /* Very small screens */
 @media (max-width: 480px) {
   .visitor-counter {
-    top: 5px !important;
-    left: 5px !important;
+    bottom: 6px !important;
+    left: 6px !important;
+    top: auto !important;
     padding: 2px 4px !important;
     min-width: 76px !important;
     max-width: 92px !important;
