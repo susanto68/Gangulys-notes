@@ -20,11 +20,41 @@
     <link rel="apple-touch-icon" sizes="512x512" href="icon-512.png">
   </head>
   <body>
-    <div class="visitor-counter" style="position: fixed; top: 8px; left: 8px; z-index: 1000; padding: 0;">
-      <div style="text-align: center;">
-        <h3 style="color: #000; margin: 0 0 3px 0; font-size: 10px; font-weight: bold; line-height: 1;">No Of Visitors</h3>
-        <div class="visitor-counter-display" style="display: inline-block; text-decoration: none; cursor: default;"></div>
-      </div>
+    <!-- Global SirGanguly Network Navigation Bar -->
+    <nav class="network-nav-bar" aria-label="Network Websites">
+        <div class="network-nav-container">
+            <span class="network-nav-title"><i class="fas fa-globe"></i> Network:</span>
+            <div class="network-nav-links">
+                <a href="https://ai.sirganguly.com" class="net-btn btn-avatar" target="_blank" rel="noopener noreferrer">
+                    <i class="fas fa-robot"></i> Launch Avatar
+                </a>
+                <a href="https://career.sirganguly.com" class="net-btn btn-career" target="_blank" rel="noopener noreferrer">
+                    <i class="fas fa-briefcase"></i> Open Guidance
+                </a>
+                <a href="https://mentor.sirganguly.com" class="net-btn btn-mentor" target="_blank" rel="noopener noreferrer">
+                    <i class="fas fa-user-graduate"></i> Meet Mentors
+                </a>
+                <a href="https://questions.sirganguly.com" class="net-btn btn-questions" target="_blank" rel="noopener noreferrer">
+                    <i class="fas fa-question-circle"></i> 100 Question Bank
+                </a>
+            </div>
+        </div>
+    </nav>
+
+        <!-- Global Brand & Visitor Widget -->
+    <div class="brand-visitor-widget" style="position: fixed; top: 8px; left: 10px; z-index: 1200; display: flex; align-items: center; gap: 8px;">
+        <div class="visitor-counter" style="position: static; margin: 0; padding: 0;">
+            <div style="text-align: center;">
+                <h3 style="color: #60a5fa; margin: 0 0 1px 0; font-size: 9.5px; font-weight: bold; line-height: 1; text-shadow: 0 0 6px rgba(96, 165, 250, 0.35);">No Of Visitors</h3>
+                <div class="visitor-counter-display" style="display: inline-block; text-decoration: none; cursor: default;">
+                    <span class="visitor-count-value">Loading...</span>
+                </div>
+            </div>
+        </div>
+        <div class="brand-profile">
+            <img src="sirganguly.png" alt="Susanto Ganguly" class="brand-avatar">
+            <span class="brand-name">Susanto Ganguly</span>
+        </div>
     </div>
 
     <header>
