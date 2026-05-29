@@ -2057,3 +2057,100 @@ footer {
     border-radius: 9px;
   }
 }
+
+/* ==========================================================================
+   📊 Global Glassmorphic Visitor Counter Styles
+   ========================================================================== */
+.visitor-counter {
+  transition: all 0.2s ease !important;
+  background: rgba(15, 23, 42, 0.72) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 2px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 18px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35) !important;
+  font-family: "Fredoka", system-ui, sans-serif !important;
+}
+
+.visitor-counter h3 {
+  color: #60a5fa !important;
+  font-weight: 900 !important;
+}
+
+/* Desktop styles */
+@media (min-width: 769px) {
+  .visitor-counter {
+    top: 15px !important;
+    left: 15px !important;
+    padding: 10px 14px !important;
+    min-width: 150px !important;
+    max-width: 210px !important;
+    font-size: 13px !important;
+  }
+  
+  .visitor-counter:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px rgba(59, 130, 246, 0.25) !important;
+  }
+}
+
+/* Mobile styles - much smaller and positioned to not overlap */
+@media (max-width: 768px) {
+  .visitor-counter {
+    top: 6px !important;
+    left: 6px !important;
+    padding: 4px 6px !important;
+    min-width: 96px !important;
+    max-width: 116px !important;
+    font-size: 9px !important;
+    z-index: 1001 !important;
+    line-height: 1.1 !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.12) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25) !important;
+    border-radius: 12px !important;
+  }
+  
+  .visitor-counter h3 {
+    font-size: 8px !important;
+    margin: 0 0 2px 0 !important;
+    line-height: 1 !important;
+  }
+  
+  .visitor-count-value {
+    font-size: 8.5px !important;
+    line-height: 1.15 !important;
+    color: #ffffff !important;
+  }
+}
+
+/* Remove any link styling from counter display */
+.visitor-counter-display {
+  cursor: default !important;
+  pointer-events: none !important;
+}
+
+.visitor-counter-display * {
+  cursor: default !important;
+  pointer-events: none !important;
+}
+
+/* Very small screens */
+@media (max-width: 480px) {
+  .visitor-counter {
+    top: 5px !important;
+    left: 5px !important;
+    padding: 2px 4px !important;
+    min-width: 76px !important;
+    max-width: 92px !important;
+  }
+  
+  .visitor-counter h3 {
+    font-size: 6px !important;
+  }
+  
+  .visitor-count-value {
+    font-size: 7px !important;
+  }
+}
+
+
