@@ -230,6 +230,21 @@
     });
   }
 
+  /* ── Dynamic Padding Override for Notes Portal ─────────── */
+  function adjustNavPadding() {
+    const widget = document.querySelector('.brand-visitor-widget');
+    const navLinks = document.querySelector('.sg-nav-links');
+    if (!widget || !navLinks) return;
+
+    if (window.innerWidth < 768) {
+      const rect = widget.getBoundingClientRect();
+      const offset = Math.ceil(rect.width) + 12;
+      navLinks.style.setProperty('padding-left', `${offset}px`, 'important');
+    } else {
+      navLinks.style.removeProperty('padding-left');
+    }
+  }
+
   /* ── 9. Main init ──────────────────────────────────────── */
   function init() {
     injectNav();
@@ -237,7 +252,17 @@
     // Wait a tick for the injected HTML to be in the DOM
     requestAnimationFrame(function () {
       initNavLinks();
+      adjustNavPadding();
+      
+      // Multi-stage timeouts to handle async Firebase numbers loading and resizing
+      setTimeout(adjustNavPadding, 150);
+      setTimeout(adjustNavPadding, 500);
+      setTimeout(adjustNavPadding, 1500);
+      setTimeout(adjustNavPadding, 3000);
     });
+
+    // Handle window resize dynamically
+    window.addEventListener('resize', adjustNavPadding, { passive: true });
   }
 
   /* ── 12. Bootstrap ──────────────────────────────────────── */

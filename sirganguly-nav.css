@@ -471,14 +471,14 @@
   }
   .sg-btn {
     flex: 0 0 auto !important; /* Prevent shrinking */
-    padding: 0.38rem 0.65rem !important;
-    font-size: 0.74rem !important;
+    padding: 0.35rem 0.55rem !important; /* Tighter padding for a perfect fit */
+    font-size: 0.72rem !important; /* Slightly smaller text */
     border-radius: 9px !important;
-    gap: 0.28rem !important;
+    gap: 0.24rem !important; /* Tighter gap */
     border-width: 1.5px !important;
   }
   .sg-btn-icon {
-    font-size: 0.8rem !important;
+    font-size: 0.78rem !important; /* Slightly smaller icons */
   }
 }
 
@@ -595,24 +595,7 @@ body.sg-has-visitor-widget:has(.sg-nav.sg-open) .brand-visitor-widget {
   pointer-events: none !important;
 }
 
-/* Responsive padding-left overrides on mobile for perfect clearances */
-@media (max-width: 639px) {
-  .sg-has-visitor-widget .sg-nav-links {
-    padding-left: 175px !important; /* Spacing for tablet/mobile visitor counter */
-  }
-}
 
-@media (max-width: 480px) {
-  .sg-has-visitor-widget .sg-nav-links {
-    padding-left: 160px !important; /* Perfect space-saving clearance for mobile visitor counter */
-  }
-}
-
-@media (max-width: 380px) {
-  .sg-has-visitor-widget .sg-nav-links {
-    padding-left: 140px !important; /* Cozy space-saving clearance for small screens */
-  }
-}
 
 
 
