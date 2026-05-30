@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sir-ganguly-v9-bento-grid';
+const CACHE_NAME = 'sir-ganguly-v10-grid-3x2';
 const urlsToCache = [
   '/',
   '/index.html',

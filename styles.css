@@ -2355,28 +2355,32 @@ footer {
 
 @media (max-width: 500px) {
   .ecosystem-grid {
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 0.55rem !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 0.4rem !important;
   }
   .ecosystem-grid-container {
     max-width: 100% !important;
-    margin: 1.5rem 0.25rem 0.85rem !important;
-    padding: 0.8rem 0.65rem !important;
+    margin: 1.5rem 0.15rem 0.85rem !important;
+    padding: 0.65rem 0.4rem !important;
     border-radius: 20px !important;
   }
   .sg-hero-btn {
-    padding: 0.65rem 0.5rem !important;
-    font-size: 0.8rem !important;
+    flex-direction: column !important;
+    padding: 0.55rem 0.25rem !important;
+    font-size: 0.68rem !important;
     border-radius: 12px !important;
     width: 100% !important;
-    gap: 0.4rem !important;
+    gap: 0.25rem !important;
+    min-height: 64px !important;
+    justify-content: center !important;
+    text-align: center !important;
+    box-sizing: border-box !important;
   }
-  .sg-btn-questions,
-  .sg-btn-career {
-    grid-column: span 2 !important;
+  .sg-btn-icon {
+    font-size: 1.15rem !important;
   }
   .ecosystem-grid-title {
-    font-size: 1rem !important;
-    margin-bottom: 0.85rem !important;
+    font-size: 0.95rem !important;
+    margin-bottom: 0.65rem !important;
   }
 }

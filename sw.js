@@ -1,9 +1,9 @@
 // Service Worker for Avatar AI Assistant PWA
 // Created by Susanto Ganguly (Sir Ganguly)
 
-const CACHE_NAME = 'sirganguly-v20260530-bento-grid';
-const STATIC_CACHE = 'sirganguly-static-v20260530-bento-grid';
-const DYNAMIC_CACHE = 'sirganguly-dynamic-v20260530-bento-grid';
+const CACHE_NAME = 'sirganguly-v20260530-grid-3x2';
+const STATIC_CACHE = 'sirganguly-static-v20260530-grid-3x2';
+const DYNAMIC_CACHE = 'sirganguly-dynamic-v20260530-grid-3x2';
 
 // Files to cache immediately
 const STATIC_FILES = [
