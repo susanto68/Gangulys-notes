@@ -628,6 +628,7 @@
   left: 15px !important;
   z-index: 10000 !important; /* Ensure it floats above the glassmorphic navbar (z-index: 9999) */
   margin: 0 !important;
+  transition: opacity 0.22s ease-in-out, transform 0.22s ease-in-out !important;
 }
 
 /* Responsive adjustment for mobile: center it vertically inside the smaller mobile nav (56px) */
@@ -654,4 +655,12 @@
     max-width: 135px !important;
   }
 }
+
+/* When the mobile menu drawer is open, hide the visitor widget so it doesn't block drawer links */
+body.sg-has-visitor-widget:has(.sg-nav.sg-open) .brand-visitor-widget {
+  opacity: 0 !important;
+  transform: translateY(-8px) !important;
+  pointer-events: none !important;
+}
+
 
