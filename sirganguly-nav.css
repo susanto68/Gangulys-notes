@@ -436,40 +436,60 @@
   }
 }
 
-/* ── Mobile & Small Tablets < 768px — inline 2-column grid ────────────────── */
+/* ── Mobile & Small Tablets < 768px — horizontal swipe-row mode ────────────────── */
 @media (max-width: 767px) {
   .sg-nav {
-    position: relative !important; /* Make static (not sticky) above portal header */
-    animation: none !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 9999 !important;
   }
   .sg-nav-container {
-    padding: 0.8rem 0.75rem !important;
-    flex-direction: column !important;
-    gap: 0.8rem !important;
+    height: 56px !important;
+    min-height: 56px !important;
+    padding: 0 0.5rem !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    overflow: hidden !important;
   }
   .sg-nav-links {
-    display: grid !important;
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 0.6rem !important;
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    gap: 0.45rem !important;
     width: 100% !important;
+    padding-left: 165px !important; /* Perfect clearance for the fixed visitor widget */
+    padding-right: 1rem !important;
+    padding-top: 4px !important;
+    padding-bottom: 4px !important;
+    scrollbar-width: none !important; /* Firefox */
+  }
+  /* Hide scrollbar for ultra-clean mobile appearance */
+  .sg-nav-links::-webkit-scrollbar {
+    display: none !important;
   }
   .sg-btn {
-    width: 100% !important;
-    justify-content: center !important;
-    font-size: 0.88rem !important;
-    padding: 0.62rem 0.5rem !important;
-    border-radius: 12px !important;
+    flex: 0 0 auto !important; /* Prevent shrinking */
+    padding: 0.38rem 0.65rem !important;
+    font-size: 0.74rem !important;
+    border-radius: 9px !important;
+    gap: 0.28rem !important;
+    border-width: 1.5px !important;
+  }
+  .sg-btn-icon {
+    font-size: 0.8rem !important;
   }
 }
 
 /* ── Very small phones 320px–399px ─────────────────────────── */
 @media (max-width: 399px) {
   .sg-nav-links {
-    gap: 0.5rem !important;
+    gap: 0.35rem !important;
   }
   .sg-btn {
-    font-size: 0.8rem !important;
-    padding: 0.58rem 0.4rem !important;
+    font-size: 0.7rem !important;
+    padding: 0.35rem 0.55rem !important;
   }
 }
 
@@ -574,5 +594,25 @@ body.sg-has-visitor-widget:has(.sg-nav.sg-open) .brand-visitor-widget {
   transform: translateY(-8px) !important;
   pointer-events: none !important;
 }
+
+/* Responsive padding-left overrides on mobile for perfect clearances */
+@media (max-width: 639px) {
+  .sg-has-visitor-widget .sg-nav-links {
+    padding-left: 175px !important; /* Spacing for tablet/mobile visitor counter */
+  }
+}
+
+@media (max-width: 480px) {
+  .sg-has-visitor-widget .sg-nav-links {
+    padding-left: 160px !important; /* Perfect space-saving clearance for mobile visitor counter */
+  }
+}
+
+@media (max-width: 380px) {
+  .sg-has-visitor-widget .sg-nav-links {
+    padding-left: 140px !important; /* Cozy space-saving clearance for small screens */
+  }
+}
+
 
 
