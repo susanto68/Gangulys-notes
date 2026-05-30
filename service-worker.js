@@ -1,10 +1,8 @@
-const CACHE_NAME = 'sir-ganguly-v7-unified-nav';
+const CACHE_NAME = 'sir-ganguly-v8-hero-grid';
 const urlsToCache = [
   '/',
   '/index.html',
   '/styles.css',
-  '/sirganguly-nav.css',
-  '/sirganguly-nav.js',
   '/chapters.css',
   '/scripts.js',
   '/icon-192.png',
