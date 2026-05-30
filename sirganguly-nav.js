@@ -156,41 +156,12 @@
       <span class="sg-brand-label">Sir <span>Ganguly</span></span>
     </a>
 
-    <!-- Desktop / Tablet inline buttons -->
+    <!-- Desktop / Tablet / Mobile inline buttons -->
     <div class="sg-nav-links" role="list" aria-label="Network websites">
       ${buttons}
     </div>
-
-    <!-- Hamburger toggle (mobile only) -->
-    <button
-      class="sg-hamburger"
-      id="sgHamburger"
-      aria-expanded="false"
-      aria-controls="sgMobileDrawer"
-      aria-label="Open navigation menu"
-      type="button"
-    >
-      <span></span>
-      <span></span>
-      <span></span>
-    </button>
 
   </div><!-- /.sg-nav-container -->
-
-  <!-- Mobile drawer -->
-  <div
-    class="sg-mobile-drawer"
-    id="sgMobileDrawer"
-    aria-hidden="true"
-    role="dialog"
-    aria-modal="false"
-    aria-label="Navigation menu"
-  >
-    <div class="sg-nav-links" role="list" aria-label="Network websites">
-      ${buttons}
-    </div>
-  </div>
-
 </nav><!-- /.sg-nav -->
     `.trim();
   }
@@ -241,62 +212,7 @@
     }, 380);
   }
 
-  /* ── 8. Hamburger Toggle ────────────────────────────────── */
-  function initHamburger() {
-    const nav       = document.getElementById('sgNav');
-    const hamburger = document.getElementById('sgHamburger');
-    const drawer    = document.getElementById('sgMobileDrawer');
-    if (!nav || !hamburger || !drawer) return;
-
-    function openDrawer() {
-      nav.classList.add('sg-open');
-      hamburger.setAttribute('aria-expanded', 'true');
-      hamburger.setAttribute('aria-label', 'Close navigation menu');
-      drawer.setAttribute('aria-hidden', 'false');
-      // Trap focus inside drawer
-      const firstLink = drawer.querySelector('a');
-      if (firstLink) firstLink.focus();
-    }
-
-    function closeDrawer() {
-      nav.classList.remove('sg-open');
-      hamburger.setAttribute('aria-expanded', 'false');
-      hamburger.setAttribute('aria-label', 'Open navigation menu');
-      drawer.setAttribute('aria-hidden', 'true');
-      hamburger.focus();
-    }
-
-    hamburger.addEventListener('click', function () {
-      if (nav.classList.contains('sg-open')) {
-        closeDrawer();
-      } else {
-        openDrawer();
-      }
-    });
-
-    // Close on Escape key
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && nav.classList.contains('sg-open')) {
-        closeDrawer();
-      }
-    });
-
-    // Close if user clicks outside nav
-    document.addEventListener('click', function (e) {
-      if (nav.classList.contains('sg-open') && !nav.contains(e.target)) {
-        closeDrawer();
-      }
-    });
-
-    // Close drawer when a link is tapped (single-page UX)
-    drawer.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', function () {
-        closeDrawer();
-      });
-    });
-  }
-
-  /* ── 9. Loading bar on navigation clicks ────────────────── */
+  /* ── 8. Loading bar on navigation clicks ────────────────── */
   function initNavLinks() {
     const nav = document.getElementById('sgNav');
     if (!nav) return;
@@ -314,35 +230,13 @@
     });
   }
 
-  /* ── 10. Scroll-hide on mobile (optional micro-UX) ──────── */
-  let lastScroll = 0;
-  function initScrollBehaviour() {
-    const nav = document.getElementById('sgNav');
-    if (!nav) return;
-    // Only on mobile
-    if (window.innerWidth >= 640) return;
-
-    window.addEventListener('scroll', function () {
-      const current = window.pageYOffset;
-      if (current > lastScroll && current > 80 && !nav.classList.contains('sg-open')) {
-        nav.style.transform = 'translateY(-100%)';
-        nav.style.transition = 'transform 0.3s ease';
-      } else {
-        nav.style.transform = 'translateY(0)';
-      }
-      lastScroll = current <= 0 ? 0 : current;
-    }, { passive: true });
-  }
-
-  /* ── 11. Main init ──────────────────────────────────────── */
+  /* ── 9. Main init ──────────────────────────────────────── */
   function init() {
     injectNav();
 
     // Wait a tick for the injected HTML to be in the DOM
     requestAnimationFrame(function () {
-      initHamburger();
       initNavLinks();
-      initScrollBehaviour();
     });
   }
 
