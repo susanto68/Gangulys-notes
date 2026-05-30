@@ -1,8 +1,10 @@
-const CACHE_NAME = 'sir-ganguly-v6-mobile-buttons';
+const CACHE_NAME = 'sir-ganguly-v7-unified-nav';
 const urlsToCache = [
   '/',
   '/index.html',
   '/styles.css',
+  '/sirganguly-nav.css',
+  '/sirganguly-nav.js',
   '/chapters.css',
   '/scripts.js',
   '/icon-192.png',

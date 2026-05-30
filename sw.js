@@ -1,14 +1,16 @@
 // Service Worker for Avatar AI Assistant PWA
 // Created by Susanto Ganguly (Sir Ganguly)
 
-const CACHE_NAME = 'sirganguly-v20260529-mobile-buttons';
-const STATIC_CACHE = 'sirganguly-static-v20260529-mobile-buttons';
-const DYNAMIC_CACHE = 'sirganguly-dynamic-v20260529-mobile-buttons';
+const CACHE_NAME = 'sirganguly-v20260529-unified-nav';
+const STATIC_CACHE = 'sirganguly-static-v20260529-unified-nav';
+const DYNAMIC_CACHE = 'sirganguly-dynamic-v20260529-unified-nav';
 
 // Files to cache immediately
 const STATIC_FILES = [
   '/',
   '/index.html',
+  '/sirganguly-nav.css',
+  '/sirganguly-nav.js',
   '/ai-voice-assistant.html',
   '/student-registration.html',
   '/offline.html',

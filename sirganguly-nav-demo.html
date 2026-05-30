@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sir Ganguly — Unified Navigation System | Integration Guide</title>
+  <meta name="description" content="Universal navigation bar for the Sir Ganguly educational ecosystem — Home, AI Teacher, Questions, Books, Career and Mentor portals.">
+  <meta name="robots" content="noindex">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- ★ The nav system itself ★ -->
+  <link rel="stylesheet" href="sirganguly-nav.css">
+  <script src="sirganguly-nav.js" defer></script>
+
+  <style>
+    /* ── page chrome ──────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --page-bg:   #040814;
+      --card-bg:   rgba(15, 23, 42, 0.65);
+      --border:    rgba(255,255,255,0.10);
+      --text:      #e2e8f0;
+      --muted:     #94a3b8;
+      --accent:    #60a5fa;
+      --font:      "Fredoka", system-ui, sans-serif;
+      --code-font: "Fira Code", monospace;
+    }
+
+    body {
+      font-family: var(--font);
+      background: var(--page-bg);
+      background-image:
+        radial-gradient(circle at 15% 25%, rgba(59,130,246,.16) 0%, transparent 45%),
+        radial-gradient(circle at 85% 70%, rgba(168,85,247,.12) 0%, transparent 45%),
+        radial-gradient(circle at 50% 50%, rgba(16,185,129,.08) 0%, transparent 55%);
+      min-height: 100vh;
+      color: var(--text);
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* The nav injects itself before everything — body padding prevents overlap */
+    body { padding-top: 0; }
+
+    /* ── hero ─────────────────────────────────────────── */
+    .hero {
+      text-align: center;
+      padding: 5rem 1.5rem 3.5rem;
+      animation: fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) both;
+      animation-delay: 0.3s;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero h1 {
+      font-size: clamp(2rem, 6vw, 3.4rem);
+      font-weight: 900;
+      color: #ffffff;
+      text-shadow: 0 2px 20px rgba(96,165,250,.3);
+      margin-bottom: .75rem;
+    }
+
+    .hero h1 span {
+      background: linear-gradient(90deg,#60a5fa,#a855f7,#ec4899,#f97316);
+      background-size: 300% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: shimmer 5s ease-in-out infinite;
+    }
+
+    @keyframes shimmer {
+      0%,100% { background-position: 0% 50%; }
+      50%      { background-position: 100% 50%; }
+    }
+
+    .hero p {
+      font-size: clamp(1rem, 2.5vw, 1.25rem);
+      color: var(--muted);
+      max-width: 640px;
+      margin: 0 auto 2rem;
+    }
+
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: .6rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      background: rgba(96,165,250,.12);
+      border: 1px solid rgba(96,165,250,.3);
+      border-radius: 99px;
+      padding: .3rem .9rem;
+      font-size: .82rem;
+      font-weight: 700;
+      color: #93c5fd;
+      letter-spacing: .02em;
+    }
+
+    /* ── live preview box ──────────────────────────────── */
+    .preview-label {
+      font-size: .78rem;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: .6rem;
+    }
+
+    /* ── site cards grid ───────────────────────────────── */
+    .section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 1rem 1.5rem 4rem;
+    }
+
+    .section-title {
+      font-size: clamp(1.3rem, 3vw, 1.7rem);
+      font-weight: 900;
+      color: #ffffff;
+      margin-bottom: 1.8rem;
+      display: flex;
+      align-items: center;
+      gap: .7rem;
+    }
+
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 2px;
+      background: linear-gradient(90deg, rgba(96,165,250,.5), transparent);
+      border-radius: 2px;
+    }
+
+    /* ── integration instructions ──────────────────────── */
+    .site-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .site-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 1.5rem;
+      backdrop-filter: blur(12px);
+      transition: transform .25s ease, box-shadow .25s ease;
+    }
+
+    .site-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 40px rgba(0,0,0,.3);
+    }
+
+    .site-card-header {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      margin-bottom: 1rem;
+    }
+
+    .site-card-icon {
+      font-size: 2rem;
+      filter: drop-shadow(0 2px 6px rgba(0,0,0,.3));
+    }
+
+    .site-card-info h3 {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    .site-card-info a {
+      font-size: .82rem;
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .site-card-info a:hover { text-decoration: underline; }
+
+    .step-list {
+      list-style: none;
+      counter-reset: step;
+      display: flex;
+      flex-direction: column;
+      gap: .6rem;
+    }
+
+    .step-list li {
+      counter-increment: step;
+      display: flex;
+      gap: .75rem;
+      font-size: .9rem;
+      color: var(--muted);
+      align-items: flex-start;
+    }
+
+    .step-list li::before {
+      content: counter(step);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 22px;
+      height: 22px;
+      background: rgba(96,165,250,.2);
+      border: 1px solid rgba(96,165,250,.4);
+      border-radius: 50%;
+      font-size: .72rem;
+      font-weight: 800;
+      color: var(--accent);
+      margin-top: 1px;
+    }
+
+    /* ── code block ────────────────────────────────────── */
+    .code-box {
+      position: relative;
+      background: rgba(0,0,0,.55);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 14px;
+      padding: 1.2rem 1rem 1rem;
+      margin: 1.2rem 0;
+      overflow-x: auto;
+    }
+
+    .code-box pre {
+      font-family: var(--code-font);
+      font-size: .78rem;
+      line-height: 1.7;
+      color: #e2e8f0;
+      white-space: pre;
+    }
+
+    .code-box .comment { color: #64748b; }
+    .code-box .tag     { color: #60a5fa; }
+    .code-box .attr    { color: #a78bfa; }
+    .code-box .val     { color: #34d399; }
+    .code-box .text    { color: #e2e8f0; }
+
+    .copy-btn {
+      position: absolute;
+      top: .6rem;
+      right: .6rem;
+      background: rgba(96,165,250,.15);
+      border: 1px solid rgba(96,165,250,.3);
+      border-radius: 8px;
+      color: var(--accent);
+      font-family: var(--font);
+      font-size: .72rem;
+      font-weight: 700;
+      padding: .3rem .7rem;
+      cursor: pointer;
+      transition: background .2s;
+    }
+
+    .copy-btn:hover { background: rgba(96,165,250,.25); }
+    .copy-btn.copied { background: rgba(34,197,94,.2); color: #4ade80; border-color: rgba(34,197,94,.3); }
+
+    /* ── feature grid ──────────────────────────────────── */
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.2rem;
+      margin-top: 1rem;
+    }
+
+    .feature-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.3rem;
+      text-align: center;
+    }
+
+    .feature-card .icon { font-size: 2.2rem; margin-bottom: .6rem; display: block; }
+    .feature-card h4 { font-size: 1rem; font-weight: 800; color: #fff; margin-bottom: .35rem; }
+    .feature-card p  { font-size: .85rem; color: var(--muted); }
+
+    /* ── button preview section ────────────────────────── */
+    .btn-showcase {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+      padding: 2rem;
+      background: rgba(0,0,0,.35);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      margin-top: 1rem;
+    }
+
+    /* ── footer ────────────────────────────────────────── */
+    footer {
+      text-align: center;
+      padding: 2rem 1rem;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: .88rem;
+    }
+
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      .site-grid { grid-template-columns: 1fr; }
+      .feature-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 400px) {
+      .feature-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ★ Mount point — nav is injected here by sirganguly-nav.js ★ -->
+<div id="sg-nav-root"></div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     HERO
+═══════════════════════════════════════════════════════════ -->
+<section class="hero">
+  <h1>Sir Ganguly<br><span>Unified Navigation</span></h1>
+  <p>
+    A single, beautiful navigation bar that works identically across
+    all six Sir&nbsp;Ganguly websites — no frameworks, no dependencies,
+    just copy-paste HTML.
+  </p>
+
+  <div class="badge-row">
+    <span class="badge">✅ Mobile-First</span>
+    <span class="badge">♿ WCAG Accessible</span>
+    <span class="badge">🚀 Zero Dependencies</span>
+    <span class="badge">🎨 Glassmorphism</span>
+    <span class="badge">⚡ < 4 KB CSS+JS</span>
+    <span class="badge">🔍 SEO Friendly</span>
+  </div>
+
+  <p class="preview-label">↑ Live preview above — that is the actual navigation bar ↑</p>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     FEATURES
+═══════════════════════════════════════════════════════════ -->
+<section class="section">
+  <h2 class="section-title">✨ Features</h2>
+  <div class="feature-grid">
+    <div class="feature-card">
+      <span class="icon">📱</span>
+      <h4>Mobile Hamburger</h4>
+      <p>Full-screen slide-down drawer on phones — easy to tap, keyboard closeable.</p>
+    </div>
+    <div class="feature-card">
+      <span class="icon">🎯</span>
+      <h4>Auto Active Detection</h4>
+      <p>Reads <code>window.location.hostname</code> and highlights the current site automatically.</p>
+    </div>
+    <div class="feature-card">
+      <span class="icon">⏳</span>
+      <h4>Loading Progress Bar</h4>
+      <p>Animated progress bar at top on every cross-site navigation click.</p>
+    </div>
+    <div class="feature-card">
+      <span class="icon">🌊</span>
+      <h4>Glassmorphism</h4>
+      <p>Sticky bar with blur + semi-transparent dark glass — looks great over any background.</p>
+    </div>
+    <div class="feature-card">
+      <span class="icon">♿</span>
+      <h4>Fully Accessible</h4>
+      <p>ARIA labels, <code>aria-current</code>, keyboard focus rings, Escape to close drawer.</p>
+    </div>
+    <div class="feature-card">
+      <span class="icon">🎨</span>
+      <h4>6 Premium Gradients</h4>
+      <p>Each website has its own signature gradient with glow, hover lift and press animations.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     BUTTON SHOWCASE
+═══════════════════════════════════════════════════════════ -->
+<section class="section" style="padding-top:0">
+  <h2 class="section-title">🎨 Button Showcase</h2>
+  <p style="color:var(--muted);margin-bottom:1rem;">Hover, tap, or click any button below to feel the animations.</p>
+  <div class="btn-showcase">
+    <a href="https://sirganguly.com"          class="sg-btn sg-btn-home"      aria-label="Home"><span class="sg-btn-icon">🏠</span><span class="sg-btn-text">Home</span></a>
+    <a href="https://ai.sirganguly.com"       class="sg-btn sg-btn-ai"        aria-label="AI Teacher"><span class="sg-btn-icon">🤖</span><span class="sg-btn-text">AI Teacher</span></a>
+    <a href="https://questions.sirganguly.com" class="sg-btn sg-btn-questions" aria-label="Questions"><span class="sg-btn-icon">❓</span><span class="sg-btn-text">Questions</span></a>
+    <a href="https://books.sirganguly.com"    class="sg-btn sg-btn-books"     aria-label="Books"><span class="sg-btn-icon">📚</span><span class="sg-btn-text">Books</span></a>
+    <a href="https://career.sirganguly.com"   class="sg-btn sg-btn-career"    aria-label="Career"><span class="sg-btn-icon">🚀</span><span class="sg-btn-text">Career</span></a>
+    <a href="https://mentor.sirganguly.com"   class="sg-btn sg-btn-mentor"    aria-label="Mentor"><span class="sg-btn-icon">🎯</span><span class="sg-btn-text">Mentor</span></a>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     INTEGRATION GUIDE — SIX SITES
+═══════════════════════════════════════════════════════════ -->
+<section class="section" style="padding-top:0">
+  <h2 class="section-title">🔧 Integration Guide — All 6 Sites</h2>
+  <p style="color:var(--muted);margin-bottom:1.5rem;">
+    Copy the three lines below into the <code>&lt;head&gt;</code> and one line at the top of <code>&lt;body&gt;</code>
+    of each website. The JS auto-detects which site it's on and highlights the correct button.
+  </p>
+
+  <!-- Universal embed snippet -->
+  <div class="code-box">
+    <button class="copy-btn" onclick="copyCode(this, 'embedSnippet')">Copy</button>
+    <pre id="embedSnippet"><span class="comment">&lt;!-- Sir Ganguly Unified Navigation — paste in &lt;head&gt; --&gt;</span>
+<span class="tag">&lt;link</span> <span class="attr">rel</span>=<span class="val">"stylesheet"</span> <span class="attr">href</span>=<span class="val">"https://sirganguly.com/sirganguly-nav.css"</span><span class="tag">&gt;</span>
+<span class="tag">&lt;script</span> <span class="attr">src</span>=<span class="val">"https://sirganguly.com/sirganguly-nav.js"</span> <span class="attr">defer</span><span class="tag">&gt;&lt;/script&gt;</span>
+
+<span class="comment">&lt;!-- Paste this as the FIRST child of &lt;body&gt; --&gt;</span>
+<span class="tag">&lt;div</span> <span class="attr">id</span>=<span class="val">"sg-nav-root"</span><span class="tag">&gt;&lt;/div&gt;</span></pre>
+  </div>
+
+  <div class="site-grid">
+
+    <!-- sirganguly.com -->
+    <div class="site-card">
+      <div class="site-card-header">
+        <span class="site-card-icon">🏠</span>
+        <div class="site-card-info">
+          <h3>sirganguly.com</h3>
+          <a href="https://sirganguly.com" target="_blank" rel="noopener">Open site ↗</a>
+        </div>
+      </div>
+      <ul class="step-list">
+        <li>Add the 3 &lt;head&gt; lines above</li>
+        <li>Add <code>&lt;div id="sg-nav-root"&gt;&lt;/div&gt;</code> at top of &lt;body&gt;</li>
+        <li>Nav auto-highlights <strong>🏠 Home</strong> button</li>
+        <li>Avatar image at <code>/sirganguly.png</code> is used automatically</li>
+      </ul>
+    </div>
+
+    <!-- ai.sirganguly.com -->
+    <div class="site-card">
+      <div class="site-card-header">
+        <span class="site-card-icon">🤖</span>
+        <div class="site-card-info">
+          <h3>ai.sirganguly.com</h3>
+          <a href="https://ai.sirganguly.com" target="_blank" rel="noopener">Open site ↗</a>
+        </div>
+      </div>
+      <ul class="step-list">
+        <li>Add the 3 &lt;head&gt; lines above</li>
+        <li>Add <code>&lt;div id="sg-nav-root"&gt;&lt;/div&gt;</code> at top of &lt;body&gt;</li>
+        <li>Nav auto-highlights <strong>🤖 AI Teacher</strong> button</li>
+        <li>Override avatar: <code>window.SG_AVATAR_URL = "/img/sir.png"</code> before the script</li>
+      </ul>
+    </div>
+
+    <!-- questions.sirganguly.com -->
+    <div class="site-card">
+      <div class="site-card-header">
+        <span class="site-card-icon">❓</span>
+        <div class="site-card-info">
+          <h3>questions.sirganguly.com</h3>
+          <a href="https://questions.sirganguly.com" target="_blank" rel="noopener">Open site ↗</a>
+        </div>
+      </div>
+      <ul class="step-list">
+        <li>Add the 3 &lt;head&gt; lines above</li>
+        <li>Add <code>&lt;div id="sg-nav-root"&gt;&lt;/div&gt;</code> at top of &lt;body&gt;</li>
+        <li>Nav auto-highlights <strong>❓ Questions</strong> button</li>
+      </ul>
+    </div>
+
+    <!-- books.sirganguly.com -->
+    <div class="site-card">
+      <div class="site-card-header">
+        <span class="site-card-icon">📚</span>
+        <div class="site-card-info">
+          <h3>books.sirganguly.com</h3>
+          <a href="https://books.sirganguly.com" target="_blank" rel="noopener">Open site ↗</a>
+        </div>
+      </div>
+      <ul class="step-list">
+        <li>Add the 3 &lt;head&gt; lines above</li>
+        <li>Add <code>&lt;div id="sg-nav-root"&gt;&lt;/div&gt;</code> at top of &lt;body&gt;</li>
+        <li>Nav auto-highlights <strong>📚 Books</strong> button</li>
+      </ul>
+    </div>
+
+    <!-- career.sirganguly.com -->
+    <div class="site-card">
+      <div class="site-card-header">
+        <span class="site-card-icon">🚀</span>
+        <div class="site-card-info">
+          <h3>career.sirganguly.com</h3>
+          <a href="https://career.sirganguly.com" target="_blank" rel="noopener">Open site ↗</a>
+        </div>
+      </div>
+      <ul class="step-list">
+        <li>Add the 3 &lt;head&gt; lines above</li>
+        <li>Add <code>&lt;div id="sg-nav-root"&gt;&lt;/div&gt;</code> at top of &lt;body&gt;</li>
+        <li>Nav auto-highlights <strong>🚀 Career</strong> button</li>
+      </ul>
+    </div>
+
+    <!-- mentor.sirganguly.com -->
+    <div class="site-card">
+      <div class="site-card-header">
+        <span class="site-card-icon">🎯</span>
+        <div class="site-card-info">
+          <h3>mentor.sirganguly.com</h3>
+          <a href="https://mentor.sirganguly.com" target="_blank" rel="noopener">Open site ↗</a>
+        </div>
+      </div>
+      <ul class="step-list">
+        <li>Add the 3 &lt;head&gt; lines above</li>
+        <li>Add <code>&lt;div id="sg-nav-root"&gt;&lt;/div&gt;</code> at top of &lt;body&gt;</li>
+        <li>Nav auto-highlights <strong>🎯 Mentor</strong> button</li>
+      </ul>
+    </div>
+
+  </div><!-- /.site-grid -->
+
+  <!-- Avatar override note -->
+  <div style="margin-top:1.5rem;padding:1.2rem 1.4rem;background:rgba(234,179,8,.08);border:1px solid rgba(234,179,8,.25);border-radius:14px;">
+    <strong style="color:#fde68a;">💡 Custom Avatar (Optional)</strong>
+    <p style="color:var(--muted);margin-top:.4rem;font-size:.9rem;">
+      If a site has its own copy of the teacher's photo, override the avatar path before the script tag:
+    </p>
+    <div class="code-box" style="margin-top:.75rem;">
+      <pre><span class="tag">&lt;script&gt;</span>
+  <span class="text">window.SG_AVATAR_URL = "/path/to/sirganguly.png";</span>
+<span class="tag">&lt;/script&gt;</span>
+<span class="tag">&lt;script</span> <span class="attr">src</span>=<span class="val">"https://sirganguly.com/sirganguly-nav.js"</span> <span class="attr">defer</span><span class="tag">&gt;&lt;/script&gt;</span></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     TECHNICAL NOTES
+═══════════════════════════════════════════════════════════ -->
+<section class="section" style="padding-top:0">
+  <h2 class="section-title">📋 Technical Notes</h2>
+  <div class="feature-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px,1fr))">
+    <div class="feature-card" style="text-align:left">
+      <span class="icon">📐</span>
+      <h4>Breakpoints</h4>
+      <p>≥ 1024px — full desktop row<br>640–1023px — compact tablet row<br>< 640px — hamburger + drawer</p>
+    </div>
+    <div class="feature-card" style="text-align:left">
+      <span class="icon">⚡</span>
+      <h4>Performance</h4>
+      <p>CSS ~5 KB · JS ~4 KB (uncompressed).<br>Zero external dependencies.<br>Single HTTP round-trip to sirganguly.com CDN.</p>
+    </div>
+    <div class="feature-card" style="text-align:left">
+      <span class="icon">🔍</span>
+      <h4>SEO</h4>
+      <p>All links are real <code>&lt;a href&gt;</code> tags, fully crawlable by Google and Bing without JavaScript.</p>
+    </div>
+    <div class="feature-card" style="text-align:left">
+      <span class="icon">🎨</span>
+      <h4>Theming</h4>
+      <p>All colours controlled via CSS custom properties in <code>:root</code> — override any gradient per-site if needed.</p>
+    </div>
+    <div class="feature-card" style="text-align:left">
+      <span class="icon">♿</span>
+      <h4>Accessibility</h4>
+      <p><code>aria-current="page"</code>, <code>aria-expanded</code>, <code>aria-label</code>, Escape key closes drawer, visible focus rings.</p>
+    </div>
+    <div class="feature-card" style="text-align:left">
+      <span class="icon">📦</span>
+      <h4>Public API</h4>
+      <p>Access via <code>window.SirGangulyNav</code> — exposes <code>.refresh()</code>, <code>.showProgress()</code>, <code>.hideProgress()</code>.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>Sir Ganguly Unified Navigation v1.0 &nbsp;·&nbsp; Built with ❤️ for education &nbsp;·&nbsp;
+    <a href="https://sirganguly.com">sirganguly.com</a>
+  </p>
+  <p style="margin-top:.4rem;">Files: <code>sirganguly-nav.css</code> &amp; <code>sirganguly-nav.js</code> — hosted at <a href="https://sirganguly.com">sirganguly.com</a></p>
+</footer>
+
+<script>
+  /* Copy-to-clipboard helper for code blocks */
+  function copyCode(btn, id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    // Extract plain text from the pre (strip HTML tags)
+    const text = el.innerText || el.textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = '✓ Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = 'Copy';
+        btn.classList.remove('copied');
+      }, 2000);
+    }).catch(() => {
+      btn.textContent = 'Failed';
+      setTimeout(() => { btn.textContent = 'Copy'; }, 2000);
+    });
+  }
+</script>
+
+</body>
+</html>
