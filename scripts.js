@@ -1,3 +1,13 @@
+// Dynamically load Sir Ganguly Analytics & GTM Core
+(function() {
+    if (typeof window !== 'undefined') {
+        const analyticsScript = document.createElement('script');
+        analyticsScript.src = '/sirganguly-analytics.js?v=20260530-unified-v1';
+        analyticsScript.async = true;
+        document.head.appendChild(analyticsScript);
+    }
+})();
+
 function isLocalPDFPath(pdfPath) {
     try {
         const url = new URL(pdfPath, window.location.href);
@@ -6,6 +16,7 @@ function isLocalPDFPath(pdfPath) {
         return false;
     }
 }
+
 
 function getPDFViewerURL(pdfPath) {
     const url = new URL(pdfPath, window.location.href);
@@ -108,6 +119,42 @@ let portalIntroUtterance = null;
 let portalIntroAudio = null;
 let portalIntroVoicesReadyPromise = null;
 const PORTAL_INTRO_AUDIO_URL = '/audio/portal-introduction.wav?v=20260517-static-intro-audio';
+const PORTAL_INTRO_PLAYED_STORAGE_KEY = 'sirgangulyPortalIntroPlayed';
+let portalIntroSpeechInitialized = false;
+let portalIntroAutoplayInProgress = false;
+
+function hasPortalIntroPlayed() {
+    if (window.__sirGangulyPortalIntroPlayed === true) return true;
+
+    try {
+        if (localStorage.getItem(PORTAL_INTRO_PLAYED_STORAGE_KEY) === 'true') {
+            window.__sirGangulyPortalIntroPlayed = true;
+            return true;
+        }
+    } catch (error) {}
+
+    try {
+        const cookieName = `${PORTAL_INTRO_PLAYED_STORAGE_KEY}=true`;
+        if (document.cookie.split('; ').includes(cookieName)) {
+            window.__sirGangulyPortalIntroPlayed = true;
+            return true;
+        }
+    } catch (error) {}
+
+    return false;
+}
+
+function markPortalIntroPlayed() {
+    window.__sirGangulyPortalIntroPlayed = true;
+
+    try {
+        localStorage.setItem(PORTAL_INTRO_PLAYED_STORAGE_KEY, 'true');
+    } catch (error) {}
+
+    try {
+        document.cookie = `${PORTAL_INTRO_PLAYED_STORAGE_KEY}=true; Max-Age=31536000; Path=/; SameSite=Lax`;
+    } catch (error) {}
+}
 
 function getPortalIntroVoice() {
     if (!window.speechSynthesis) return null;
@@ -285,27 +332,27 @@ async function speakPortalIntroduction() {
     stopPortalIntroduction();
 
     if (shouldUsePortalIntroMp3First()) {
-        await playPortalIntroductionAudio(status);
-        return;
+        return await playPortalIntroductionAudio(status);
     }
 
     if (!('speechSynthesis' in window) || !('SpeechSynthesisUtterance' in window)) {
-        await playPortalIntroductionAudio(status, 'Speech is not supported in this browser.');
-        return;
+        return await playPortalIntroductionAudio(status, 'Speech is not supported in this browser.');
     }
 
     await waitForPortalIntroVoices();
 
     try {
         await speakPortalIntroductionWithSynthesis(status, 1);
+        return true;
     } catch (firstError) {
         try {
             window.speechSynthesis.cancel();
             await new Promise((resolve) => setTimeout(resolve, 120));
             if (status) status.textContent = 'Starting introduction again...';
             await speakPortalIntroductionWithSynthesis(status, 2);
+            return true;
         } catch (secondError) {
-            await playPortalIntroductionAudio(status, 'Speech was blocked.');
+            return await playPortalIntroductionAudio(status, 'Speech was blocked.');
         }
     }
 }
@@ -313,54 +360,75 @@ async function speakPortalIntroduction() {
 function initPortalIntroductionSpeech() {
     const speakButton = document.getElementById('portalIntroSpeakBtn');
     if (!speakButton) return;
+    if (portalIntroSpeechInitialized) return;
+    portalIntroSpeechInitialized = true;
 
-    speakButton.addEventListener('click', speakPortalIntroduction);
+    speakButton.addEventListener('click', async (event) => {
+        event.stopPropagation();
+        const played = await speakPortalIntroduction();
+        if (played) markPortalIntroPlayed();
+    });
     if (window.speechSynthesis) {
         window.speechSynthesis.getVoices();
         window.speechSynthesis.addEventListener('voiceschanged', getPortalIntroVoice);
     }
     window.addEventListener('pagehide', stopPortalIntroduction);
 
-    // Dynamic Autoplay and User Interaction Unlocker
-    let hasPlayed = false;
+    const autoplayEvents = ['click', 'touchstart', 'pointerdown', 'keydown'];
+    const removeAutoplayListeners = () => {
+        autoplayEvents.forEach((eventName) => {
+            document.removeEventListener(eventName, triggerAutoplay);
+        });
+    };
+    const addAutoplayListeners = () => {
+        if (hasPortalIntroPlayed()) return;
+        autoplayEvents.forEach((eventName) => {
+            document.addEventListener(eventName, triggerAutoplay);
+        });
+    };
 
     const triggerAutoplay = async () => {
-        if (hasPlayed) return;
-        hasPlayed = true;
+        if (hasPortalIntroPlayed() || portalIntroAutoplayInProgress) {
+            removeAutoplayListeners();
+            return;
+        }
 
-        // Remove the interaction event listeners immediately so it only triggers once
-        document.removeEventListener('click', triggerAutoplay);
-        document.removeEventListener('touchstart', triggerAutoplay);
-        document.removeEventListener('pointerdown', triggerAutoplay);
-        document.removeEventListener('keydown', triggerAutoplay);
-
+        portalIntroAutoplayInProgress = true;
+        removeAutoplayListeners();
         try {
-            await speakPortalIntroduction();
+            const played = await speakPortalIntroduction();
+            if (played) {
+                markPortalIntroPlayed();
+            } else {
+                addAutoplayListeners();
+            }
         } catch (e) {
             console.log('Interaction autoplay failed:', e);
-            hasPlayed = false; // Reset if it truly failed
+            addAutoplayListeners();
+        } finally {
+            portalIntroAutoplayInProgress = false;
         }
     };
 
     // 1. Try to play immediately on window load (Chrome allows it if site has high media engagement)
     setTimeout(async () => {
+        if (hasPortalIntroPlayed() || portalIntroAutoplayInProgress) return;
+        portalIntroAutoplayInProgress = true;
         try {
-            if (!hasPlayed) {
-                // If it starts playing successfully, mark it as played
-                const played = await speakPortalIntroduction();
-                hasPlayed = true;
+            const played = await speakPortalIntroduction();
+            if (played) {
+                markPortalIntroPlayed();
             }
         } catch (err) {
             // Autoplay blocked by browser policy, fallback to first interaction
             console.log('Immediate autoplay was blocked, waiting for first user interaction to play...');
+        } finally {
+            portalIntroAutoplayInProgress = false;
         }
     }, 400);
 
     // 2. Add global interaction listeners as fallback to play on the absolute first click, touch, or keypress anywhere on screen
-    document.addEventListener('click', triggerAutoplay);
-    document.addEventListener('touchstart', triggerAutoplay);
-    document.addEventListener('pointerdown', triggerAutoplay);
-    document.addEventListener('keydown', triggerAutoplay);
+    addAutoplayListeners();
 }
 
 // Initialize visitor counter with text display

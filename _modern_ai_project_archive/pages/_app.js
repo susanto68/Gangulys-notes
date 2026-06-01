@@ -1,9 +1,48 @@
 import '../styles/globals.css'
 import '../styles/modern-cursor.css'
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { useRouter } from 'next/router'
 import ModernCursor from '../components/ModernCursor/ModernCursor'
 
+const INTRO_PLAYED_STORAGE_KEY = 'sirgangulyPortalIntroPlayed'
+
+function hasIntroPlayed() {
+  if (typeof window === 'undefined') return false
+  if (window.__sirGangulyPortalIntroPlayed === true) return true
+
+  try {
+    if (window.localStorage.getItem(INTRO_PLAYED_STORAGE_KEY) === 'true') {
+      window.__sirGangulyPortalIntroPlayed = true
+      return true
+    }
+  } catch (_) {}
+
+  try {
+    const cookieName = `${INTRO_PLAYED_STORAGE_KEY}=true`
+    if (document.cookie.split('; ').includes(cookieName)) {
+      window.__sirGangulyPortalIntroPlayed = true
+      return true
+    }
+  } catch (_) {}
+
+  return false
+}
+
+function markIntroPlayed() {
+  if (typeof window === 'undefined') return
+  window.__sirGangulyPortalIntroPlayed = true
+
+  try {
+    window.localStorage.setItem(INTRO_PLAYED_STORAGE_KEY, 'true')
+  } catch (_) {}
+
+  try {
+    document.cookie = `${INTRO_PLAYED_STORAGE_KEY}=true; Max-Age=31536000; Path=/; SameSite=Lax`
+  } catch (_) {}
+}
+
 export default function App({ Component, pageProps }) {
+  const router = useRouter()
   const [showIntro, setShowIntro] = useState(true)
   const [isSpeakingIntro, setIsSpeakingIntro] = useState(false)
   const introStartedRef = useRef(false)
@@ -16,7 +55,7 @@ Where knowledge is free.
 This portal believes that education and knowledge should reach every learner without barriers.`
 
   const speakIntro = useCallback(() => {
-    if (typeof window === 'undefined' || !window.speechSynthesis || introStartedRef.current) {
+    if (typeof window === 'undefined' || !window.speechSynthesis || introStartedRef.current || hasIntroPlayed()) {
       return
     }
 
@@ -39,7 +78,10 @@ This portal believes that education and knowledge should reach every learner wit
       utterance.pitch = 0.72
       utterance.rate = 0.82
       utterance.volume = 1
-      utterance.onstart = () => setIsSpeakingIntro(true)
+      utterance.onstart = () => {
+        markIntroPlayed()
+        setIsSpeakingIntro(true)
+      }
       utterance.onend = () => setIsSpeakingIntro(false)
       utterance.onerror = () => setIsSpeakingIntro(false)
 
@@ -56,6 +98,7 @@ This portal believes that education and knowledge should reach every learner wit
 
   const enterPortal = () => {
     speakIntro()
+    markIntroPlayed()
     setTimeout(() => setShowIntro(false), 900)
   }
 
@@ -64,8 +107,7 @@ This portal believes that education and knowledge should reach every learner wit
       return
     }
 
-    const hasSeenIntro = sessionStorage.getItem('portalIntroPlayed') === 'true'
-    if (hasSeenIntro) {
+    if (hasIntroPlayed()) {
       setShowIntro(false)
       return
     }
@@ -75,9 +117,34 @@ This portal believes that education and knowledge should reach every learner wit
 
   useEffect(() => {
     if (!showIntro && typeof window !== 'undefined') {
-      sessionStorage.setItem('portalIntroPlayed', 'true')
+      markIntroPlayed()
     }
   }, [showIntro])
+
+  // Inject Sir Ganguly Analytics Core on client-side mount & track SPA page views
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    if (!window.SirGangulyAnalyticsLoaded) {
+      window.SirGangulyAnalyticsLoaded = true;
+      const analyticsScript = document.createElement('script');
+      const primaryDomain = 'https://sirganguly.com';
+      analyticsScript.src = primaryDomain + '/sirganguly-analytics.js?v=20260530-unified-v1';
+      analyticsScript.async = true;
+      document.head.appendChild(analyticsScript);
+    }
+
+    const handleRouteChange = () => {
+      if (window.SirGangulyAnalytics) {
+        window.SirGangulyAnalytics.firePageView();
+      }
+    };
+
+    router.events.on('routeChangeComplete', handleRouteChange);
+    return () => {
+      router.events.off('routeChangeComplete', handleRouteChange);
+    };
+  }, [router.events]);
 
   return (
     <>
