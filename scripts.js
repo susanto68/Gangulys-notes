@@ -756,10 +756,234 @@ function checkFontAwesome() {
     }, 1000);
 }
 
+const FLOATING_TEACHER_PET_MOODS = [
+    { emotion: 'happy', message: 'Namaste, ready to learn?' },
+    { emotion: 'thinking', message: 'Ask your AI teacher.' },
+    { emotion: 'focused', message: 'I am listening.' },
+    { emotion: 'excited', message: 'Great question!' }
+];
+
+function getFloatingTeacherPetMarkup() {
+    return `
+        <div class="floating-pet-bubble" role="status" aria-live="polite">Namaste, ready to learn?</div>
+        <button type="button" class="floating-pet-button" aria-label="Toggle Sir Ganguly cartoon companion">
+            <span class="teacher-pet-glow" aria-hidden="true"></span>
+            <span class="teacher-pet-shadow" aria-hidden="true"></span>
+            <span class="teacher-pet-action-ring" aria-hidden="true"></span>
+            <span class="teacher-pet" aria-hidden="true">
+                <span class="teacher-pet-neck"></span>
+                <span class="teacher-pet-shirt">
+                    <span class="teacher-pet-collar teacher-pet-collar-left"></span>
+                    <span class="teacher-pet-collar teacher-pet-collar-right"></span>
+                    <span class="teacher-pet-placket"></span>
+                </span>
+                <span class="teacher-pet-head">
+                    <span class="teacher-pet-ear teacher-pet-ear-left"></span>
+                    <span class="teacher-pet-ear teacher-pet-ear-right"></span>
+                    <span class="teacher-pet-hair"></span>
+                    <span class="teacher-pet-hair-sweep"></span>
+                    <span class="teacher-pet-brow teacher-pet-brow-left"></span>
+                    <span class="teacher-pet-brow teacher-pet-brow-right"></span>
+                    <span class="teacher-pet-glasses">
+                        <span class="teacher-pet-lens teacher-pet-lens-left"></span>
+                        <span class="teacher-pet-bridge"></span>
+                        <span class="teacher-pet-lens teacher-pet-lens-right"></span>
+                    </span>
+                    <span class="teacher-pet-eye teacher-pet-eye-left"><span class="teacher-pet-pupil"></span></span>
+                    <span class="teacher-pet-eye teacher-pet-eye-right"><span class="teacher-pet-pupil"></span></span>
+                    <span class="teacher-pet-nose"></span>
+                    <span class="teacher-pet-cheek teacher-pet-cheek-left"></span>
+                    <span class="teacher-pet-cheek teacher-pet-cheek-right"></span>
+                    <span class="teacher-pet-moustache"></span>
+                    <span class="teacher-pet-smile"></span>
+                    <span class="teacher-pet-mouth-open"></span>
+                </span>
+                <span class="teacher-pet-arm teacher-pet-arm-left"><span class="teacher-pet-hand"></span></span>
+                <span class="teacher-pet-arm teacher-pet-arm-right"><span class="teacher-pet-hand"></span></span>
+                <span class="teacher-pet-leg teacher-pet-leg-left"><span class="teacher-pet-shoe"></span></span>
+                <span class="teacher-pet-leg teacher-pet-leg-right"><span class="teacher-pet-shoe"></span></span>
+                <span class="teacher-pet-spark teacher-pet-spark-one"></span>
+                <span class="teacher-pet-spark teacher-pet-spark-two"></span>
+            </span>
+        </button>
+    `;
+}
+
+function initFloatingTeacherPet() {
+    if (document.getElementById('floatingTeacherPet')) return;
+
+    const pet = document.createElement('div');
+    pet.id = 'floatingTeacherPet';
+    pet.className = 'floating-pet floating-pet-emotion-happy floating-pet-direction-idle';
+    pet.innerHTML = getFloatingTeacherPetMarkup();
+    document.body.appendChild(pet);
+
+    const button = pet.querySelector('.floating-pet-button');
+    const bubble = pet.querySelector('.floating-pet-bubble');
+    const dragState = {
+        pointerId: null,
+        startX: 0,
+        startY: 0,
+        originX: 0,
+        originY: 0,
+        moved: false,
+        lastDirection: 'idle'
+    };
+    let messageIndex = 0;
+    let emotionTimeout = null;
+
+    const setPetClassState = (emotion, direction, dragging) => {
+        pet.className = [
+            'floating-pet',
+            pet.classList.contains('floating-pet-open') ? 'floating-pet-open' : '',
+            dragging ? 'floating-pet-dragging' : '',
+            `floating-pet-emotion-${emotion}`,
+            `floating-pet-direction-${direction}`
+        ].filter(Boolean).join(' ');
+    };
+
+    const setTemporaryEmotion = (emotion, duration) => {
+        window.clearTimeout(emotionTimeout);
+        const direction = dragState.lastDirection || 'idle';
+        setPetClassState(emotion, direction, dragState.pointerId !== null);
+        emotionTimeout = window.setTimeout(() => {
+            const currentMood = FLOATING_TEACHER_PET_MOODS[messageIndex];
+            setPetClassState(currentMood.emotion, direction, dragState.pointerId !== null);
+        }, duration || 900);
+    };
+
+    const clampPosition = (x, y) => {
+        const width = window.innerWidth <= 768 ? 148 : 176;
+        const height = window.innerWidth <= 768 ? 176 : 196;
+        const padding = window.innerWidth <= 768 ? 6 : 10;
+
+        return {
+            x: Math.min(Math.max(padding, x), window.innerWidth - width - padding),
+            y: Math.min(Math.max(padding, y), window.innerHeight - height - padding)
+        };
+    };
+
+    const placePet = () => {
+        const currentX = Number.parseFloat(pet.style.left);
+        const currentY = Number.parseFloat(pet.style.top);
+        const position = Number.isFinite(currentX) && Number.isFinite(currentY)
+            ? clampPosition(currentX, currentY)
+            : {
+                x: window.innerWidth <= 768 ? 10 : 14,
+                y: window.innerWidth <= 768 ? 84 : 104
+            };
+
+        pet.style.left = `${position.x}px`;
+        pet.style.top = `${position.y}px`;
+        pet.style.right = 'auto';
+        pet.style.bottom = 'auto';
+    };
+
+    const rotateMessage = () => {
+        messageIndex = (messageIndex + 1) % FLOATING_TEACHER_PET_MOODS.length;
+        const mood = FLOATING_TEACHER_PET_MOODS[messageIndex];
+        bubble.textContent = mood.message;
+        setPetClassState(mood.emotion, dragState.lastDirection || 'idle', dragState.pointerId !== null);
+    };
+
+    const handlePointerDown = (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        const currentX = Number.parseFloat(pet.style.left) || 14;
+        const currentY = Number.parseFloat(pet.style.top) || 104;
+
+        button.setPointerCapture?.(event.pointerId);
+        dragState.pointerId = event.pointerId;
+        dragState.startX = event.clientX;
+        dragState.startY = event.clientY;
+        dragState.originX = currentX;
+        dragState.originY = currentY;
+        dragState.moved = false;
+        dragState.lastDirection = 'idle';
+        setPetClassState('focused', 'idle', true);
+    };
+
+    const handlePointerMove = (event) => {
+        if (dragState.pointerId !== event.pointerId) return;
+        event.preventDefault();
+        event.stopPropagation();
+
+        const deltaX = event.clientX - dragState.startX;
+        const deltaY = event.clientY - dragState.startY;
+        const distance = Math.hypot(deltaX, deltaY);
+
+        if (distance > 3) dragState.moved = true;
+        if (distance > 18) {
+            dragState.lastDirection = Math.abs(deltaX) > Math.abs(deltaY)
+                ? (deltaX > 0 ? 'right' : 'left')
+                : (deltaY > 0 ? 'down' : 'up');
+        }
+
+        const position = clampPosition(dragState.originX + deltaX, dragState.originY + deltaY);
+        pet.style.left = `${position.x}px`;
+        pet.style.top = `${position.y}px`;
+        setPetClassState('focused', dragState.lastDirection, true);
+    };
+
+    const handlePointerUp = (event) => {
+        if (dragState.pointerId !== event.pointerId) return;
+        event.preventDefault();
+        event.stopPropagation();
+        button.releasePointerCapture?.(event.pointerId);
+
+        const wasDragged = dragState.moved;
+        dragState.pointerId = null;
+
+        if (!wasDragged) {
+            pet.classList.toggle('floating-pet-open');
+            setTemporaryEmotion('surprised', 850);
+        } else {
+            setTemporaryEmotion('happy', 700);
+        }
+
+        window.setTimeout(() => {
+            dragState.lastDirection = 'idle';
+            setPetClassState(FLOATING_TEACHER_PET_MOODS[messageIndex].emotion, 'idle', false);
+        }, 500);
+    };
+
+    const resetDragState = () => {
+        if (dragState.pointerId === null) return;
+        dragState.pointerId = null;
+        dragState.moved = false;
+        dragState.lastDirection = 'idle';
+        setPetClassState(FLOATING_TEACHER_PET_MOODS[messageIndex].emotion, 'idle', false);
+    };
+
+    button.addEventListener('pointerdown', handlePointerDown);
+    window.addEventListener('pointermove', handlePointerMove);
+    window.addEventListener('pointerup', handlePointerUp);
+    window.addEventListener('pointercancel', handlePointerUp);
+    window.addEventListener('blur', resetDragState);
+    button.addEventListener('pointerenter', () => setTemporaryEmotion('happy', 1100));
+    button.addEventListener('focus', () => setTemporaryEmotion('happy', 1100));
+    button.addEventListener('click', (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+    });
+    button.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            pet.classList.toggle('floating-pet-open');
+            setTemporaryEmotion('surprised', 850);
+        }
+    });
+    window.addEventListener('resize', placePet);
+
+    placePet();
+    window.setInterval(rotateMessage, 7000);
+}
+
 // Initialize mobile counter on load
 if (typeof window !== 'undefined') {
     window.addEventListener('load', function() {
         initPortalIntroductionSpeech();
+        initFloatingTeacherPet();
         initMobileCounter();
         loadVisitorCounter();
         setInterval(() => updateVisitorApi(false), 30000);
