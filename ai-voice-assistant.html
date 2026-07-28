@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -301,7 +301,12 @@
       muted: false,
       thinking: false,
       speaking: false,
-      recognition: null
+      recognition: null,
+      conversationStarted: false,
+      lastInputType: 'text',
+      interactionCount: 0,
+      speechToken: 0,
+      speechWatchdog: null
     };
 
     const questionInput = document.getElementById('questionInput');
@@ -367,12 +372,34 @@
         .trim();
     }
 
-    function stopSpeaking() {
+    function clearSpeechWatchdog() {
+      if (state.speechWatchdog) {
+        clearInterval(state.speechWatchdog);
+        state.speechWatchdog = null;
+      }
+    }
+
+    function startSpeechWatchdog(speechToken) {
+      clearSpeechWatchdog();
+      state.speechWatchdog = setInterval(() => {
+        if (state.speechToken !== speechToken || !state.speaking) {
+          clearSpeechWatchdog();
+          return;
+        }
+        window.speechSynthesis.resume();
+      }, 5000);
+    }
+
+    function stopSpeaking(options = {}) {
+      state.speechToken += 1;
+      clearSpeechWatchdog();
       if (window.speechSynthesis) {
         window.speechSynthesis.cancel();
       }
       state.speaking = false;
-      setStatus('Ready.', 'Online');
+      if (!options.keepStatus) {
+        setStatus('Ready.', 'Online');
+      }
     }
 
     function speakText(text) {
@@ -383,57 +410,56 @@
       }
       const speechText = cleanForSpeech(text);
       if (!speechText) return;
-      stopSpeaking();
-      const utterance = new SpeechSynthesisUtterance(speechText);
+      stopSpeaking({ keepStatus: true });
+      const speechToken = state.speechToken;
       const voice = pickVoice();
-      utterance.lang = voice?.lang || 'en-IN';
-      utterance.voice = voice || null;
-      utterance.rate = 0.94;
-      utterance.pitch = 0.88;
-      utterance.volume = 1;
-      utterance.onstart = () => {
-        state.speaking = true;
-        setStatus('Sir Ganguly is speaking...', 'Speaking');
-      };
-      utterance.onend = () => {
-        state.speaking = false;
-        setStatus('Ready for the next question.', 'Online');
-      };
-      
       let retryActive = false;
-      utterance.onerror = (e) => {
-        console.warn('Speech Synthesis Error, attempting fallback retry:', e);
-        state.speaking = false;
-        
-        // If it failed with a specific voice (e.g. Edge Natural online voice), retry using the browser default voice
-        if (!retryActive && utterance.voice !== null) {
-          retryActive = true;
-          console.log('Retrying speech synthesis using browser default voice...');
-          const retryUtterance = new SpeechSynthesisUtterance(speechText);
-          retryUtterance.lang = 'en-US';
-          retryUtterance.voice = null;
-          retryUtterance.rate = 0.94;
-          retryUtterance.pitch = 0.88;
-          retryUtterance.volume = 1;
-          retryUtterance.onstart = () => {
-            state.speaking = true;
-            setStatus('Sir Ganguly is speaking (Fallback Voice)...', 'Speaking');
-          };
-          retryUtterance.onend = () => {
-            state.speaking = false;
-            setStatus('Ready for the next question.', 'Online');
-          };
-          retryUtterance.onerror = () => {
-            state.speaking = false;
+
+      function speakWithVoice(selectedVoice, lang, statusMessage) {
+        if (state.speechToken !== speechToken) return;
+        const utterance = new SpeechSynthesisUtterance(speechText);
+        utterance.lang = lang;
+        utterance.voice = selectedVoice;
+        utterance.rate = 0.94;
+        utterance.pitch = 0.88;
+        utterance.volume = 1;
+        utterance.onstart = () => {
+          if (state.speechToken !== speechToken) return;
+          state.speaking = true;
+          startSpeechWatchdog(speechToken);
+          setStatus(statusMessage, 'Speaking');
+        };
+        utterance.onend = () => {
+          if (state.speechToken !== speechToken) return;
+          clearSpeechWatchdog();
+          state.speaking = false;
+          setStatus('Ready for the next question.', 'Online');
+        };
+        utterance.onerror = (e) => {
+          if (state.speechToken !== speechToken) return;
+          console.warn('Speech Synthesis Error, attempting fallback retry:', e);
+          clearSpeechWatchdog();
+          state.speaking = false;
+
+          if (!retryActive && selectedVoice !== null) {
+            retryActive = true;
+            console.log('Retrying speech synthesis using browser default voice...');
+            setTimeout(() => {
+              if (state.speechToken === speechToken) {
+                speakWithVoice(null, 'en-US', 'Sir Ganguly is speaking...');
+              }
+            }, 150);
+          } else {
             setStatus('Speech was blocked. Tap Read Again to hear the answer.', 'Online');
-          };
-          window.speechSynthesis.speak(retryUtterance);
-        } else {
-          setStatus('Speech was blocked. Tap Read Again to hear the answer.', 'Online');
-        }
-      };
-      
-      window.speechSynthesis.speak(utterance);
+          }
+        };
+
+        window.speechSynthesis.speak(utterance);
+      }
+
+      state.speaking = true;
+      setStatus('Sir Ganguly is speaking...', 'Speaking');
+      speakWithVoice(voice || null, voice?.lang || 'en-IN', 'Sir Ganguly is speaking...');
     }
 
     function renderAnswer(answer, code, language) {
@@ -456,6 +482,20 @@
     async function askTeacher(question) {
       const cleanQuestion = String(question || '').trim();
       if (!cleanQuestion || state.thinking) return;
+
+      // Dynamic GA4/GTM custom portal tracking
+      if (typeof SirGangulyAnalytics !== 'undefined') {
+        if (!state.conversationStarted) {
+          state.conversationStarted = true;
+          SirGangulyAnalytics.trackAvatarConversationStart('computer-teacher');
+        }
+        state.interactionCount++;
+        SirGangulyAnalytics.trackAvatarVoiceInteraction(state.lastInputType);
+        SirGangulyAnalytics.trackAvatarQuestionAsked('computer-teacher', cleanQuestion.length);
+        // Reset back to text
+        state.lastInputType = 'text';
+      }
+
       stopSpeaking();
       showError('');
       renderAnswer('', '', '');
@@ -557,6 +597,7 @@
       state.recognition.onresult = event => {
         const transcript = event.results[0][0].transcript;
         questionInput.value = transcript;
+        state.lastInputType = 'voice'; // Mark interaction as voice
         askTeacher(transcript);
       };
       state.recognition.onerror = event => {
@@ -618,6 +659,13 @@
       getVoices();
     }
     setupSpeechRecognition();
+
+    // Track session completion on tab exit or back click
+    window.addEventListener('pagehide', () => {
+      if (typeof SirGangulyAnalytics !== 'undefined' && state.conversationStarted) {
+        SirGangulyAnalytics.trackAvatarSessionComplete(state.interactionCount);
+      }
+    });
   </script>
 </body>
 </html>

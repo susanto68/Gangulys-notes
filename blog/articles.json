@@ -1,0 +1,22 @@
+[
+  {
+    "title": "Welcome to Ganguly's Notes",
+    "subtitle": "India's AI Powered Computer Science Learning Platform",
+    "slug": "welcome-to-gangulys-notes",
+    "url": "/blog/welcome-to-gangulys-notes.html",
+    "author": "Susanto Ganguly",
+    "published": "2026-07-28",
+    "updated": "2026-07-28",
+    "readingTime": "8 min read",
+    "category": "AI Platform",
+    "tags": [
+      "Artificial Intelligence",
+      "Computer Science",
+      "Students",
+      "Teachers",
+      "Parents"
+    ],
+    "featuredImage": "/assets/blog/welcome-platform.svg",
+    "summary": "An introduction to Ganguly's Notes as an AI-powered computer science learning platform."
+  }
+]

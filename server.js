@@ -56,6 +56,7 @@ function getContentType(filePath) {
     '.gif': 'image/gif',
     '.ico': 'image/x-icon',
     '.svg': 'image/svg+xml',
+    '.webp': 'image/webp',
     '.pdf': 'application/pdf',
     '.wav': 'audio/wav',
     '.mp3': 'audio/mpeg'
@@ -198,10 +199,15 @@ Always end your answers with a kind, uplifting line, such as: "You're doing a gr
   // Clean query strings
   reqPath = reqPath.split('?')[0];
 
-  const filePath = path.join(__dirname, reqPath);
+  let filePath = path.join(__dirname, reqPath);
 
   fs.stat(filePath, (err, stats) => {
-    if (err || !stats.isFile()) {
+    if (!err && stats.isDirectory()) {
+      filePath = path.join(filePath, 'index.html');
+      stats = fs.existsSync(filePath) ? fs.statSync(filePath) : null;
+    }
+
+    if (err || !stats || !stats.isFile()) {
       // 404 page fallback
       res.writeHead(404, { 'Content-Type': 'text/plain' });
       res.end('File Not Found');
