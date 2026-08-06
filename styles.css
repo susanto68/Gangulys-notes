@@ -896,6 +896,26 @@ footer {
   background: rgba(244, 63, 94, 0.12) !important;
 }
 
+.card-blog {
+  border-color: rgba(37, 99, 235, 0.45) !important;
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.16), rgba(5, 150, 105, 0.14)) !important;
+}
+
+.card-blog:hover {
+  border-color: #2563eb !important;
+  box-shadow: 0 0 25px rgba(37, 99, 235, 0.42) !important;
+}
+
+.card-blog-featured {
+  border-color: rgba(202, 138, 4, 0.45) !important;
+  background: linear-gradient(135deg, rgba(202, 138, 4, 0.18), rgba(220, 38, 38, 0.12)) !important;
+}
+
+.card-blog-featured:hover {
+  border-color: #ca8a04 !important;
+  box-shadow: 0 0 25px rgba(202, 138, 4, 0.42) !important;
+}
+
 /* Syllabus & Notes */
 .card-holiday {
   border-color: rgba(249, 115, 22, 0.4) !important;

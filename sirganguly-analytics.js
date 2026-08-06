@@ -64,7 +64,7 @@
   // Helper to extract subdomain reliably
   function getSubdomain() {
     const hostname = window.location.hostname.toLowerCase();
-    
+
     // Check if it is a local environment
     if (hostname === 'localhost' || hostname === '127.0.0.1') {
       return 'localhost';
@@ -91,12 +91,12 @@
   // 3. Sanitizers to prevent PII leakage (Passwords, Auth keys, Private text inputs)
   function sanitizeValue(text, fieldName) {
     if (!text || typeof text !== 'string') return '';
-    
+
     const lowerName = (fieldName || '').toLowerCase();
-    
+
     // Ignore password inputs, credentials, credit card details, security codes, and social security numbers
     const sensitiveFields = [
-      'pass', 'password', 'pwd', 'secret', 'token', 'key', 'auth', 'pin', 'cvv', 
+      'pass', 'password', 'pwd', 'secret', 'token', 'key', 'auth', 'pin', 'cvv',
       'card', 'cc', 'ssn', 'phone', 'mobile', 'email', 'mail', 'username', 'login'
     ];
 
@@ -122,7 +122,7 @@
     try {
       const parsedUrl = new URL(url);
       const searchParams = parsedUrl.searchParams;
-      
+
       const sensitiveKeys = ['token', 'password', 'pass', 'key', 'auth', 'code', 'session', 'id', 'user'];
       let modified = false;
 
@@ -185,7 +185,7 @@
 
     const viewportSize = `${window.innerWidth}x${window.innerHeight}`;
     const screenResolution = `${window.screen.width}x${window.screen.height}`;
-    
+
     // GA4 config tracking
     gtag('event', 'page_view', {
       page_title: document.title,
@@ -226,7 +226,7 @@
       if (downloadMatch) {
         const fileName = href.substring(href.lastIndexOf('/') + 1) || 'file';
         const fileExt = downloadMatch[1].toLowerCase();
-        
+
         // Track GA4 file download
         gtag('event', 'file_download', {
           file_name: fileName,
