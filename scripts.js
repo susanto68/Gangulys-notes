@@ -763,6 +763,73 @@ const FLOATING_TEACHER_PET_MOODS = [
     { emotion: 'excited', message: 'Great question!' }
 ];
 
+// Tiny synthesized sound effects for the floating mascot (Web Audio oscillators,
+// no audio files). AudioContext is created lazily on first call since it must
+// start from a real user gesture (tap/keypress) to satisfy browser autoplay rules.
+let mascotAudioCtx = null;
+
+function playMascotChime(type) {
+    try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        if (!mascotAudioCtx) mascotAudioCtx = new AudioCtx();
+        if (mascotAudioCtx.state === 'suspended') mascotAudioCtx.resume();
+
+        const notes = type === 'happy' ? [523.25, 659.25] : [660];
+        const noteDuration = 0.12;
+
+        notes.forEach((freq, index) => {
+            const startTime = mascotAudioCtx.currentTime + index * noteDuration;
+            const oscillator = mascotAudioCtx.createOscillator();
+            const gainNode = mascotAudioCtx.createGain();
+
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(freq, startTime);
+
+            gainNode.gain.setValueAtTime(0.0001, startTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.18, startTime + 0.015);
+            gainNode.gain.exponentialRampToValueAtTime(0.0001, startTime + noteDuration);
+
+            oscillator.connect(gainNode);
+            gainNode.connect(mascotAudioCtx.destination);
+            oscillator.start(startTime);
+            oscillator.stop(startTime + noteDuration + 0.02);
+        });
+    } catch (error) {
+        console.warn('Mascot chime skipped:', error);
+    }
+}
+
+// Spoken tap reactions: a few fixed lines plus one time-of-day greeting, picked at random.
+const FLOATING_TEACHER_PET_TAP_LINES = ['Hello!', 'Ha ha ha!', 'How are you?'];
+
+function getMascotTimeGreeting() {
+    const hour = new Date().getHours();
+    if (hour >= 5 && hour < 12) return 'Good morning!';
+    if (hour >= 12 && hour < 21) return 'Good evening!';
+    return 'Good night!';
+}
+
+function pickMascotTapLine() {
+    const pool = FLOATING_TEACHER_PET_TAP_LINES.concat([getMascotTimeGreeting()]);
+    return pool[Math.floor(Math.random() * pool.length)];
+}
+
+function speakMascotLine(text) {
+    if (!text || !('speechSynthesis' in window)) return;
+    try {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'en-IN';
+        utterance.rate = 0.98;
+        utterance.pitch = 0.95;
+        utterance.volume = 1;
+        window.speechSynthesis.speak(utterance);
+    } catch (error) {
+        console.warn('Mascot speech skipped:', error);
+    }
+}
+
 function getFloatingTeacherPetMarkup() {
     return `
         <div class="floating-pet-bubble" role="status" aria-live="polite">Namaste, ready to learn?</div>
@@ -831,6 +898,7 @@ function initFloatingTeacherPet() {
     };
     let messageIndex = 0;
     let emotionTimeout = null;
+    let bubbleTimeout = null;
 
     const setPetClassState = (emotion, direction, dragging) => {
         pet.className = [
@@ -850,6 +918,16 @@ function initFloatingTeacherPet() {
             const currentMood = FLOATING_TEACHER_PET_MOODS[messageIndex];
             setPetClassState(currentMood.emotion, direction, dragState.pointerId !== null);
         }, duration || 900);
+    };
+
+    const reactToTap = () => {
+        const line = pickMascotTapLine();
+        window.clearTimeout(bubbleTimeout);
+        bubble.textContent = line;
+        speakMascotLine(line);
+        bubbleTimeout = window.setTimeout(() => {
+            bubble.textContent = FLOATING_TEACHER_PET_MOODS[messageIndex].message;
+        }, 2600);
     };
 
     const clampPosition = (x, y) => {
@@ -937,8 +1015,11 @@ function initFloatingTeacherPet() {
         if (!wasDragged) {
             pet.classList.toggle('floating-pet-open');
             setTemporaryEmotion('surprised', 850);
+            playMascotChime('tap');
+            reactToTap();
         } else {
             setTemporaryEmotion('happy', 700);
+            playMascotChime('happy');
         }
 
         window.setTimeout(() => {
@@ -971,6 +1052,8 @@ function initFloatingTeacherPet() {
             event.preventDefault();
             pet.classList.toggle('floating-pet-open');
             setTemporaryEmotion('surprised', 850);
+            playMascotChime('tap');
+            reactToTap();
         }
     });
     window.addEventListener('resize', placePet);

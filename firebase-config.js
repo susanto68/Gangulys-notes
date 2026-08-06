@@ -6,5 +6,5 @@ window.SIRGANGULY_FIREBASE_CONFIG = {
     storageBucket: "curious-chiller-469123-p5.firebasestorage.app",
     messagingSenderId: "911501017162",
     appId: "1:911501017162:web:8a481713ba38abaeeae6b3",
-    measurementId: "G-TLYCKMSYK5"
+    measurementId: "G-B8ZXHFVS1B"
 };

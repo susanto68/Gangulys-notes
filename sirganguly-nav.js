@@ -15,6 +15,19 @@
 (function () {
   'use strict';
 
+  // Dynamically load Sir Ganguly Analytics & GTM Core
+  (function() {
+    if (typeof window !== 'undefined' && !window.SirGangulyAnalyticsLoaded) {
+      window.SirGangulyAnalyticsLoaded = true;
+      const analyticsScript = document.createElement('script');
+      // Load it from the primary domain to support cross-origin subdomains
+      const primaryDomain = 'https://sirganguly.com';
+      analyticsScript.src = primaryDomain + '/sirganguly-analytics.js?v=20260530-unified-v1';
+      analyticsScript.async = true;
+      document.head.appendChild(analyticsScript);
+    }
+  })();
+
   /* ── 1. Navigation Data ─────────────────────────────────── */
   const SG_SITES = [
     {

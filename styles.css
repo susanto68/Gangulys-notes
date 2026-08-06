@@ -2244,15 +2244,19 @@ footer {
   font-weight: 700 !important;
   color: #ffffff !important;
   text-decoration: none !important;
-  border: 2px solid rgba(255, 255, 255, 0.18) !important;
+  border: 2px solid rgba(255, 255, 255, 0.22) !important;
   position: relative !important;
   overflow: hidden !important;
   transition: all 0.28s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
   transform: translateY(0) scale(1) !important;
   will-change: transform;
   cursor: pointer !important;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35) !important;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35) !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4) !important;
+  box-shadow:
+    0 6px 0 var(--btn-dark, #172554),
+    0 10px 22px rgba(0, 0, 0, 0.4),
+    inset 0 2px 0 rgba(255, 255, 255, 0.4),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.15) !important;
   box-sizing: border-box;
 }
 
@@ -2262,8 +2266,8 @@ footer {
   inset: 0 !important;
   background: linear-gradient(
     160deg,
-    rgba(255, 255, 255, 0.25) 0%,
-    rgba(255, 255, 255, 0.05) 45%,
+    rgba(255, 255, 255, 0.35) 0%,
+    rgba(255, 255, 255, 0.08) 45%,
     rgba(255, 255, 255, 0) 55%
   ) !important;
   pointer-events: none !important;
@@ -2271,62 +2275,75 @@ footer {
 }
 
 .sg-hero-btn:hover {
-  transform: translateY(-4px) scale(1.03) !important;
-  border-color: rgba(255, 255, 255, 0.35) !important;
+  transform: translateY(-3px) scale(1.04) !important;
+  border-color: rgba(255, 255, 255, 0.45) !important;
+  filter: brightness(1.08) saturate(1.15) !important;
+  box-shadow:
+    0 9px 0 var(--btn-dark, #172554),
+    0 18px 32px var(--btn-glow, rgba(0, 0, 0, 0.4)),
+    0 0 24px var(--btn-glow, rgba(0, 0, 0, 0.3)),
+    inset 0 2px 0 rgba(255, 255, 255, 0.45),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.15) !important;
 }
 
 .sg-hero-btn:active {
-  transform: translateY(2px) scale(0.97) !important;
+  transform: translateY(5px) scale(0.97) !important;
   transition: all 0.1s ease !important;
+  filter: brightness(0.96) !important;
+  box-shadow:
+    0 1px 0 var(--btn-dark, #172554),
+    0 3px 8px rgba(0, 0, 0, 0.35),
+    inset 0 2px 0 rgba(255, 255, 255, 0.25),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.2) !important;
 }
 
-/* Gradients */
+/* Gradients — richer 3-stop diagonal blends, each with a matching 3D bevel edge + glow */
 .sg-hero-btn.sg-btn-home {
-  background: linear-gradient(135deg, #3b82f6, #06b6d4) !important;
-  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.4) !important;
-}
-.sg-hero-btn.sg-btn-home:hover {
-  box-shadow: 0 8px 24px rgba(59, 130, 246, 0.55), 0 0 12px rgba(6, 182, 212, 0.4) !important;
+  --btn-dark: #1e3a8a;
+  --btn-glow: rgba(59, 130, 246, 0.55);
+  background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 50%, #0891b2 100%) !important;
 }
 
 .sg-hero-btn.sg-btn-ai {
-  background: linear-gradient(135deg, #a855f7, #ec4899) !important;
-  box-shadow: 0 4px 16px rgba(168, 85, 247, 0.4) !important;
-}
-.sg-hero-btn.sg-btn-ai:hover {
-  box-shadow: 0 8px 24px rgba(168, 85, 247, 0.55), 0 0 12px rgba(236, 72, 153, 0.4) !important;
+  --btn-dark: #581c87;
+  --btn-glow: rgba(168, 85, 247, 0.55);
+  background: linear-gradient(135deg, #d8b4fe 0%, #a855f7 50%, #ec4899 100%) !important;
 }
 
 .sg-hero-btn.sg-btn-questions {
-  background: linear-gradient(135deg, #f97316, #ef4444) !important;
-  box-shadow: 0 4px 16px rgba(249, 115, 22, 0.4) !important;
-}
-.sg-hero-btn.sg-btn-questions:hover {
-  box-shadow: 0 8px 24px rgba(249, 115, 22, 0.55), 0 0 12px rgba(239, 68, 68, 0.4) !important;
+  --btn-dark: #7c2d12;
+  --btn-glow: rgba(249, 115, 22, 0.55);
+  background: linear-gradient(135deg, #fdba74 0%, #f97316 50%, #dc2626 100%) !important;
 }
 
 .sg-hero-btn.sg-btn-books {
-  background: linear-gradient(135deg, #22c55e, #10b981) !important;
-  box-shadow: 0 4px 16px rgba(34, 197, 94, 0.4) !important;
-}
-.sg-hero-btn.sg-btn-books:hover {
-  box-shadow: 0 8px 24px rgba(34, 197, 94, 0.55), 0 0 12px rgba(16, 185, 129, 0.4) !important;
+  --btn-dark: #14532d;
+  --btn-glow: rgba(34, 197, 94, 0.55);
+  background: linear-gradient(135deg, #86efac 0%, #22c55e 50%, #059669 100%) !important;
 }
 
 .sg-hero-btn.sg-btn-career {
-  background: linear-gradient(135deg, #6366f1, #3b82f6) !important;
-  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.4) !important;
-}
-.sg-hero-btn.sg-btn-career:hover {
-  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.55), 0 0 12px rgba(59, 130, 246, 0.4) !important;
+  --btn-dark: #312e81;
+  --btn-glow: rgba(99, 102, 241, 0.55);
+  background: linear-gradient(135deg, #a5b4fc 0%, #6366f1 50%, #2563eb 100%) !important;
 }
 
 .sg-hero-btn.sg-btn-mentor {
-  background: linear-gradient(135deg, #eab308, #f97316) !important;
-  box-shadow: 0 4px 16px rgba(234, 179, 8, 0.4) !important;
+  --btn-dark: #713f12;
+  --btn-glow: rgba(234, 179, 8, 0.55);
+  background: linear-gradient(135deg, #fde047 0%, #eab308 50%, #ea580c 100%) !important;
 }
-.sg-hero-btn.sg-btn-mentor:hover {
-  box-shadow: 0 8px 24px rgba(234, 179, 8, 0.55), 0 0 12px rgba(249, 115, 22, 0.4) !important;
+
+.sg-hero-btn.sg-btn-class {
+  --btn-dark: #134e4a;
+  --btn-glow: rgba(20, 184, 166, 0.55);
+  background: linear-gradient(135deg, #5eead4 0%, #14b8a6 50%, #0284c7 100%) !important;
+}
+
+.sg-hero-btn.sg-btn-quiz {
+  --btn-dark: #2e1065;
+  --btn-glow: rgba(124, 58, 237, 0.55);
+  background: linear-gradient(135deg, #a78bfa 0%, #7c3aed 50%, #4c1d95 100%) !important;
 }
 
 .sg-btn-icon {
