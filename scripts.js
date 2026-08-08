@@ -374,6 +374,22 @@ function initPortalIntroductionSpeech() {
     }
     window.addEventListener('pagehide', stopPortalIntroduction);
 
+    // "pagehide" only fires for same-tab navigation. Links that open in a new
+    // tab (target="_blank", like the ecosystem grid) leave this tab running in
+    // the background, so the intro audio/speech would otherwise keep playing
+    // there unheard. Stop it the moment any link is clicked.
+    document.addEventListener('click', (event) => {
+        const link = event.target.closest && event.target.closest('a[href]');
+        if (!link) return;
+        const introActive = Boolean(portalIntroAudio) || Boolean(portalIntroUtterance) ||
+            (window.speechSynthesis && window.speechSynthesis.speaking);
+        if (!introActive) return;
+        stopPortalIntroduction();
+        resetPortalIntroButton();
+        const status = document.getElementById('portalIntroSpeechStatus');
+        if (status) status.textContent = '';
+    });
+
     const autoplayEvents = ['click', 'touchstart', 'pointerdown', 'keydown'];
     const removeAutoplayListeners = () => {
         autoplayEvents.forEach((eventName) => {

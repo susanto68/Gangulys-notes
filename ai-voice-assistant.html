@@ -378,8 +378,8 @@
     // delivery shifts between curious / warm / calm across the reading.
     const SPEECH_MOODS = {
       calm: { rate: 0.94, pitch: 0.88 },
-      curious: { rate: 0.97, pitch: 1.02 },
-      warm: { rate: 0.96, pitch: 1.08 }
+      curious: { rate: 0.98, pitch: 1.05 },
+      warm: { rate: 0.97, pitch: 1.1 }
     };
 
     function detectSpeechMood(sentence) {
@@ -431,7 +431,7 @@
       }
     }
 
-    function speakText(text) {
+    function speakText(text, options = {}) {
       if (state.muted || !text) return;
       if (!window.speechSynthesis || !window.SpeechSynthesisUtterance) {
         setStatus('Speech is unavailable in this browser.', 'Online');
@@ -445,8 +445,20 @@
       const segments = splitIntoSpeechSegments(speechText);
       let retryActive = false;
 
+      // Segments are spoken one at a time, chained through onend with a short
+      // pause in between (a longer beat right after the question echo) so a
+      // multi-sentence answer reads like natural paced speech instead of a
+      // rushed run-on.
       function speakSegment(index, selectedVoice, lang, statusMessage) {
         if (state.speechToken !== speechToken) return;
+        if (index >= segments.length) {
+          clearSpeechWatchdog();
+          state.speaking = false;
+          setStatus('Ready for the next question.', 'Online');
+          options.onComplete?.();
+          return;
+        }
+
         const mood = SPEECH_MOODS[detectSpeechMood(segments[index])] || SPEECH_MOODS.calm;
         const utterance = new SpeechSynthesisUtterance(segments[index]);
         utterance.lang = lang;
@@ -462,16 +474,13 @@
         };
         utterance.onend = () => {
           if (state.speechToken !== speechToken) return;
-          if (index === segments.length - 1) {
-            clearSpeechWatchdog();
-            state.speaking = false;
-            setStatus('Ready for the next question.', 'Online');
-          }
+          const pause = index === 0 ? 280 : 190;
+          setTimeout(() => speakSegment(index + 1, selectedVoice, lang, statusMessage), pause);
         };
         utterance.onerror = (e) => {
           if (state.speechToken !== speechToken) return;
           // A deliberate cancel() (e.g. from a retry restart) fires 'canceled'/'interrupted'
-          // on every queued utterance - those aren't real failures, so ignore them.
+          // on the currently playing utterance - that isn't a real failure, so ignore it.
           if (e.error === 'canceled' || e.error === 'interrupted') return;
           console.warn('Speech Synthesis Error, attempting fallback retry:', e);
           clearSpeechWatchdog();
@@ -483,7 +492,7 @@
             console.log('Retrying speech synthesis using browser default voice...');
             setTimeout(() => {
               if (state.speechToken === speechToken) {
-                speakAllSegments(null, 'en-US', 'Sir Ganguly is speaking...');
+                speakSegment(0, null, 'en-US', 'Sir Ganguly is speaking...');
               }
             }, 150);
           } else {
@@ -494,13 +503,28 @@
         window.speechSynthesis.speak(utterance);
       }
 
-      function speakAllSegments(selectedVoice, lang, statusMessage) {
-        segments.forEach((_, index) => speakSegment(index, selectedVoice, lang, statusMessage));
-      }
-
+      const statusMessage = options.statusMessage || 'Sir Ganguly is speaking...';
       state.speaking = true;
-      setStatus('Sir Ganguly is speaking...', 'Speaking');
-      speakAllSegments(voice || null, voice?.lang || 'en-IN', 'Sir Ganguly is speaking...');
+      setStatus(statusMessage, 'Speaking');
+      speakSegment(0, voice || null, voice?.lang || 'en-IN', statusMessage);
+    }
+
+    // Spoken intro so the avatar opens the conversation, like a teacher greeting
+    // a class, instead of sitting silently until the student types first.
+    const INTRO_TEXT = "Hello! I am Sir Ganguly, your AI Computer Teacher. Ask me anything about computer science, and I will explain it step by step. What would you like to know?";
+
+    function playIntroGreeting() {
+      if (state.muted) return;
+      sendBtn.disabled = true;
+      if (state.recognition) talkBtn.disabled = true;
+      setStatus('Sir is introducing the class...', 'Speaking');
+      speakText(INTRO_TEXT, {
+        statusMessage: 'Sir is introducing the class...',
+        onComplete: () => {
+          sendBtn.disabled = false;
+          if (state.recognition) talkBtn.disabled = false;
+        }
+      });
     }
 
     function renderAnswer(answer, code, language) {
@@ -700,6 +724,7 @@
       getVoices();
     }
     setupSpeechRecognition();
+    setTimeout(playIntroGreeting, 800);
 
     // Track session completion on tab exit or back click
     window.addEventListener('pagehide', () => {
