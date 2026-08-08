@@ -372,6 +372,35 @@
         .trim();
     }
 
+    // Emotion presets for the free browser voice: since SpeechSynthesis only
+    // exposes rate/pitch/volume per utterance (no true prosody), each answer
+    // is split into sentences and each sentence gets a mood by content, so the
+    // delivery shifts between curious / warm / calm across the reading.
+    const SPEECH_MOODS = {
+      calm: { rate: 0.94, pitch: 0.88 },
+      curious: { rate: 0.97, pitch: 1.02 },
+      warm: { rate: 0.96, pitch: 1.08 }
+    };
+
+    function detectSpeechMood(sentence) {
+      if (/\?\s*$/.test(sentence)) return 'curious';
+      if (/(great job|good job|wonderful|excellent|congratulations|keep practicing|stay curious|well done|awesome|fantastic|you're doing|great question)/i.test(sentence)) {
+        return 'warm';
+      }
+      return 'calm';
+    }
+
+    function splitIntoSpeechSegments(text) {
+      const withoutLabels = text
+        .replace(/^\s*question\s*:\s*/i, '')
+        .replace(/\s*answer\s*:\s*/i, ' ');
+      const sentences = withoutLabels
+        .split(/(?<=[.!?])\s+/)
+        .map(sentence => sentence.trim())
+        .filter(Boolean);
+      return sentences.length ? sentences : [withoutLabels.trim()].filter(Boolean);
+    }
+
     function clearSpeechWatchdog() {
       if (state.speechWatchdog) {
         clearInterval(state.speechWatchdog);
@@ -413,15 +442,17 @@
       stopSpeaking({ keepStatus: true });
       const speechToken = state.speechToken;
       const voice = pickVoice();
+      const segments = splitIntoSpeechSegments(speechText);
       let retryActive = false;
 
-      function speakWithVoice(selectedVoice, lang, statusMessage) {
+      function speakSegment(index, selectedVoice, lang, statusMessage) {
         if (state.speechToken !== speechToken) return;
-        const utterance = new SpeechSynthesisUtterance(speechText);
+        const mood = SPEECH_MOODS[detectSpeechMood(segments[index])] || SPEECH_MOODS.calm;
+        const utterance = new SpeechSynthesisUtterance(segments[index]);
         utterance.lang = lang;
         utterance.voice = selectedVoice;
-        utterance.rate = 0.94;
-        utterance.pitch = 0.88;
+        utterance.rate = mood.rate;
+        utterance.pitch = mood.pitch;
         utterance.volume = 1;
         utterance.onstart = () => {
           if (state.speechToken !== speechToken) return;
@@ -431,22 +462,28 @@
         };
         utterance.onend = () => {
           if (state.speechToken !== speechToken) return;
-          clearSpeechWatchdog();
-          state.speaking = false;
-          setStatus('Ready for the next question.', 'Online');
+          if (index === segments.length - 1) {
+            clearSpeechWatchdog();
+            state.speaking = false;
+            setStatus('Ready for the next question.', 'Online');
+          }
         };
         utterance.onerror = (e) => {
           if (state.speechToken !== speechToken) return;
+          // A deliberate cancel() (e.g. from a retry restart) fires 'canceled'/'interrupted'
+          // on every queued utterance - those aren't real failures, so ignore them.
+          if (e.error === 'canceled' || e.error === 'interrupted') return;
           console.warn('Speech Synthesis Error, attempting fallback retry:', e);
           clearSpeechWatchdog();
           state.speaking = false;
 
           if (!retryActive && selectedVoice !== null) {
             retryActive = true;
+            window.speechSynthesis.cancel();
             console.log('Retrying speech synthesis using browser default voice...');
             setTimeout(() => {
               if (state.speechToken === speechToken) {
-                speakWithVoice(null, 'en-US', 'Sir Ganguly is speaking...');
+                speakAllSegments(null, 'en-US', 'Sir Ganguly is speaking...');
               }
             }, 150);
           } else {
@@ -457,9 +494,13 @@
         window.speechSynthesis.speak(utterance);
       }
 
+      function speakAllSegments(selectedVoice, lang, statusMessage) {
+        segments.forEach((_, index) => speakSegment(index, selectedVoice, lang, statusMessage));
+      }
+
       state.speaking = true;
       setStatus('Sir Ganguly is speaking...', 'Speaking');
-      speakWithVoice(voice || null, voice?.lang || 'en-IN', 'Sir Ganguly is speaking...');
+      speakAllSegments(voice || null, voice?.lang || 'en-IN', 'Sir Ganguly is speaking...');
     }
 
     function renderAnswer(answer, code, language) {
