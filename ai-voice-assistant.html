@@ -359,6 +359,10 @@
         if (/google|microsoft|natural|online/.test(name)) score += 15;
         if (voice.default) score += 10;
         if (/en-/.test(name)) score += 8;
+        // Sir Ganguly is a male teacher persona - prefer a deep male voice when one exists,
+        // matching the voice selection used across the other Sir Ganguly avatar projects.
+        if (/\b(male|david|mark|ravi|daniel)\b/.test(name)) score += 12;
+        if (/\bfemale\b/.test(name)) score -= 4;
         return { voice, score };
       }).sort((a, b) => b.score - a.score)[0].voice;
     }
@@ -376,10 +380,14 @@
     // exposes rate/pitch/volume per utterance (no true prosody), each answer
     // is split into sentences and each sentence gets a mood by content, so the
     // delivery shifts between curious / warm / calm across the reading.
+    // Baseline deepened to match the "deep, clear teacher voice" used across the
+    // other Sir Ganguly avatar projects (rate ~0.95, pitch ~0.8-0.88 there); the
+    // curious/warm deltas above calm are kept the same as before for consistent
+    // emotional contrast, just shifted onto the deeper base.
     const SPEECH_MOODS = {
-      calm: { rate: 0.94, pitch: 0.88 },
-      curious: { rate: 0.98, pitch: 1.05 },
-      warm: { rate: 0.97, pitch: 1.1 }
+      calm: { rate: 0.95, pitch: 0.85 },
+      curious: { rate: 0.99, pitch: 1.02 },
+      warm: { rate: 0.98, pitch: 1.07 }
     };
 
     function detectSpeechMood(sentence) {
