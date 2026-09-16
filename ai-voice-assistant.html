@@ -357,6 +357,8 @@
         if (/en-in|india|indian/.test(name)) score += 50;
         if (/english/.test(name)) score += 20;
         if (/google|microsoft|natural|online/.test(name)) score += 15;
+        // Edge "Online (Natural)" neural voices follow punctuation far more expressively.
+        if (/natural/.test(name)) score += 60;
         if (voice.default) score += 10;
         if (/en-/.test(name)) score += 8;
         // Sir Ganguly is a male teacher persona - a male voice must always outrank
@@ -390,12 +392,12 @@
     // Pitches stay at or below ~0.95 so the voice keeps a male timbre while
     // still moving noticeably between moods.
     const SPEECH_MOODS = {
-      calm: { rate: 0.96, pitch: 0.82, pause: 220 },
-      curious: { rate: 1.0, pitch: 0.95, pause: 320 },
-      warm: { rate: 0.98, pitch: 0.92, pause: 260 },
-      excited: { rate: 1.08, pitch: 0.95, pause: 240 },
-      serious: { rate: 0.88, pitch: 0.74, pause: 340 },
-      empathetic: { rate: 0.9, pitch: 0.8, pause: 320 }
+      calm: { rate: 0.9, pitch: 0.82, pause: 450 },
+      curious: { rate: 0.95, pitch: 0.98, pause: 700 },
+      warm: { rate: 1.05, pitch: 0.95, pause: 500 },
+      excited: { rate: 1.12, pitch: 0.98, pause: 600 },
+      serious: { rate: 0.8, pitch: 0.7, pause: 700 },
+      empathetic: { rate: 0.82, pitch: 0.78, pause: 600 }
     };
 
     function detectSpeechMood(sentence) {
@@ -493,7 +495,7 @@
         };
         utterance.onend = () => {
           if (state.speechToken !== speechToken) return;
-          const pause = index === 0 ? 350 : mood.pause;
+          const pause = index === 0 ? 600 : mood.pause;
           setTimeout(() => speakSegment(index + 1, selectedVoice, lang, statusMessage), pause);
         };
         utterance.onerror = (e) => {
