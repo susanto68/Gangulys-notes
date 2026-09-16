@@ -71,7 +71,8 @@ Always end your answers with a kind, uplifting line, such as: "You're doing a gr
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model: 'llama-3.1-8b-instant',
+        model: 'openai/gpt-oss-20b',
+        reasoning_effort: 'low',
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: question }
