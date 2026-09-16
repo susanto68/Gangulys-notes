@@ -30,7 +30,7 @@ function monitorAPIPerformance() {
   
   // Check environment variables
   console.log('\n🔑 Environment Check:');
-  console.log('GEMINI_API_KEY:', process.env.GEMINI_API_KEY ? '✅ Set' : '❌ Missing');
+  console.log('GROQ_API_KEY:', process.env.GROQ_API_KEY ? '✅ Set' : '❌ Missing');
   
   // Check system prompt size
   const systemPromptPath = path.join(__dirname, 'public', 'system_prompt.txt');
@@ -56,10 +56,10 @@ function monitorAPIPerformance() {
   
   // Performance recommendations
   console.log('\n💡 Performance Recommendations:');
-  console.log('1. Ensure GEMINI_API_KEY is set in .env.local');
+  console.log('1. Ensure GROQ_API_KEY is set in .env.local');
   console.log('2. Monitor API response times in browser DevTools');
   console.log('3. Check Network tab for slow requests');
-  console.log('4. Verify Gemini API service status');
+  console.log('4. Verify Groq API service status');
   console.log('5. Consider reducing system prompt complexity if responses are slow');
   
   // Memory usage check

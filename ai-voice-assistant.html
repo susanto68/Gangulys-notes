@@ -385,9 +385,9 @@
     // curious/warm deltas above calm are kept the same as before for consistent
     // emotional contrast, just shifted onto the deeper base.
     const SPEECH_MOODS = {
-      calm: { rate: 0.95, pitch: 0.85 },
-      curious: { rate: 0.99, pitch: 1.02 },
-      warm: { rate: 0.98, pitch: 1.07 }
+      calm: { rate: 1.0, pitch: 0.8 },
+      curious: { rate: 1.03, pitch: 0.95 },
+      warm: { rate: 1.02, pitch: 1.0 }
     };
 
     function detectSpeechMood(sentence) {
@@ -523,6 +523,11 @@
 
     function playIntroGreeting() {
       if (state.muted) return;
+      // Greet only once per visitor
+      try {
+        if (localStorage.getItem('sirgangulyAvatarIntroPlayed') === 'true') return;
+        localStorage.setItem('sirgangulyAvatarIntroPlayed', 'true');
+      } catch (error) {}
       sendBtn.disabled = true;
       if (state.recognition) talkBtn.disabled = true;
       setStatus('Sir is introducing the class...', 'Speaking');

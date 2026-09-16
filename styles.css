@@ -3209,11 +3209,15 @@ footer {
 }
 
 @media (max-width: 768px) {
+  /* Shrink the whole companion on phones so it never covers content */
   .floating-pet {
-    left: 10px;
-    top: 84px;
+    left: 6px;
+    top: auto;
+    bottom: 12px;
     width: 148px;
     height: 176px;
+    transform: scale(0.5);
+    transform-origin: top left;
   }
 
   .floating-pet-button {
@@ -3223,17 +3227,10 @@ footer {
     height: 134px;
   }
 
-  .teacher-pet {
-    left: 4px;
-    top: 0;
-    transform: scale(0.94);
-    transform-origin: top left;
-  }
-
   .floating-pet-bubble {
-    max-width: 128px;
-    font-size: 11px;
-    padding: 7px 9px;
+    max-width: 140px;
+    font-size: 16px;
+    padding: 8px 10px;
   }
 }
 
@@ -3244,5 +3241,24 @@ footer {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+/* Mobile: tighten vertical spacing between dashboard sections */
+@media (max-width: 768px) {
+  .dashboard-grid {
+    gap: 28px !important;
+  }
+
+  .dashboard-category {
+    padding-top: 12px !important;
+  }
+
+  main.container {
+    margin-bottom: 32px !important;
+  }
+
+  footer {
+    margin-top: 32px !important;
   }
 }

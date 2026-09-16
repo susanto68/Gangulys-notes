@@ -246,6 +246,7 @@ async function playPortalIntroductionAudio(status, reason) {
     try {
         portalIntroAudio = new Audio(PORTAL_INTRO_AUDIO_URL);
         portalIntroAudio.preload = 'auto';
+        portalIntroAudio.playbackRate = 1.08;
         setPortalIntroSpeakingState('Teacher introduction is playing.');
 
         portalIntroAudio.onended = () => {
@@ -260,6 +261,8 @@ async function playPortalIntroductionAudio(status, reason) {
         };
 
         await portalIntroAudio.play();
+        // Mark as soon as it starts, so leaving mid-intro never replays it
+        markPortalIntroPlayed();
         return true;
     } catch (error) {
         resetPortalIntroButton();
@@ -283,7 +286,7 @@ function speakPortalIntroductionWithSynthesis(status, attempt) {
         utterance.lang = selectedVoice?.lang || 'en-IN';
         if (selectedVoice) utterance.voice = selectedVoice;
         utterance.pitch = 0.72;
-        utterance.rate = 0.82;
+        utterance.rate = 0.92;
         utterance.volume = 1;
 
         const settle = (handler, value) => {
@@ -294,6 +297,7 @@ function speakPortalIntroductionWithSynthesis(status, attempt) {
 
         utterance.onstart = () => {
             started = true;
+            markPortalIntroPlayed();
             setPortalIntroSpeakingState('Teacher introduction is playing.');
         };
 
@@ -947,8 +951,9 @@ function initFloatingTeacherPet() {
     };
 
     const clampPosition = (x, y) => {
-        const width = window.innerWidth <= 768 ? 148 : 176;
-        const height = window.innerWidth <= 768 ? 176 : 196;
+        // Mobile pet is rendered at scale(0.5), so clamp against its visual size
+        const width = window.innerWidth <= 768 ? 74 : 176;
+        const height = window.innerWidth <= 768 ? 88 : 196;
         const padding = window.innerWidth <= 768 ? 6 : 10;
 
         return {
@@ -963,8 +968,9 @@ function initFloatingTeacherPet() {
         const position = Number.isFinite(currentX) && Number.isFinite(currentY)
             ? clampPosition(currentX, currentY)
             : {
-                x: window.innerWidth <= 768 ? 10 : 14,
-                y: window.innerWidth <= 768 ? 84 : 104
+                x: window.innerWidth <= 768 ? 6 : 14,
+                // Bottom-left corner on phones, clear of the header and page content
+                y: window.innerWidth <= 768 ? window.innerHeight - 88 - 12 : 104
             };
 
         pet.style.left = `${position.x}px`;
