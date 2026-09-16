@@ -392,12 +392,12 @@
     // Pitches stay at or below ~0.95 so the voice keeps a male timbre while
     // still moving noticeably between moods.
     const SPEECH_MOODS = {
-      calm: { rate: 0.9, pitch: 0.82, pause: 450 },
-      curious: { rate: 0.95, pitch: 0.98, pause: 700 },
-      warm: { rate: 1.05, pitch: 0.95, pause: 500 },
-      excited: { rate: 1.12, pitch: 0.98, pause: 600 },
-      serious: { rate: 0.8, pitch: 0.7, pause: 700 },
-      empathetic: { rate: 0.82, pitch: 0.78, pause: 600 }
+      calm: { rate: 1.0, pitch: 0.82, pause: 350 },
+      curious: { rate: 1.05, pitch: 0.98, pause: 550 },
+      warm: { rate: 1.12, pitch: 0.95, pause: 400 },
+      excited: { rate: 1.2, pitch: 0.98, pause: 450 },
+      serious: { rate: 0.9, pitch: 0.7, pause: 550 },
+      empathetic: { rate: 0.92, pitch: 0.78, pause: 450 }
     };
 
     function detectSpeechMood(sentence) {
@@ -495,7 +495,7 @@
         };
         utterance.onend = () => {
           if (state.speechToken !== speechToken) return;
-          const pause = index === 0 ? 600 : mood.pause;
+          const pause = index === 0 ? 450 : mood.pause;
           setTimeout(() => speakSegment(index + 1, selectedVoice, lang, statusMessage), pause);
         };
         utterance.onerror = (e) => {
