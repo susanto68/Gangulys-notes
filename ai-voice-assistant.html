@@ -359,10 +359,13 @@
         if (/google|microsoft|natural|online/.test(name)) score += 15;
         if (voice.default) score += 10;
         if (/en-/.test(name)) score += 8;
-        // Sir Ganguly is a male teacher persona - prefer a deep male voice when one exists,
-        // matching the voice selection used across the other Sir Ganguly avatar projects.
-        if (/\b(male|david|mark|ravi|daniel)\b/.test(name)) score += 12;
-        if (/\bfemale\b/.test(name)) score -= 4;
+        // Sir Ganguly is a male teacher persona - a male voice must always outrank
+        // a female one, so these weights dominate the locale/vendor bonuses above.
+        if (/\bfemale\b/.test(name)) score -= 200;
+        else if (/\b(male|ravi|prabhat|rishi|david|mark|guy|christopher|eric|ryan|brian|andrew|roger|steffan|daniel|alex|fred|aaron|arthur|oliver|thomas|george)\b/.test(name)) score += 100;
+        if (/\b(heera|neerja|kalpana|veena|lekha|zira|hazel|susan|aria|jenny|libby|sonia|emma|ava|michelle|ana|natasha|clara|samantha|karen|moira|tessa|victoria|fiona|serena|allison|kate)\b/.test(name)) score -= 200;
+        // Chrome's unlabeled "Google US English" / "Google हिन्दी" voices are female.
+        if (/^google (us english|हिन्दी)/.test(name)) score -= 150;
         return { voice, score };
       }).sort((a, b) => b.score - a.score)[0].voice;
     }
@@ -384,10 +387,15 @@
     // other Sir Ganguly avatar projects (rate ~0.95, pitch ~0.8-0.88 there); the
     // curious/warm deltas above calm are kept the same as before for consistent
     // emotional contrast, just shifted onto the deeper base.
+    // Pitches stay at or below ~0.95 so the voice keeps a male timbre while
+    // still moving noticeably between moods.
     const SPEECH_MOODS = {
-      calm: { rate: 1.0, pitch: 0.8 },
-      curious: { rate: 1.03, pitch: 0.95 },
-      warm: { rate: 1.02, pitch: 1.0 }
+      calm: { rate: 0.96, pitch: 0.82, pause: 220 },
+      curious: { rate: 1.0, pitch: 0.95, pause: 320 },
+      warm: { rate: 0.98, pitch: 0.92, pause: 260 },
+      excited: { rate: 1.08, pitch: 0.95, pause: 240 },
+      serious: { rate: 0.88, pitch: 0.74, pause: 340 },
+      empathetic: { rate: 0.9, pitch: 0.8, pause: 320 }
     };
 
     function detectSpeechMood(sentence) {
@@ -395,6 +403,9 @@
       if (/(great job|good job|wonderful|excellent|congratulations|keep practicing|stay curious|well done|awesome|fantastic|you're doing|great question)/i.test(sentence)) {
         return 'warm';
       }
+      if (/!\s*$/.test(sentence) || /\b(amazing|exciting|wow|imagine|powerful|incredible)\b/i.test(sentence)) return 'excited';
+      if (/\b(don't worry|it's okay|it is okay|difficult|confus|mistake|sorry|take your time|no problem)\b/i.test(sentence)) return 'empathetic';
+      if (/\b(important|remember|note that|never|always|must|warning|careful|key point)\b/i.test(sentence)) return 'serious';
       return 'calm';
     }
 
@@ -482,7 +493,7 @@
         };
         utterance.onend = () => {
           if (state.speechToken !== speechToken) return;
-          const pause = index === 0 ? 280 : 190;
+          const pause = index === 0 ? 350 : mood.pause;
           setTimeout(() => speakSegment(index + 1, selectedVoice, lang, statusMessage), pause);
         };
         utterance.onerror = (e) => {
