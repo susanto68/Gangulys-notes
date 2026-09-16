@@ -63,28 +63,35 @@ Keep all code short, clear, and easy to understand, especially for ICSE students
 Avoid harsh, negative, or confusing words.
 Always end your answers with a kind, uplifting line, such as: "You're doing a great job — keep practicing and stay curious!"`;
 
-    // Make direct API call to Groq
-    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        model: 'openai/gpt-oss-20b',
-        reasoning_effort: 'low',
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: question }
-        ],
-        temperature: 0.7,
-        max_tokens: 1024
-      })
-    });
+    // Make direct API call to Groq, falling back to the next model if one fails
+    const models = ['openai/gpt-oss-20b', 'qwen/qwen3.8-27b', 'openai/gpt-oss-120b'];
+    let response;
+    let lastError;
+    for (const model of models) {
+      response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          model,
+          reasoning_effort: 'low',
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: question }
+          ],
+          temperature: 0.7,
+          max_tokens: 1024
+        })
+      });
+      if (response.ok) break;
+      lastError = `Groq API returned status ${response.status} for ${model}: ${await response.text()}`;
+      console.error(lastError);
+    }
 
     if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Groq API returned status ${response.status}: ${errorText}`);
+      throw new Error(lastError);
     }
 
     const data = await response.json();
