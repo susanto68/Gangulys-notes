@@ -24,6 +24,13 @@ function getPDFViewerURL(pdfPath) {
     return `/pdf-viewer.html?file=${encodeURIComponent(filePath)}`;
 }
 
+// Browsers remember their own PDF zoom, so on some machines a chapter opens
+// as a small page in the corner. #view=FitH tells the built-in viewer to fit
+// the page to the window width, which makes every machine look the same.
+function withFitToWidth(pdfURL) {
+    return pdfURL.hash ? pdfURL.href : pdfURL.href + '#view=FitH';
+}
+
 function showPDFError() {
     const errorModal = document.getElementById('errorModal');
     const errorMessage = document.getElementById('errorMessage');
@@ -37,7 +44,7 @@ function handlePDFClick(event, pdfPath) {
 
     try {
         if (isLocalPDFPath(pdfPath)) {
-            window.location.href = new URL(pdfPath, window.location.href).href;
+            window.location.href = withFitToWidth(new URL(pdfPath, window.location.href));
             return;
         }
 

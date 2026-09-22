@@ -916,17 +916,6 @@ footer {
   box-shadow: 0 0 25px rgba(202, 138, 4, 0.42) !important;
 }
 
-/* Syllabus & Notes */
-.card-holiday {
-  border-color: rgba(249, 115, 22, 0.4) !important;
-  box-shadow: 0 0 12px rgba(249, 115, 22, 0.15) !important;
-}
-.card-holiday:hover {
-  border-color: #f97316 !important;
-  box-shadow: 0 0 25px rgba(249, 115, 22, 0.45) !important;
-  background: rgba(249, 115, 22, 0.12) !important;
-}
-
 /* Video & Programs */
 .card-videos {
   border-color: rgba(239, 68, 68, 0.4) !important;
