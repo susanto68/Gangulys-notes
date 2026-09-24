@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>3D Dinosaur - BlueJ Lab</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; }
+    body {
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      background: #0f172a;
+      color: #0f172a;
+      display: flex;
+      flex-direction: column;
+      height: 100dvh;
+      overflow: hidden;
+    }
+
+    .topbar {
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      background: linear-gradient(135deg, #3b82f6, #1e40af);
+      color: #fff;
+    }
+    .back-btn {
+      flex: 0 0 auto;
+      color: #1e40af;
+      background: #fff;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 14px;
+      padding: 7px 12px;
+      border-radius: 999px;
+    }
+    .topbar h1 { margin: 0; font-size: 17px; line-height: 1.2; flex: 1; min-width: 0; }
+    .sound-btn {
+      flex: 0 0 auto;
+      border: 0;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.2);
+      color: #fff;
+      font-size: 17px;
+      width: 36px;
+      height: 36px;
+      cursor: pointer;
+    }
+
+    .layout { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+
+    /* Upper part: animation + output */
+    .stage-panel {
+      flex: 0 0 auto;
+      background: radial-gradient(circle at 50% 35%, #1e3a5f 0%, #0f172a 75%);
+      color: #e2e8f0;
+      padding: 6px 10px 8px;
+      position: relative;
+      overflow: hidden;
+    }
+    .stage-svg { display: block; width: 100%; max-width: 820px; height: auto; margin: 0 auto; }
+
+    .vars {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 4px;
+      margin: 2px 0 6px;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 12px;
+    }
+    .vars span {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 6px;
+      padding: 2px 6px;
+    }
+    .vars b { color: #fde047; }
+    @media (max-width: 420px) {
+      .vars { flex-wrap: nowrap; font-size: 11px; gap: 3px; }
+      .vars span { padding: 2px 5px; white-space: nowrap; }
+    }
+
+    .ask-row { display: flex; gap: 8px; max-width: 520px; margin: 0 auto 6px; }
+    .ask-row input {
+      flex: 1;
+      min-width: 0;
+      font-size: 17px;
+      padding: 9px 12px;
+      border-radius: 10px;
+      border: 2px solid #3b82f6;
+      background: #fff;
+      color: #0f172a;
+    }
+    .ask-row button {
+      border: 0;
+      border-radius: 10px;
+      padding: 9px 16px;
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+      background: linear-gradient(135deg, #10b981, #047857);
+      cursor: pointer;
+    }
+    .ask-row button:disabled { opacity: 0.55; cursor: not-allowed; }
+
+    .terminal {
+      max-width: 820px;
+      margin: 0 auto;
+      height: 74px;
+      overflow-y: auto;
+      background: #020617;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 13px;
+      line-height: 1.45;
+      color: #a7f3d0;
+      white-space: pre-wrap;
+    }
+    .terminal .cursor { display: inline-block; width: 8px; background: #a7f3d0; animation: blink 1s steps(1) infinite; }
+    .terminal .user { color: #fde047; }
+    .terminal .ok { color: #4ade80; font-weight: 700; }
+    .terminal .bad { color: #fca5a5; font-weight: 700; }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    /* Lower part: read-only program */
+    .code-panel {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
+      position: relative;
+      background: #fffdf0;
+      border-top: 4px solid #1e40af;
+    }
+    .code-title {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      background: #fef3c7;
+      border-bottom: 1px solid #fcd34d;
+      padding: 6px 12px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #92400e;
+    }
+    .code {
+      margin: 0;
+      padding: 6px 0 24px;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 13.5px;
+      line-height: 1.6;
+      user-select: text;
+    }
+    .code .ln {
+      display: block;
+      padding: 0 12px 0 0;
+      white-space: pre;
+      border-left: 4px solid transparent;
+      transition: background 0.2s ease;
+    }
+    .code .ln::before {
+      content: attr(data-n);
+      display: inline-block;
+      width: 32px;
+      margin-right: 10px;
+      text-align: right;
+      color: #94a3b8;
+    }
+    .code .ln.active { background: #fde68a; border-left-color: #f59e0b; }
+    .kw { color: #7c3aed; font-weight: 700; }
+    .str { color: #047857; }
+    .num { color: #c2410c; }
+    .cm { color: #64748b; font-style: italic; }
+
+    /* Pockets */
+    .pocket rect.box { fill: #ffffff; stroke: #60a5fa; stroke-width: 3; transition: fill 0.3s ease, stroke 0.3s ease; }
+    .pocket .flap { fill: none; stroke: #93c5fd; stroke-width: 2; stroke-dasharray: 5 4; }
+    .pocket text.val {
+      font: 700 26px "Segoe UI", Arial, sans-serif;
+      fill: #0f172a;
+      text-anchor: middle;
+      transform-box: fill-box;
+      transform-origin: center;
+      transition: transform 0.3s ease;
+    }
+    .pocket text.idx { font: 600 14px Consolas, monospace; fill: #93c5fd; text-anchor: middle; }
+    .pocket .mark { font: 700 22px Arial, sans-serif; fill: #dc2626; text-anchor: middle; opacity: 0; transition: opacity 0.3s ease; }
+    .pocket.checking rect.box { fill: #fde047; stroke: #f59e0b; }
+    .pocket.checking text.val { transform: scale(1.45); }
+    .pocket.no rect.box { fill: #fecaca; stroke: #f87171; }
+    .pocket.no .mark { opacity: 1; }
+    .pocket.found rect.box { fill: #86efac; stroke: #16a34a; }
+    .pocket.found text.val { transform: scale(1.3); }
+    .pocket.found rect.box { filter: drop-shadow(0 0 10px #4ade80); }
+
+    /* Cartoon teacher */
+    #heroPos { transition: transform 0.65s linear; }
+    #hero .part { transform-box: fill-box; }
+    #hero .leg { transform-origin: 50% 0%; }
+    #hero .arm { transform-origin: 50% 0%; transition: transform 0.35s ease; }
+    #hero .head { transform-origin: 50% 100%; transition: transform 0.3s ease; }
+    #hero .eyes { transform-origin: 50% 50%; animation: eyeBlink 4s infinite; }
+    #hero .armL { transform: rotate(8deg); }
+    #hero .armR { transform: rotate(-32deg); }
+    #hero .body { animation: breathe 2.4s ease-in-out infinite; transform-box: fill-box; }
+
+    #hero.walk .legL { animation: legSwing 0.33s ease-in-out infinite alternate; }
+    #hero.walk .legR { animation: legSwing 0.33s ease-in-out infinite alternate-reverse; }
+    #hero.walk .armL { animation: armSwing 0.33s ease-in-out infinite alternate; }
+    #hero.walk .body { animation: walkBob 0.33s ease-in-out infinite alternate; }
+
+    #hero.inspect .armR { transform: rotate(-178deg); }
+    #hero.inspect .armL { transform: rotate(18deg); }
+    #hero.inspect .head { transform: rotate(-6deg); }
+
+    #hero.shake .head { animation: headShake 0.7s ease-in-out; }
+    #hero.shake .armR { transform: rotate(-60deg); }
+
+    #hero.jump .body { animation: jump 0.42s ease-out infinite alternate; }
+    #hero.jump .armL { transform: rotate(158deg); }
+    #hero.jump .armR { transform: rotate(-158deg); }
+    #hero.jump .legL { animation: legSwing 0.21s ease-in-out infinite alternate; }
+    #hero.jump .legR { animation: legSwing 0.21s ease-in-out infinite alternate-reverse; }
+
+    #hero.sad .head { transform: translateY(4px) rotate(10deg); }
+    #hero.sad .armL { transform: rotate(2deg); }
+    #hero.sad .armR { transform: rotate(-6deg); }
+    #hero.sad .mouth { transform: translateY(6px) scaleY(-1); transform-box: fill-box; transform-origin: center; }
+
+    @keyframes legSwing { from { transform: rotate(-24deg); } to { transform: rotate(24deg); } }
+    @keyframes armSwing { from { transform: rotate(-26deg); } to { transform: rotate(30deg); } }
+    @keyframes walkBob { from { transform: translateY(0); } to { transform: translateY(-4px); } }
+    @keyframes breathe { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-1.5px); } }
+    @keyframes jump { from { transform: translateY(0); } to { transform: translateY(-34px); } }
+    @keyframes headShake {
+      0%, 100% { transform: rotate(0); }
+      20% { transform: rotate(-13deg); }
+      40% { transform: rotate(13deg); }
+      60% { transform: rotate(-11deg); }
+      80% { transform: rotate(9deg); }
+    }
+    @keyframes eyeBlink { 0%, 94%, 100% { transform: scaleY(1); } 97% { transform: scaleY(0.1); } }
+
+    .bubble rect { fill: #ffffff; stroke: #1e40af; stroke-width: 2; }
+    .bubble path { fill: #ffffff; stroke: #1e40af; stroke-width: 2; }
+    .bubble text { font: 700 17px "Segoe UI", Arial, sans-serif; fill: #0f172a; text-anchor: middle; }
+
+    .confetti {
+      position: absolute;
+      top: -12px;
+      width: 9px;
+      height: 14px;
+      border-radius: 2px;
+      pointer-events: none;
+      animation: fall 1.9s ease-in forwards;
+    }
+    @keyframes fall {
+      to { transform: translate(var(--dx), 420px) rotate(var(--rot)); opacity: 0.2; }
+    }
+
+    @media (min-width: 980px) {
+      .layout { flex-direction: row; }
+      .stage-panel { flex: 1 1 58%; display: flex; flex-direction: column; justify-content: center; }
+      .terminal { height: 150px; width: 100%; }
+      .code-panel { flex: 1 1 42%; border-top: 0; border-left: 4px solid #1e40af; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      #heroPos { transition-duration: 0.2s; }
+    }
+  
+    .stage-panel { background: radial-gradient(circle at 50% 30%, #1e3a5f 0%, #0f172a 80%); }
+    .credit { text-align: center; font: italic 700 14px "Times New Roman", serif; color: #fca5a5; margin: 0 0 4px; }
+    .canvas-wrap {
+      width: min(94vw, 44vh, 520px);
+      aspect-ratio: 1;
+      margin: 0 auto;
+      background: #ffffff;
+      border-radius: 14px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+      position: relative;
+      overflow: hidden;
+    }
+    #dino { display: block; width: 100%; height: 100%; touch-action: none; cursor: grab; }
+    #dino.dragging { cursor: grabbing; }
+    .drag-hint {
+      position: absolute;
+      left: 50%;
+      bottom: 8px;
+      transform: translateX(-50%);
+      background: rgba(15, 23, 42, 0.75);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 999px;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+    }
+    .dino-controls { display: flex; justify-content: center; gap: 6px; margin: 8px 0 6px; flex-wrap: wrap; }
+    .dino-controls button {
+      border: 0;
+      border-radius: 10px;
+      padding: 7px 12px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      background: linear-gradient(135deg, #6366f1, #4338ca);
+      cursor: pointer;
+    }
+    .dino-controls button.on { background: linear-gradient(135deg, #10b981, #047857); }
+    .terminal { height: 54px; }
+    .code .ln { font-size: 12.5px; }
+    @media (min-width: 980px) {
+      .canvas-wrap { width: min(44vw, 64vh, 560px); }
+      .terminal { height: 90px; }
+    }
+</style>
+</head>
+<body>
+  <div class="topbar">
+    <a class="back-btn" href="index.html" aria-label="Back to all topics">&larr; Back</a>
+    <h1>24. 3D Dinosaur</h1>
+  </div>
+
+  <div class="layout">
+    <section class="stage-panel" aria-label="3D dinosaur viewer">
+      <div class="credit">Designer :- Susanto Ganguly</div>
+      <div class="canvas-wrap">
+        <canvas id="dino" aria-label="3D wireframe dinosaur. Drag to rotate."></canvas>
+        <div class="drag-hint" id="hint">&#9995; Drag the dinosaur to turn it</div>
+      </div>
+
+      <div class="dino-controls">
+        <button id="spinBtn" type="button">&#8635; Auto Spin</button>
+        <button id="zoomIn" type="button">&#128269; +</button>
+        <button id="zoomOut" type="button">&#128269; &minus;</button>
+        <button id="resetBtn" type="button">Reset</button>
+      </div>
+
+      <div class="terminal" id="terminal" aria-live="polite"></div>
+    </section>
+
+    <section class="code-panel" id="codePanel" aria-label="Java program (read only)">
+      <div class="code-title">Dinasaur.java + Matrix3D.java (BlueJ applet) &middot; read only &middot; scroll to read</div>
+      <pre class="code" id="code"></pre>
+    </section>
+  </div>
+
+  <script>
+    (function () {
+      const JAVA = ["import java.applet.Applet;", "import java.awt.Graphics;", "import java.awt.Color;", "import java.awt.Event;", "import java.awt.event.*;", "import java.io.*;", "", "import java.net.URL;", "", "class FileFormatException extends Exception {", "    public FileFormatException(String s) {", "    super(s);", "    }", "}", "", "/** The representation of a 3D model */", "class Model3D {", "", "    float vert[];", "    int tvert[];", "    int nvert, maxvert;", "    int con[];", "    int ncon, maxcon;", "    boolean transformed;", "    Matrix3D mat;", "", "    float xmin, xmax, ymin, ymax, zmin, zmax;", "", "    Model3D () {", "", "    mat = new Matrix3D ();", "    mat.xrot(20);", "    mat.yrot(30);", "    }", "    /** Create a 3D model by parsing an input stream */", "    Model3D (InputStream is) throws IOException, FileFormatException {", "      this();", "      StreamTokenizer st = new StreamTokenizer(new BufferedReader(new InputStreamReader(is)));", "      st.eolIsSignificant(true);", "      st.commentChar('#');", "    scan:", "    while (true) {", "        switch (st.nextToken()) {", "          default:", "        break scan;", "          case StreamTokenizer.TT_EOL:", "        break;", "          case StreamTokenizer.TT_WORD:", "        if (\"v\".equals(st.sval)) {", "            double x = 0, y = 0, z = 0;", "            if (st.nextToken() == StreamTokenizer.TT_NUMBER) {", "            x = st.nval;", "            if (st.nextToken() == StreamTokenizer.TT_NUMBER) {", "                y = st.nval;", "                if (st.nextToken() == StreamTokenizer.TT_NUMBER)", "                z = st.nval;", "            }", "            }", "            addVert((float) x, (float) y, (float) z);", "            while (st.ttype != StreamTokenizer.TT_EOL &&", "                st.ttype != StreamTokenizer.TT_EOF)", "            st.nextToken();", "        } else if (\"f\".equals(st.sval) || \"fo\".equals(st.sval) || \"l\".equals(st.sval)) {", "            int start = -1;", "            int prev = -1;", "            int n = -1;", "            while (true)", "            if (st.nextToken() == StreamTokenizer.TT_NUMBER) {", "                n = (int) st.nval;", "                if (prev >= 0)", "                add(prev - 1, n - 1);", "                if (start < 0)", "                start = n;", "                prev = n;", "            } else if (st.ttype == '/')", "                st.nextToken();", "            else", "                break;", "            if (start >= 0)", "            add(start - 1, prev - 1);", "            if (st.ttype != StreamTokenizer.TT_EOL)", "            break scan;", "        } else {", "            while (st.nextToken() != StreamTokenizer.TT_EOL", "                && st.ttype != StreamTokenizer.TT_EOF);", "        }", "        }", "    }", "    is.close();", "    if (st.ttype != StreamTokenizer.TT_EOF)", "        throw new FileFormatException(st.toString());", "    }", "", "    /** Add a vertex to this model */", "    int addVert(float x, float y, float z) {", "    int i = nvert;", "    if (i >= maxvert)", "        if (vert == null) {", "        maxvert = 100;", "        vert = new float[maxvert * 3];", "        } else {", "        maxvert *= 2;", "        float nv[] = new float[maxvert * 3];", "        System.arraycopy(vert, 0, nv, 0, vert.length);", "        vert = nv;", "        }", "    i *= 3;", "    vert[i] = x;", "    vert[i + 1] = y;", "    vert[i + 2] = z;", "    return nvert++;", "    }", "    /** Add a line from vertex p1 to vertex p2 */", "    void add(int p1, int p2) {", "    int i = ncon;", "    if (p1 >= nvert || p2 >= nvert)", "        return;", "    if (i >= maxcon)", "        if (con == null) {", "        maxcon = 100;", "        con = new int[maxcon];", "        } else {", "        maxcon *= 2;", "        int nv[] = new int[maxcon];", "        System.arraycopy(con, 0, nv, 0, con.length);", "        con = nv;", "        }", "    if (p1 > p2) {", "        int t = p1;", "        p1 = p2;", "        p2 = t;", "    }", "    con[i] = (p1 << 16) | p2;", "    ncon = i + 1;", "    }", "    /** Transform all the points in this model */", "    void transform() {", "    if (transformed || nvert <= 0)", "        return;", "    if (tvert == null || tvert.length < nvert * 3)", "        tvert = new int[nvert*3];", "    mat.transform(vert, tvert, nvert);", "    transformed = true;", "    }", "", "   /* Quick Sort implementation", "    */", "   private void quickSort(int a[], int left, int right)", "   {", "      int leftIndex = left;", "      int rightIndex = right;", "      int partionElement;", "      if ( right > left)", "      {", "", "         /* Arbitrarily establishing partition element as the midpoint of", "          * the array.", "          */", "         partionElement = a[ ( left + right ) / 2 ];", "", "         // loop through the array until indices cross", "         while( leftIndex <= rightIndex )", "         {", "            /* find the first element that is greater than or equal to", "             * the partionElement starting from the leftIndex.", "             */", "            while( ( leftIndex < right ) && ( a[leftIndex] < partionElement ) )", "               ++leftIndex;", "", "            /* find an element that is smaller than or equal to", "             * the partionElement starting from the rightIndex.", "             */", "            while( ( rightIndex > left ) &&", "                   ( a[rightIndex] > partionElement ) )", "               --rightIndex;", "", "            // if the indexes have not crossed, swap", "            if( leftIndex <= rightIndex )", "            {", "               swap(a, leftIndex, rightIndex);", "               ++leftIndex;", "               --rightIndex;", "            }", "         }", "", "         /* If the right index has not reached the left side of array", "          * must now sort the left partition.", "          */", "         if( left < rightIndex )", "            quickSort( a, left, rightIndex );", "", "         /* If the left index has not reached the right side of array", "          * must now sort the right partition.", "          */", "         if( leftIndex < right )", "            quickSort( a, leftIndex, right );", "", "      }", "   }", "", "   private void swap(int a[], int i, int j)", "   {", "      int T;", "      T = a[i];", "      a[i] = a[j];", "      a[j] = T;", "   }", "", "", "    /** eliminate duplicate lines */", "    void compress() {", "    int limit = ncon;", "    int c[] = con;", "    quickSort(con, 0, ncon - 1);", "    int d = 0;", "    int pp1 = -1;", "    for (int i = 0; i < limit; i++) {", "        int p1 = c[i];", "        if (pp1 != p1) {", "        c[d] = p1;", "        d++;", "        }", "        pp1 = p1;", "    }", "    ncon = d;", "    }", "", "    static Color gr[];", "", "    /** Paint this model to a graphics context.  It uses the matrix associated", "    with this model to map from model space to screen space.", "    The next version of the browser should have double buffering,", "    which will make this *much* nicer */", "    void paint(Graphics g) {", "    if (vert == null || nvert <= 0)", "        return;", "    transform();", "    if (gr == null) {", "        gr = new Color[16];", "        for (int i = 0; i < 16; i++) {", "        int grey = (int) (170*(1-Math.pow(i/15.0, 2.3)));", "        gr[i] = new Color(grey, grey, grey);", "        }", "    }", "    int lg = 0;", "    int lim = ncon;", "    int c[] = con;", "    int v[] = tvert;", "    if (lim <= 0 || nvert <= 0)", "        return;", "    for (int i = 0; i < lim; i++) {", "        int T = c[i];", "        int p1 = ((T >> 16) & 0xFFFF) * 3;", "        int p2 = (T & 0xFFFF) * 3;", "        int grey = v[p1 + 2] + v[p2 + 2];", "        if (grey < 0)", "        grey = 0;", "        if (grey > 15)", "        grey = 15;", "        if (grey != lg) {", "        lg = grey;", "        g.setColor(gr[grey]);", "        }", "        g.drawLine(v[p1], v[p1 + 1],", "               v[p2], v[p2 + 1]);", "    }", "    }", "", "    /** Find the bounding box of this model */", "    void findBB() {", "    if (nvert <= 0)", "        return;", "    float v[] = vert;", "    float xmin = v[0], xmax = xmin;", "    float ymin = v[1], ymax = ymin;", "    float zmin = v[2], zmax = zmin;", "    for (int i = nvert * 3; (i -= 3) > 0;) {", "        float x = v[i];", "        if (x < xmin)", "        xmin = x;", "        if (x > xmax)", "        xmax = x;", "        float y = v[i + 1];", "        if (y < ymin)", "        ymin = y;", "        if (y > ymax)", "        ymax = y;", "        float z = v[i + 2];", "        if (z < zmin)", "        zmin = z;", "        if (z > zmax)", "        zmax = z;", "    }", "    this.xmax = xmax;", "    this.xmin = xmin;", "    this.ymax = ymax;", "    this.ymin = ymin;", "    this.zmax = zmax;", "    this.zmin = zmin;", "    }", "}", "", "/** An applet to put a 3D model into a page */", "public class Dinasaur extends Applet", "  implements Runnable, MouseListener, MouseMotionListener {", "    Model3D md;", "    boolean painted = true;", "    float xfac;", "    int prevx, prevy;", "    float xtheta, ytheta;", "    float scalefudge = 1;", "    Matrix3D amat = new Matrix3D(), tmat = new Matrix3D();", "    String mdname = null;", "    String message = null;", "", "    public void init() {", "    mdname = getParameter(\"model\");", "    try {", "        scalefudge = Float.valueOf(getParameter(\"scale\")).floatValue();", "    }catch(Exception e){};", "    amat.yrot(20);", "    amat.xrot(20);", "    if (mdname == null)", "        mdname = \"dinasaur.obj\";", "    resize(getSize().width <= 20 ? 400 : getSize().width,", "           getSize().height <= 20 ? 400 : getSize().height);", "    addMouseListener(this);", "    addMouseMotionListener(this);", "    }", "", "    public void destroy() {", "        removeMouseListener(this);", "        removeMouseMotionListener(this);", "    }", "", "    public void run() {", "    InputStream is = null;", "    try {", "        Thread.currentThread().setPriority(Thread.MIN_PRIORITY);", "        is = new URL(getDocumentBase(), mdname).openStream();", "        Model3D m = new Model3D (is);", "        md = m;", "        m.findBB();", "        m.compress();", "        float xw = m.xmax - m.xmin;", "        float yw = m.ymax - m.ymin;", "        float zw = m.zmax - m.zmin;", "        if (yw > xw)", "        xw = yw;", "        if (zw > xw)", "        xw = zw;", "        float f1 = getSize().width / xw;", "        float f2 = getSize().height / xw;", "        xfac = 0.7f * (f1 < f2 ? f1 : f2) * scalefudge;", "    } catch(Exception e) {", "        md = null;", "        message = e.toString();", "    }", "    try {", "        if (is != null)", "        is.close();", "    } catch(Exception e) {", "    }", "    repaint();", "    }", "", "    public void start() {", "    if (md == null && message == null)", "        new Thread(this).start();", "    }", "", "    public void stop() {", "    }", "", "    public  void mouseClicked(MouseEvent e) {", "    }", "", "    public  void mousePressed(MouseEvent e) {", "        prevx = e.getX();", "        prevy = e.getY();", "        e.consume();", "    }", "", "    public  void mouseReleased(MouseEvent e) {", "    }", "", "    public  void mouseEntered(MouseEvent e) {", "    }", "", "    public  void mouseExited(MouseEvent e) {", "    }", "", "    public  void mouseDragged(MouseEvent e) {", "        int x = e.getX();", "        int y = e.getY();", "", "        tmat.unit();", "        float xtheta = (prevy - y) * 360.0f / getSize().width;", "        float ytheta = (x - prevx) * 360.0f / getSize().height;", "        tmat.xrot(xtheta);", "        tmat.yrot(ytheta);", "        amat.mult(tmat);", "        if (painted) {", "            painted = false;", "            repaint();", "        }", "        prevx = x;", "        prevy = y;", "        e.consume();", "    }", "", "    public  void mouseMoved(MouseEvent e) {", "    }", "", "    public void paint(Graphics g) {", "    if (md != null) {", "        md.mat.unit();", "        md.mat.translate(-(md.xmin + md.xmax) / 2,", "                 -(md.ymin + md.ymax) / 2,", "                 -(md.zmin + md.zmax) / 2);", "        md.mat.mult(amat);", "        md.mat.scale(xfac, -xfac, 16 * xfac / getSize().width);", "        md.mat.translate(getSize().width / 2, getSize().height / 2, 8);", "        md.transformed = false;", "        md.paint(g);", "        setPainted();", "    } else if (message != null) {", "        g.drawString(\"Error in model:\", 3, 20);", "        g.drawString(message, 10, 40);", "    }", "    }", "", "    private synchronized void setPainted() {", "    painted = true;", "    notifyAll();", "    }", "    public String getAppletInfo() {", "", "        return \"Designer :- Susanto Ganguly\";", "    }", "", "    public String[][] getParameterInfo() {", "        String[][] info = {", "            {\"model\", \"path string\", \"The path to the model to be displayed.\"},", "            {\"scale\", \"float\", \"The scale of the model.  Default is 1.\"}", "        };", "        return info;", "    }", "}", "", "// ======================= Matrix3D.java =======================", "", "class Matrix3D {", "    float xx, xy, xz, xo;", "    float yx, yy, yz, yo;", "    float zx, zy, zz, zo;", "    static final double pi = 3.14159265;", "    /** Create a new unit matrix */", "    Matrix3D () {", "    xx = 1.0f;", "    yy = 1.0f;", "    zz = 1.0f;", "    }", "    /** Scale by f in all dimensions */", "    void scale(float f) {", "    xx *= f;", "    xy *= f;", "    xz *= f;", "    xo *= f;", "    yx *= f;", "    yy *= f;", "    yz *= f;", "    yo *= f;", "    zx *= f;", "    zy *= f;", "    zz *= f;", "    zo *= f;", "    }", "    /** Scale along each axis independently */", "    void scale(float xf, float yf, float zf) {", "    xx *= xf;", "    xy *= xf;", "    xz *= xf;", "    xo *= xf;", "    yx *= yf;", "    yy *= yf;", "    yz *= yf;", "    yo *= yf;", "    zx *= zf;", "    zy *= zf;", "    zz *= zf;", "    zo *= zf;", "    }", "    /** Translate the origin */", "    void translate(float x, float y, float z) {", "    xo += x;", "    yo += y;", "    zo += z;", "    }", "    /** rotate theta degrees about the y axis */", "    void yrot(double theta) {", "    theta *= (pi / 180);", "    double ct = Math.cos(theta);", "    double st = Math.sin(theta);", "", "    float Nxx = (float) (xx * ct + zx * st);", "    float Nxy = (float) (xy * ct + zy * st);", "    float Nxz = (float) (xz * ct + zz * st);", "    float Nxo = (float) (xo * ct + zo * st);", "", "    float Nzx = (float) (zx * ct - xx * st);", "    float Nzy = (float) (zy * ct - xy * st);", "    float Nzz = (float) (zz * ct - xz * st);", "    float Nzo = (float) (zo * ct - xo * st);", "", "    xo = Nxo;", "    xx = Nxx;", "    xy = Nxy;", "    xz = Nxz;", "    zo = Nzo;", "    zx = Nzx;", "    zy = Nzy;", "    zz = Nzz;", "    }", "    /** rotate theta degrees about the x axis */", "    void xrot(double theta) {", "    theta *= (pi / 180);", "    double ct = Math.cos(theta);", "    double st = Math.sin(theta);", "", "    float Nyx = (float) (yx * ct + zx * st);", "    float Nyy = (float) (yy * ct + zy * st);", "    float Nyz = (float) (yz * ct + zz * st);", "    float Nyo = (float) (yo * ct + zo * st);", "", "    float Nzx = (float) (zx * ct - yx * st);", "    float Nzy = (float) (zy * ct - yy * st);", "    float Nzz = (float) (zz * ct - yz * st);", "    float Nzo = (float) (zo * ct - yo * st);", "", "    yo = Nyo;", "    yx = Nyx;", "    yy = Nyy;", "    yz = Nyz;", "    zo = Nzo;", "    zx = Nzx;", "    zy = Nzy;", "    zz = Nzz;", "    }", "    /** rotate theta degrees about the z axis */", "    void zrot(double theta) {", "    theta *= (pi / 180);", "    double ct = Math.cos(theta);", "    double st = Math.sin(theta);", "", "    float Nyx = (float) (yx * ct + xx * st);", "    float Nyy = (float) (yy * ct + xy * st);", "    float Nyz = (float) (yz * ct + xz * st);", "    float Nyo = (float) (yo * ct + xo * st);", "", "    float Nxx = (float) (xx * ct - yx * st);", "    float Nxy = (float) (xy * ct - yy * st);", "    float Nxz = (float) (xz * ct - yz * st);", "    float Nxo = (float) (xo * ct - yo * st);", "", "    yo = Nyo;", "    yx = Nyx;", "    yy = Nyy;", "    yz = Nyz;", "    xo = Nxo;", "    xx = Nxx;", "    xy = Nxy;", "    xz = Nxz;", "    }", "    /** Multiply this matrix by a second: M = M*R */", "    void mult(Matrix3D rhs) {", "    float lxx = xx * rhs.xx + yx * rhs.xy + zx * rhs.xz;", "    float lxy = xy * rhs.xx + yy * rhs.xy + zy * rhs.xz;", "    float lxz = xz * rhs.xx + yz * rhs.xy + zz * rhs.xz;", "    float lxo = xo * rhs.xx + yo * rhs.xy + zo * rhs.xz + rhs.xo;", "", "    float lyx = xx * rhs.yx + yx * rhs.yy + zx * rhs.yz;", "    float lyy = xy * rhs.yx + yy * rhs.yy + zy * rhs.yz;", "    float lyz = xz * rhs.yx + yz * rhs.yy + zz * rhs.yz;", "    float lyo = xo * rhs.yx + yo * rhs.yy + zo * rhs.yz + rhs.yo;", "", "    float lzx = xx * rhs.zx + yx * rhs.zy + zx * rhs.zz;", "    float lzy = xy * rhs.zx + yy * rhs.zy + zy * rhs.zz;", "    float lzz = xz * rhs.zx + yz * rhs.zy + zz * rhs.zz;", "    float lzo = xo * rhs.zx + yo * rhs.zy + zo * rhs.zz + rhs.zo;", "", "    xx = lxx;", "    xy = lxy;", "    xz = lxz;", "    xo = lxo;", "", "    yx = lyx;", "    yy = lyy;", "    yz = lyz;", "    yo = lyo;", "", "    zx = lzx;", "    zy = lzy;", "    zz = lzz;", "    zo = lzo;", "    }", "", "    /** Reinitialize to the unit matrix */", "    void unit() {", "    xo = 0;", "    xx = 1;", "    xy = 0;", "    xz = 0;", "    yo = 0;", "    yx = 0;", "    yy = 1;", "    yz = 0;", "    zo = 0;", "    zx = 0;", "    zy = 0;", "    zz = 1;", "    }", "    /** Transform nvert points from v into tv.  v contains the input", "        coordinates in floating point.  Three successive entries in", "    the array constitute a point.  tv ends up holding the transformed", "    points as integers; three successive entries per point */", "    void transform(float v[], int tv[], int nvert) {", "    float lxx = xx, lxy = xy, lxz = xz, lxo = xo;", "    float lyx = yx, lyy = yy, lyz = yz, lyo = yo;", "    float lzx = zx, lzy = zy, lzz = zz, lzo = zo;", "    for (int i = nvert * 3; (i -= 3) >= 0;) {", "        float x = v[i];", "        float y = v[i + 1];", "        float z = v[i + 2];", "        tv[i    ] = (int) (x * lxx + y * lxy + z * lxz + lxo);", "        tv[i + 1] = (int) (x * lyx + y * lyy + z * lyz + lyo);", "        tv[i + 2] = (int) (x * lzx + y * lzy + z * lzz + lzo);", "    }", "    }", "    public String toString() {", "    return (\"[\" + xo + \",\" + xx + \",\" + xy + \",\" + xz + \";\"", "        + yo + \",\" + yx + \",\" + yy + \",\" + yz + \";\"", "        + zo + \",\" + zx + \",\" + zy + \",\" + zz + \"]\");", "    }", "}"];
+      const LINE = {"open": 340, "parse": 341, "findBB": 343, "compress": 344, "xfac": 354, "pressed": 379, "xrot": 400, "mult": 402, "paint": 425, "draw": 264};
+      const terminal = document.getElementById('terminal');
+      const codeEl = document.getElementById('code');
+      const codePanel = document.getElementById('codePanel');
+
+      // ---------- Read-only code panel ----------
+      function escapeHTML(s) {
+        return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      }
+      function highlightJava(line) {
+        return escapeHTML(line).replace(
+          /(\/\/.*$)|("(?:[^"\\]|\\.)*")|\b(import|public|private|static|final|class|extends|implements|void|int|float|double|boolean|new|for|while|if|else|return|try|catch|throws|throw|switch|case|default|break|synchronized|this|null)\b|\b(\d+(?:\.\d+)?f?)\b/g,
+          (m, cm, str, kw, num) => {
+            if (cm) return '<span class="cm">' + cm + '</span>';
+            if (str) return '<span class="str">' + str + '</span>';
+            if (kw) return '<span class="kw">' + kw + '</span>';
+            return '<span class="num">' + num + '</span>';
+          }
+        );
+      }
+      codeEl.innerHTML = JAVA.map((l, i) =>
+        '<span class="ln" data-n="' + (i + 1) + '" id="L' + (i + 1) + '">' + (highlightJava(l) || ' ') + '</span>'
+      ).join('');
+
+      let lastUserScroll = 0;
+      ['touchstart', 'wheel', 'mousedown'].forEach((evt) =>
+        codePanel.addEventListener(evt, () => { lastUserScroll = Date.now(); }, { passive: true })
+      );
+      let currentLine = 0;
+      function markLine(n) {
+        if (n === currentLine) return;
+        currentLine = n;
+        codeEl.querySelectorAll('.ln.active').forEach((el) => el.classList.remove('active'));
+        const el = document.getElementById('L' + n);
+        if (!el) return;
+        el.classList.add('active');
+        if (Date.now() - lastUserScroll > 4000) {
+          codePanel.scrollTo({ top: Math.max(0, el.offsetTop - codePanel.clientHeight / 2), behavior: 'smooth' });
+        }
+      }
+      function printLine(text) {
+        terminal.insertAdjacentHTML('beforeend', text + '\n');
+        terminal.scrollTop = terminal.scrollHeight;
+      }
+
+      // ---------- Matrix3D (same maths as Matrix3D.java) ----------
+      class Matrix3D {
+        constructor() { this.unit(); }
+        scale(xf, yf, zf) {
+          this.xx *= xf; this.xy *= xf; this.xz *= xf; this.xo *= xf;
+          this.yx *= yf; this.yy *= yf; this.yz *= yf; this.yo *= yf;
+          this.zx *= zf; this.zy *= zf; this.zz *= zf; this.zo *= zf;
+        }
+        translate(x, y, z) { this.xo += x; this.yo += y; this.zo += z; }
+        yrot(theta) {
+          theta *= Math.PI / 180;
+          const ct = Math.cos(theta), st = Math.sin(theta);
+          const Nxx = this.xx * ct + this.zx * st, Nxy = this.xy * ct + this.zy * st;
+          const Nxz = this.xz * ct + this.zz * st, Nxo = this.xo * ct + this.zo * st;
+          const Nzx = this.zx * ct - this.xx * st, Nzy = this.zy * ct - this.xy * st;
+          const Nzz = this.zz * ct - this.xz * st, Nzo = this.zo * ct - this.xo * st;
+          this.xo = Nxo; this.xx = Nxx; this.xy = Nxy; this.xz = Nxz;
+          this.zo = Nzo; this.zx = Nzx; this.zy = Nzy; this.zz = Nzz;
+        }
+        xrot(theta) {
+          theta *= Math.PI / 180;
+          const ct = Math.cos(theta), st = Math.sin(theta);
+          const Nyx = this.yx * ct + this.zx * st, Nyy = this.yy * ct + this.zy * st;
+          const Nyz = this.yz * ct + this.zz * st, Nyo = this.yo * ct + this.zo * st;
+          const Nzx = this.zx * ct - this.yx * st, Nzy = this.zy * ct - this.yy * st;
+          const Nzz = this.zz * ct - this.yz * st, Nzo = this.zo * ct - this.yo * st;
+          this.yo = Nyo; this.yx = Nyx; this.yy = Nyy; this.yz = Nyz;
+          this.zo = Nzo; this.zx = Nzx; this.zy = Nzy; this.zz = Nzz;
+        }
+        zrot(theta) {
+          theta *= Math.PI / 180;
+          const ct = Math.cos(theta), st = Math.sin(theta);
+          const Nyx = this.yx * ct + this.xx * st, Nyy = this.yy * ct + this.xy * st;
+          const Nyz = this.yz * ct + this.xz * st, Nyo = this.yo * ct + this.xo * st;
+          const Nxx = this.xx * ct - this.yx * st, Nxy = this.xy * ct - this.yy * st;
+          const Nxz = this.xz * ct - this.yz * st, Nxo = this.xo * ct - this.yo * st;
+          this.yo = Nyo; this.yx = Nyx; this.yy = Nyy; this.yz = Nyz;
+          this.xo = Nxo; this.xx = Nxx; this.xy = Nxy; this.xz = Nxz;
+        }
+        mult(r) {
+          const lxx = this.xx * r.xx + this.yx * r.xy + this.zx * r.xz;
+          const lxy = this.xy * r.xx + this.yy * r.xy + this.zy * r.xz;
+          const lxz = this.xz * r.xx + this.yz * r.xy + this.zz * r.xz;
+          const lxo = this.xo * r.xx + this.yo * r.xy + this.zo * r.xz + r.xo;
+          const lyx = this.xx * r.yx + this.yx * r.yy + this.zx * r.yz;
+          const lyy = this.xy * r.yx + this.yy * r.yy + this.zy * r.yz;
+          const lyz = this.xz * r.yx + this.yz * r.yy + this.zz * r.yz;
+          const lyo = this.xo * r.yx + this.yo * r.yy + this.zo * r.yz + r.yo;
+          const lzx = this.xx * r.zx + this.yx * r.zy + this.zx * r.zz;
+          const lzy = this.xy * r.zx + this.yy * r.zy + this.zy * r.zz;
+          const lzz = this.xz * r.zx + this.yz * r.zy + this.zz * r.zz;
+          const lzo = this.xo * r.zx + this.yo * r.zy + this.zo * r.zz + r.zo;
+          this.xx = lxx; this.xy = lxy; this.xz = lxz; this.xo = lxo;
+          this.yx = lyx; this.yy = lyy; this.yz = lyz; this.yo = lyo;
+          this.zx = lzx; this.zy = lzy; this.zz = lzz; this.zo = lzo;
+        }
+        unit() {
+          this.xo = 0; this.xx = 1; this.xy = 0; this.xz = 0;
+          this.yo = 0; this.yx = 0; this.yy = 1; this.yz = 0;
+          this.zo = 0; this.zx = 0; this.zy = 0; this.zz = 1;
+        }
+        transform(v, tv, nvert) {
+          for (let i = nvert * 3; (i -= 3) >= 0;) {
+            const x = v[i], y = v[i + 1], z = v[i + 2];
+            tv[i] = Math.trunc(x * this.xx + y * this.xy + z * this.xz + this.xo);
+            tv[i + 1] = Math.trunc(x * this.yx + y * this.yy + z * this.yz + this.yo);
+            tv[i + 2] = Math.trunc(x * this.zx + y * this.zy + z * this.zz + this.zo);
+          }
+        }
+      }
+
+      // ---------- Model3D (same logic as the Model3D class) ----------
+      class Model3D {
+        constructor(text) {
+          this.vert = [];
+          this.con = [];
+          this.nvert = 0;
+          this.mat = new Matrix3D();
+          // The original file separates lines with "\r\0\0"; StreamTokenizer skips the NULs.
+          const lines = text.replace(/\0/g, '').split(/\r\n|\r|\n/);
+          for (const raw of lines) {
+            const line = raw.split('#')[0].trim();
+            if (!line) continue;
+            const parts = line.split(/\s+/);
+            const cmd = parts[0];
+            if (cmd === 'v') {
+              this.addVert(+parts[1] || 0, +parts[2] || 0, +parts[3] || 0);
+            } else if (cmd === 'f' || cmd === 'fo' || cmd === 'l') {
+              let start = -1, prev = -1;
+              for (const p of parts.slice(1)) {
+                const n = parseInt(p, 10);
+                if (isNaN(n)) break;
+                if (prev >= 0) this.add(prev - 1, n - 1);
+                if (start < 0) start = n;
+                prev = n;
+              }
+              if (start >= 0) this.add(start - 1, prev - 1);
+            }
+          }
+        }
+        addVert(x, y, z) { this.vert.push(x, y, z); return this.nvert++; }
+        add(p1, p2) {
+          if (p1 >= this.nvert || p2 >= this.nvert || p1 < 0 || p2 < 0) return;
+          if (p1 > p2) { const t = p1; p1 = p2; p2 = t; }
+          this.con.push((p1 << 16) | p2);
+        }
+        compress() {
+          const c = Int32Array.from(this.con).sort();
+          const out = [];
+          let pp1 = -1;
+          for (const p1 of c) { if (p1 !== pp1) out.push(p1); pp1 = p1; }
+          this.con = out;
+        }
+        findBB() {
+          const v = this.vert;
+          let xmin = v[0], xmax = xmin, ymin = v[1], ymax = ymin, zmin = v[2], zmax = zmin;
+          for (let i = this.nvert * 3; (i -= 3) > 0;) {
+            xmin = Math.min(xmin, v[i]); xmax = Math.max(xmax, v[i]);
+            ymin = Math.min(ymin, v[i + 1]); ymax = Math.max(ymax, v[i + 1]);
+            zmin = Math.min(zmin, v[i + 2]); zmax = Math.max(zmax, v[i + 2]);
+          }
+          Object.assign(this, { xmin, xmax, ymin, ymax, zmin, zmax });
+        }
+        paint(g) {
+          if (!this.tvert) this.tvert = new Int32Array(this.nvert * 3);
+          this.mat.transform(this.vert, this.tvert, this.nvert);
+          const v = this.tvert;
+          // Sixteen grey pens, as in the applet: lines further back are drawn lighter.
+          const buckets = Array.from({ length: 16 }, () => []);
+          for (const T of this.con) {
+            const p1 = ((T >> 16) & 0xFFFF) * 3;
+            const p2 = (T & 0xFFFF) * 3;
+            let grey = v[p1 + 2] + v[p2 + 2];
+            grey = grey < 0 ? 0 : grey > 15 ? 15 : grey;
+            buckets[grey].push(p1, p2);
+          }
+          for (let k = 0; k < 16; k++) {
+            const list = buckets[k];
+            if (!list.length) continue;
+            const grey = Math.trunc(170 * (1 - Math.pow(k / 15, 2.3)));
+            g.strokeStyle = 'rgb(' + grey + ',' + grey + ',' + grey + ')';
+            g.beginPath();
+            for (let i = 0; i < list.length; i += 2) {
+              g.moveTo(v[list[i]] + 0.5, v[list[i] + 1] + 0.5);
+              g.lineTo(v[list[i + 1]] + 0.5, v[list[i + 1] + 1] + 0.5);
+            }
+            g.stroke();
+          }
+        }
+      }
+
+      // ---------- The applet (Dinasaur) ----------
+      const canvas = document.getElementById('dino');
+      const g = canvas.getContext('2d');
+      const hint = document.getElementById('hint');
+      let md = null, xfac = 1, scalefudge = 1, size = 400;
+      let amat = new Matrix3D();
+      const tmat = new Matrix3D();
+      let spinning = false, dirty = true;
+      const START_ZROT = -90;
+
+      function initView() {
+        amat = new Matrix3D();
+        // The model file stands the dinosaur on its nose (long axis = y); turn it side-on first.
+        amat.zrot(START_ZROT);
+        amat.yrot(20);
+        amat.xrot(20);
+        scalefudge = 1;
+      }
+
+      function fitCanvas() {
+        const r = canvas.getBoundingClientRect();
+        size = Math.round(r.width);
+        const dpr = window.devicePixelRatio || 1;
+        canvas.width = Math.round(r.width * dpr);
+        canvas.height = Math.round(r.height * dpr);
+        g.setTransform(dpr, 0, 0, dpr, 0, 0);
+        g.lineWidth = 1;
+        computeXfac();
+        dirty = true;
+      }
+
+      function computeXfac() {
+        if (!md) return;
+        let xw = md.xmax - md.xmin;
+        const yw = md.ymax - md.ymin, zw = md.zmax - md.zmin;
+        if (yw > xw) xw = yw;
+        if (zw > xw) xw = zw;
+        xfac = 0.7 * (size / xw) * scalefudge;
+      }
+
+      function paint() {
+        g.clearRect(0, 0, size, size);
+        if (!md) return;
+        md.mat.unit();
+        md.mat.translate(-(md.xmin + md.xmax) / 2, -(md.ymin + md.ymax) / 2, -(md.zmin + md.zmax) / 2);
+        md.mat.mult(amat);
+        md.mat.scale(xfac, -xfac, 16 * xfac / size);
+        md.mat.translate(size / 2, size / 2, 8);
+        md.paint(g);
+      }
+
+      function loop() {
+        if (spinning) {
+          tmat.unit();
+          tmat.yrot(0.8);
+          amat.mult(tmat);
+          dirty = true;
+        }
+        if (dirty) { paint(); dirty = false; }
+        requestAnimationFrame(loop);
+      }
+
+      // Mouse / finger dragging - same formula as mouseDragged()
+      let dragging = false, prevx = 0, prevy = 0;
+      canvas.addEventListener('pointerdown', (e) => {
+        dragging = true;
+        canvas.setPointerCapture(e.pointerId);
+        canvas.classList.add('dragging');
+        prevx = e.offsetX;
+        prevy = e.offsetY;
+        markLine(LINE.pressed);
+        hint.style.opacity = '0';
+      });
+      canvas.addEventListener('pointermove', (e) => {
+        if (!dragging) return;
+        const x = e.offsetX, y = e.offsetY;
+        tmat.unit();
+        const xtheta = (prevy - y) * 360 / size;
+        const ytheta = (x - prevx) * 360 / size;
+        tmat.xrot(xtheta);
+        tmat.yrot(ytheta);
+        amat.mult(tmat);
+        dirty = true;
+        prevx = x;
+        prevy = y;
+        markLine(LINE.mult);
+      });
+      const endDrag = () => {
+        if (!dragging) return;
+        dragging = false;
+        canvas.classList.remove('dragging');
+        markLine(LINE.paint);
+      };
+      canvas.addEventListener('pointerup', endDrag);
+      canvas.addEventListener('pointercancel', endDrag);
+
+      const spinBtn = document.getElementById('spinBtn');
+      spinBtn.addEventListener('click', () => {
+        spinning = !spinning;
+        spinBtn.classList.toggle('on', spinning);
+        markLine(spinning ? LINE.mult : LINE.paint);
+      });
+      function zoom(f) {
+        scalefudge = Math.min(3, Math.max(0.4, scalefudge * f));
+        computeXfac();
+        dirty = true;
+        markLine(LINE.xfac);
+      }
+      document.getElementById('zoomIn').addEventListener('click', () => zoom(1.2));
+      document.getElementById('zoomOut').addEventListener('click', () => zoom(1 / 1.2));
+      document.getElementById('resetBtn').addEventListener('click', () => {
+        initView();
+        computeXfac();
+        dirty = true;
+        markLine(LINE.paint);
+      });
+
+      window.addEventListener('resize', fitCanvas);
+
+      // run(): load the model, find its bounding box, remove duplicate lines, then paint.
+      async function run() {
+        initView();
+        markLine(LINE.open);
+        printLine('Loading dinasaur.obj ...');
+        try {
+          const res = await fetch('dinasaur.obj');
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          const text = await res.text();
+          markLine(LINE.parse);
+          const m = new Model3D(text);
+          md = m;
+          markLine(LINE.findBB);
+          m.findBB();
+          const before = m.con.length;
+          markLine(LINE.compress);
+          m.compress();
+          printLine(m.nvert + ' vertices, ' + before + ' lines \u2192 ' + m.con.length + ' after compress()');
+          fitCanvas();
+          markLine(LINE.draw);
+          printLine('Drag with mouse or finger to rotate. Designer :- Susanto Ganguly');
+        } catch (err) {
+          md = null;
+          printLine('<span class="bad">Error in model: ' + err.message + '</span>');
+        }
+      }
+
+      fitCanvas();
+      requestAnimationFrame(loop);
+      run();
+    })();
+  </script>
+</body>
+</html>
