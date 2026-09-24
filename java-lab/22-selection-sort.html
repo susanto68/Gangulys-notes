@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Selection Sort Animation - BlueJ Lab</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; }
+    body {
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      background: #0f172a;
+      color: #0f172a;
+      display: flex;
+      flex-direction: column;
+      height: 100dvh;
+      overflow: hidden;
+    }
+
+    .topbar {
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      background: linear-gradient(135deg, #3b82f6, #1e40af);
+      color: #fff;
+    }
+    .back-btn {
+      flex: 0 0 auto;
+      color: #1e40af;
+      background: #fff;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 14px;
+      padding: 7px 12px;
+      border-radius: 999px;
+    }
+    .topbar h1 { margin: 0; font-size: 17px; line-height: 1.2; flex: 1; min-width: 0; }
+    .sound-btn {
+      flex: 0 0 auto;
+      border: 0;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.2);
+      color: #fff;
+      font-size: 17px;
+      width: 36px;
+      height: 36px;
+      cursor: pointer;
+    }
+
+    .layout { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+
+    /* Upper part: animation + output */
+    .stage-panel {
+      flex: 0 0 auto;
+      background: radial-gradient(circle at 50% 35%, #1e3a5f 0%, #0f172a 75%);
+      color: #e2e8f0;
+      padding: 6px 10px 8px;
+      position: relative;
+      overflow: hidden;
+    }
+    .stage-svg { display: block; width: 100%; max-width: 820px; height: auto; margin: 0 auto; }
+
+    .vars {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 4px;
+      margin: 2px 0 6px;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 12px;
+    }
+    .vars span {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 6px;
+      padding: 2px 6px;
+    }
+    .vars b { color: #fde047; }
+    @media (max-width: 420px) {
+      .vars { flex-wrap: nowrap; font-size: 11px; gap: 3px; }
+      .vars span { padding: 2px 5px; white-space: nowrap; }
+    }
+
+    .ask-row { display: flex; gap: 8px; max-width: 520px; margin: 0 auto 6px; }
+    .ask-row input {
+      flex: 1;
+      min-width: 0;
+      font-size: 17px;
+      padding: 9px 12px;
+      border-radius: 10px;
+      border: 2px solid #3b82f6;
+      background: #fff;
+      color: #0f172a;
+    }
+    .ask-row button {
+      border: 0;
+      border-radius: 10px;
+      padding: 9px 16px;
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+      background: linear-gradient(135deg, #10b981, #047857);
+      cursor: pointer;
+    }
+    .ask-row button:disabled { opacity: 0.55; cursor: not-allowed; }
+
+    .terminal {
+      max-width: 820px;
+      margin: 0 auto;
+      height: 74px;
+      overflow-y: auto;
+      background: #020617;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 13px;
+      line-height: 1.45;
+      color: #a7f3d0;
+      white-space: pre-wrap;
+    }
+    .terminal .cursor { display: inline-block; width: 8px; background: #a7f3d0; animation: blink 1s steps(1) infinite; }
+    .terminal .user { color: #fde047; }
+    .terminal .ok { color: #4ade80; font-weight: 700; }
+    .terminal .bad { color: #fca5a5; font-weight: 700; }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    /* Lower part: read-only program */
+    .code-panel {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
+      background: #fffdf0;
+      border-top: 4px solid #1e40af;
+    }
+    .code-title {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      background: #fef3c7;
+      border-bottom: 1px solid #fcd34d;
+      padding: 6px 12px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #92400e;
+    }
+    .code {
+      margin: 0;
+      padding: 6px 0 24px;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 13.5px;
+      line-height: 1.6;
+      user-select: text;
+    }
+    .code .ln {
+      display: block;
+      padding: 0 12px 0 0;
+      white-space: pre;
+      border-left: 4px solid transparent;
+      transition: background 0.2s ease;
+    }
+    .code .ln::before {
+      content: attr(data-n);
+      display: inline-block;
+      width: 32px;
+      margin-right: 10px;
+      text-align: right;
+      color: #94a3b8;
+    }
+    .code .ln.active { background: #fde68a; border-left-color: #f59e0b; }
+    .kw { color: #7c3aed; font-weight: 700; }
+    .str { color: #047857; }
+    .num { color: #c2410c; }
+    .cm { color: #64748b; font-style: italic; }
+
+    /* Pockets */
+    .pocket rect.box { fill: #ffffff; stroke: #60a5fa; stroke-width: 3; transition: fill 0.3s ease, stroke 0.3s ease; }
+    .pocket .flap { fill: none; stroke: #93c5fd; stroke-width: 2; stroke-dasharray: 5 4; }
+    .pocket text.val {
+      font: 700 26px "Segoe UI", Arial, sans-serif;
+      fill: #0f172a;
+      text-anchor: middle;
+      transform-box: fill-box;
+      transform-origin: center;
+      transition: transform 0.3s ease;
+    }
+    .pocket text.idx { font: 600 14px Consolas, monospace; fill: #93c5fd; text-anchor: middle; }
+    .pocket .mark { font: 700 22px Arial, sans-serif; fill: #dc2626; text-anchor: middle; opacity: 0; transition: opacity 0.3s ease; }
+    .pocket.checking rect.box { fill: #fde047; stroke: #f59e0b; }
+    .pocket.checking text.val { transform: scale(1.45); }
+    .pocket.no rect.box { fill: #fecaca; stroke: #f87171; }
+    .pocket.no .mark { opacity: 1; }
+    .pocket.found rect.box { fill: #86efac; stroke: #16a34a; }
+    .pocket.found text.val { transform: scale(1.3); }
+    .pocket.found rect.box { filter: drop-shadow(0 0 10px #4ade80); }
+
+    /* Cartoon teacher */
+    #heroPos { transition: transform 0.65s linear; }
+    #hero .part { transform-box: fill-box; }
+    #hero .leg { transform-origin: 50% 0%; }
+    #hero .arm { transform-origin: 50% 0%; transition: transform 0.35s ease; }
+    #hero .head { transform-origin: 50% 100%; transition: transform 0.3s ease; }
+    #hero .eyes { transform-origin: 50% 50%; animation: eyeBlink 4s infinite; }
+    #hero .armL { transform: rotate(8deg); }
+    #hero .armR { transform: rotate(-32deg); }
+    #hero .body { animation: breathe 2.4s ease-in-out infinite; transform-box: fill-box; }
+
+    #hero.walk .legL { animation: legSwing 0.33s ease-in-out infinite alternate; }
+    #hero.walk .legR { animation: legSwing 0.33s ease-in-out infinite alternate-reverse; }
+    #hero.walk .armL { animation: armSwing 0.33s ease-in-out infinite alternate; }
+    #hero.walk .body { animation: walkBob 0.33s ease-in-out infinite alternate; }
+
+    #hero.inspect .armR { transform: rotate(-178deg); }
+    #hero.inspect .armL { transform: rotate(18deg); }
+    #hero.inspect .head { transform: rotate(-6deg); }
+
+    #hero.shake .head { animation: headShake 0.7s ease-in-out; }
+    #hero.shake .armR { transform: rotate(-60deg); }
+
+    #hero.jump .body { animation: jump 0.42s ease-out infinite alternate; }
+    #hero.jump .armL { transform: rotate(158deg); }
+    #hero.jump .armR { transform: rotate(-158deg); }
+    #hero.jump .legL { animation: legSwing 0.21s ease-in-out infinite alternate; }
+    #hero.jump .legR { animation: legSwing 0.21s ease-in-out infinite alternate-reverse; }
+
+    #hero.sad .head { transform: translateY(4px) rotate(10deg); }
+    #hero.sad .armL { transform: rotate(2deg); }
+    #hero.sad .armR { transform: rotate(-6deg); }
+    #hero.sad .mouth { transform: translateY(6px) scaleY(-1); transform-box: fill-box; transform-origin: center; }
+
+    @keyframes legSwing { from { transform: rotate(-24deg); } to { transform: rotate(24deg); } }
+    @keyframes armSwing { from { transform: rotate(-26deg); } to { transform: rotate(30deg); } }
+    @keyframes walkBob { from { transform: translateY(0); } to { transform: translateY(-4px); } }
+    @keyframes breathe { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-1.5px); } }
+    @keyframes jump { from { transform: translateY(0); } to { transform: translateY(-34px); } }
+    @keyframes headShake {
+      0%, 100% { transform: rotate(0); }
+      20% { transform: rotate(-13deg); }
+      40% { transform: rotate(13deg); }
+      60% { transform: rotate(-11deg); }
+      80% { transform: rotate(9deg); }
+    }
+    @keyframes eyeBlink { 0%, 94%, 100% { transform: scaleY(1); } 97% { transform: scaleY(0.1); } }
+
+    .bubble rect { fill: #ffffff; stroke: #1e40af; stroke-width: 2; }
+    .bubble path { fill: #ffffff; stroke: #1e40af; stroke-width: 2; }
+    .bubble text { font: 700 17px "Segoe UI", Arial, sans-serif; fill: #0f172a; text-anchor: middle; }
+
+    .confetti {
+      position: absolute;
+      top: -12px;
+      width: 9px;
+      height: 14px;
+      border-radius: 2px;
+      pointer-events: none;
+      animation: fall 1.9s ease-in forwards;
+    }
+    @keyframes fall {
+      to { transform: translate(var(--dx), 420px) rotate(var(--rot)); opacity: 0.2; }
+    }
+
+    @media (min-width: 980px) {
+      .layout { flex-direction: row; }
+      .stage-panel { flex: 1 1 58%; display: flex; flex-direction: column; justify-content: center; }
+      .terminal { height: 150px; width: 100%; }
+      .code-panel { flex: 1 1 42%; border-top: 0; border-left: 4px solid #1e40af; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      #heroPos { transition-duration: 0.2s; }
+    }
+  
+    .stage-panel {
+      background:
+        linear-gradient(rgba(15, 23, 42, 0.74), rgba(15, 23, 42, 0.88)),
+        url("school.jpg") center / cover no-repeat;
+    }
+    .ball circle { stroke: #0f172a; stroke-width: 3; transition: stroke 0.3s ease, stroke-width 0.3s ease; }
+    .ball text { font: 700 24px "Times New Roman", serif; fill: #fff; text-anchor: middle; paint-order: stroke; stroke: rgba(0,0,0,0.35); stroke-width: 2px; }
+    .ball.compare circle { stroke: #fde047; stroke-width: 6; }
+    .ball.sorted circle { stroke: #4ade80; stroke-width: 6; }
+    .ball.min circle { stroke: #f97316; stroke-width: 7; }
+    .ball .min-tag { font: 800 16px "Segoe UI", Arial, sans-serif; fill: #fb923c; text-anchor: middle; opacity: 0; }
+    .ball.min .min-tag { opacity: 1; }
+    .slot { fill: none; stroke: rgba(148, 163, 184, 0.35); stroke-width: 2; stroke-dasharray: 4 5; }
+    .slot-idx { font: 600 13px Consolas, monospace; fill: #93c5fd; text-anchor: middle; }
+    .stage-title { font: 700 22px "Times New Roman", serif; fill: #f87171; }
+    .stage-name { font: italic 700 16px "Times New Roman", serif; fill: #fca5a5; text-anchor: end; }
+    .over-text { font: 700 40px "Times New Roman", serif; fill: #4ade80; text-anchor: middle; opacity: 0; transition: opacity 0.6s ease; }
+    .over-text.show { opacity: 1; }
+    #hero.nod .head { animation: headNod 0.6s ease-in-out; }
+    #hero.pointR .armR { transform: rotate(-95deg); }
+    @keyframes headNod {
+      0%, 100% { transform: translateY(0) rotate(0); }
+      25% { transform: translateY(4px) rotate(3deg); }
+      50% { transform: translateY(0) rotate(0); }
+      75% { transform: translateY(4px) rotate(3deg); }
+    }
+    .ask-row.wide { max-width: 640px; }
+    .mini-btn {
+      background: linear-gradient(135deg, #6366f1, #4338ca) !important;
+      padding: 9px 12px !important;
+      font-size: 14px !important;
+    }
+    .speed-btn {
+      flex: 0 0 auto;
+      border: 0;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.2);
+      color: #fff;
+      font-weight: 800;
+      font-size: 14px;
+      height: 36px;
+      padding: 0 12px;
+      cursor: pointer;
+    }
+    .hint { text-align: center; font-size: 12px; color: #cbd5e1; margin: -2px 0 6px; }
+    .code .ln { font-size: 12.5px; }
+</style>
+</head>
+<body>
+  <div class="topbar">
+    <a class="back-btn" href="index.html" aria-label="Back to all topics">&larr; Back</a>
+    <h1>22. Selection Sort</h1>
+    <button class="speed-btn" id="speedBtn" type="button" title="Animation speed">1x</button>
+    <button class="sound-btn" id="soundBtn" type="button" aria-label="Turn sound off" title="Sound on/off">&#128266;</button>
+  </div>
+
+  <div class="layout">
+    <section class="stage-panel" aria-label="Selection sort animation and output">
+      <svg class="stage-svg" id="stage" viewBox="-10 0 830 380" role="img" aria-label="Cartoon teacher sorting numbers with selection sort">
+        <defs>
+          <radialGradient id="lensGlass" cx="35%" cy="35%" r="70%">
+            <stop offset="0%" stop-color="#e0f2fe" stop-opacity="0.85" />
+            <stop offset="100%" stop-color="#7dd3fc" stop-opacity="0.35" />
+          </radialGradient>
+        </defs>
+        <text class="stage-title" x="4" y="24">Selection Sort Program</text>
+        <text class="stage-name" x="812" y="24">Susanto Ganguly</text>
+        <rect x="-10" y="372" width="830" height="8" fill="#1e293b" />
+        <g id="slots"></g>
+        <g id="balls"></g>
+        <text class="over-text" id="overText" x="400" y="80">Sorting Over</text>
+        <g id="heroPos" style="transform: translateX(-40px)">
+          <g transform="translate(0,370) scale(1.25)">
+            <g id="hero">
+              <g class="body">
+                <g class="part leg legL">
+                  <rect x="-15" y="-46" width="12" height="42" rx="4" fill="#1d4ed8" />
+                  <ellipse cx="-11" cy="-3" rx="11" ry="5" fill="#111827" />
+                </g>
+                <g class="part leg legR">
+                  <rect x="3" y="-46" width="12" height="42" rx="4" fill="#1d4ed8" />
+                  <ellipse cx="11" cy="-3" rx="11" ry="5" fill="#111827" />
+                </g>
+
+                <rect x="-25" y="-101" width="50" height="60" rx="15" fill="#a5d8f3" />
+                <path d="M-11 -101 L0 -89 L11 -101 Z" fill="#ffffff" />
+                <path d="M-12 -101 L-3 -91 L-9 -86 Z M12 -101 L3 -91 L9 -86 Z" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1" />
+                <circle cx="0" cy="-78" r="2" fill="#7dd3fc" />
+                <circle cx="0" cy="-66" r="2" fill="#7dd3fc" />
+
+                <g class="part arm armL">
+                  <rect x="-33" y="-97" width="13" height="44" rx="6.5" fill="#bae6fd" />
+                  <circle cx="-26.5" cy="-50" r="7" fill="#f2b48a" />
+                </g>
+
+                <g class="part arm armR">
+                  <rect x="20" y="-97" width="13" height="44" rx="6.5" fill="#bae6fd" />
+                  <circle cx="26.5" cy="-50" r="7" fill="#f2b48a" />
+                  <rect x="23.5" y="-45" width="6" height="34" rx="3" fill="#92400e" />
+                  <circle cx="26.5" cy="11" r="21" fill="url(#lensGlass)" stroke="#475569" stroke-width="5" />
+                  <path d="M16 4 A12 12 0 0 1 24 -2" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" />
+                </g>
+
+                <rect x="-6" y="-106" width="12" height="8" fill="#f2b48a" />
+
+                <g class="part head">
+                  <circle cx="-29" cy="-127" r="6.5" fill="#e9a57a" />
+                  <circle cx="29" cy="-127" r="6.5" fill="#e9a57a" />
+                  <circle cx="0" cy="-128" r="29" fill="#f2b48a" />
+                  <path d="M-31 -130 C-34 -160 -14 -170 0 -169 C16 -170 34 -160 31 -130 C27 -140 22 -146 14 -148 C4 -150 -10 -150 -18 -147 C-24 -144 -28 -138 -31 -130 Z" fill="#1f2a37" />
+                  <ellipse cx="-27" cy="-140" rx="7" ry="11" fill="#1f2a37" />
+                  <ellipse cx="27" cy="-140" rx="7" ry="11" fill="#1f2a37" />
+                  <path d="M-19 -141 Q-12 -145 -5 -141 M5 -141 Q12 -145 19 -141" fill="none" stroke="#1f2a37" stroke-width="2.4" stroke-linecap="round" />
+                  <rect x="-21" y="-137" width="17" height="13" rx="4" fill="rgba(255,255,255,0.35)" stroke="#334155" stroke-width="2" />
+                  <rect x="4" y="-137" width="17" height="13" rx="4" fill="rgba(255,255,255,0.35)" stroke="#334155" stroke-width="2" />
+                  <path d="M-4 -132 L4 -132" stroke="#334155" stroke-width="2" />
+                  <g class="part eyes">
+                    <circle cx="-12.5" cy="-130.5" r="2.7" fill="#111827" />
+                    <circle cx="12.5" cy="-130.5" r="2.7" fill="#111827" />
+                  </g>
+                  <ellipse cx="0" cy="-120" rx="3.5" ry="3" fill="#e39870" />
+                  <path d="M-16 -111 C-10 -118 -3 -116 0 -113 C3 -116 10 -118 16 -111 C10 -109 4 -110 0 -112 C-4 -110 -10 -109 -16 -111 Z" fill="#111827" />
+                  <path class="mouth" d="M-6 -106 Q0 -101 6 -106" fill="none" stroke="#b91c1c" stroke-width="2.4" stroke-linecap="round" />
+                </g>
+              </g>
+            </g>
+
+            <g class="bubble" id="bubble" transform="translate(40,-158)">
+              <path id="bubbleTail" d="M0 18 L-12 24 L0 28 Z" />
+              <rect x="0" y="0" width="170" height="38" rx="12" />
+              <text id="bubbleText" x="85" y="25">Let's sort!</text>
+            </g>
+          </g>
+        </g>
+      </svg>
+
+      <div class="vars" aria-live="polite">
+        <span>i = <b id="vI">-</b></span>
+        <span>j = <b id="vJ">-</b></span>
+        <span>minIndex = <b id="vCmp">-</b></span>
+        <span>swaps = <b id="vSwaps">0</b></span>
+      </div>
+
+      <form class="ask-row wide" id="sortForm" autocomplete="off">
+        <input id="numsInput" type="text" inputmode="text" value="10 9 8 7 6 5 4 3 2 1" aria-label="Numbers to sort">
+        <button id="sortBtn" type="submit">Sort</button>
+        <button id="defaultBtn" class="mini-btn" type="button" title="Use the program's default numbers">Default</button>
+      </form>
+      <div class="hint">Type 2 to 10 whole numbers (-99 to 999), separated by spaces or commas.</div>
+
+      <div class="terminal" id="terminal" aria-live="polite"></div>
+    </section>
+
+    <section class="code-panel" id="codePanel" aria-label="Java program (read only)">
+      <div class="code-title">SelectionSortVisualizer.java (BlueJ + JavaFX) &middot; read only &middot; scroll to read</div>
+      <pre class="code" id="code"></pre>
+    </section>
+  </div>
+
+  <script>
+    (function () {
+      const DEFAULT_NUMBERS = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1];
+      const JAVA = ["import javafx.animation.TranslateTransition;", "import javafx.application.Application;", "import javafx.scene.Scene;", "import javafx.scene.layout.VBox;", "import javafx.scene.layout.Pane;", "import javafx.scene.paint.Color;", "import javafx.scene.shape.Circle;", "import javafx.scene.text.Font;", "import javafx.scene.text.Text;", "import javafx.stage.Stage;", "import javafx.util.Duration;", "import java.util.Random;", "import javafx.scene.image.Image;", "import javafx.scene.image.ImageView;", "import javafx.scene.layout.Background;", "import javafx.scene.layout.BackgroundFill;", "import javafx.application.Platform;", "", "public class SelectionSortVisualizer extends Application {", "", "    // Constants for layout", "    private static final int START_X = 100;", "    private static final int START_Y = 200;", "    private static final int CIRCLE_RADIUS = 25;", "    private static final int CIRCLE_SPACING = 60;", "    private static final int MOVE_DISTANCE = 60; // horizontal move", "    private static final int MOVE_UP = 50; // vertical move up", "", "    public static void main(String[] args) {", "        launch(args);", "    }", "", "    @Override", "    public void start(Stage primaryStage) {", "        Pane pane = new Pane();", "        pane.setBackground(new Background(new BackgroundFill(Color.LIGHTBLUE, null, null)));", "", "        // Sample array for sorting visualization", "        //int[] numbers = { 64, 34, 25, 12, 22, 11, 90, 45, 78, 55 };", "        int[] numbers = { 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 };", "", "        // Create Circles and Text for each number", "        Circle[] circles = new Circle[numbers.length];", "        Text[] texts = new Text[numbers.length];", "", "        Random random = new Random(); // For random colors", "        for (int i = 0; i < numbers.length; i++) {", "            circles[i] = createCircle(START_X + i * CIRCLE_SPACING, START_Y, CIRCLE_RADIUS, randomColor(random));", "            texts[i] = createText(String.valueOf(numbers[i]), circles[i].getCenterX(), circles[i].getCenterY());", "", "            pane.getChildren().addAll(circles[i], texts[i]);", "        }", "", "        // Images and background", "        Image image = new Image(\"school1.jpeg\", 200, 200, true, true);", "        ImageView imageView = new ImageView(image);", "        imageView.setX(670);", "        imageView.setY(10);", "        Image image1 = new Image(\"hy1.png\", 150, 150, true, true);", "        ImageView imageView1 = new ImageView(image1);", "        imageView1.setX(100);", "        imageView1.setY(230);", "        pane.getChildren().add(imageView);", "        pane.getChildren().add(imageView1);", "", "        // Title text", "        Text title = new Text(\"Selection Sort Program\");", "        title.setFont(new Font(\"Times New Roman\", 60));", "        title.setFill(Color.RED);", "        title.setX(120);", "        title.setY(50);", "        pane.getChildren().add(title);", "", "        // Name text", "        Text name = new Text(\"Susanto Ganguly\");", "        name.setFont(new Font(\"Times New Roman\", 50));", "        name.setFill(Color.RED);", "        name.setX(220); // Centered position", "        name.setY(370); // Position at the bottom", "        pane.getChildren().add(name);", "", "        // Start the sorting visualization", "        new Thread(() -> selectionSort(circles, texts, numbers, pane)).start();", "", "        Scene scene = new Scene(pane, 800, 400);", "        primaryStage.setTitle(\"Selection Sort Visualization\");", "        primaryStage.setScene(scene);", "        primaryStage.show();", "    }", "", "    // Function to create a Circle with random color", "    private Circle createCircle(double x, double y, double radius, Color color) {", "        Circle circle = new Circle(x, y, radius);", "        circle.setFill(color);", "        circle.setStroke(Color.BLACK); // Set border color", "        circle.setStrokeWidth(2); // Set border width", "        return circle;", "    }", "", "    // Function to create Text inside the Circle", "    private Text createText(String value, double x, double y) {", "        Text text = new Text(x - 10, y + 10, value); // Center text in circle", "        text.setFill(Color.BLACK);", "        text.setFont(new Font(\"Times New Roman\", 30));", "        return text;", "    }", "", "    // Generate random color", "    private Color randomColor(Random random) {", "        return Color.rgb(random.nextInt(246) + 10, random.nextInt(246) + 10, random.nextInt(246) + 10);", "    }", "", "    // Selection Sort with visual swapping logic", "    private void selectionSort(Circle[] circles, Text[] texts, int[] numbers, Pane pane) {", "        try {", "            for (int i = 0; i < numbers.length - 1; i++) {", "                int minIndex = i;", "                // Find the index of the minimum element", "                for (int j = i + 1; j < numbers.length; j++) {", "                    if (numbers[j] < numbers[minIndex]) {", "                        minIndex = j;", "                    }", "                }", "", "                // Swap the elements if a smaller one is found", "                if (minIndex != i) {", "                    swapElements(circles, texts, i, minIndex);", "", "                    // Swap the actual values in the array", "                    int temp = numbers[i];", "                    numbers[i] = numbers[minIndex];", "                    numbers[minIndex] = temp;", "", "                    // Wait between swaps for better visualization", "                    Thread.sleep(1500); // 1.5 seconds delay between swaps", "                }", "            }", "            // Add \"Sorting Over\" text after sorting is complete", "        Platform.runLater(() -> {", "            Text sortingOverText = new Text(\"Sorting Over\");", "            sortingOverText.setFont(new Font(\"Times New Roman\", 40));", "            sortingOverText.setFill(Color.GREEN);", "            sortingOverText.setX(300); // Adjust position as needed", "            sortingOverText.setY(150); // Adjust position as needed", "            pane.getChildren().add(sortingOverText); // Add to pane", "        });", "        } catch (InterruptedException e) {", "            e.printStackTrace();", "        }", "", "    }", "", "    // Function to swap two elements (Circles and Texts) visually", "    private void swapElements(Circle[] circles, Text[] texts, int i, int j) throws InterruptedException {", "        Circle circle1 = circles[i];", "        Circle circle2 = circles[j];", "        Text text1 = texts[i];", "        Text text2 = texts[j];", "", "        // Move circle1 and circle2 up", "        TranslateTransition up1 = createTranslateTransition(circle1, 0, -MOVE_UP);", "        TranslateTransition up2 = createTranslateTransition(circle2, 0, -MOVE_UP);", "        TranslateTransition upText1 = createTranslateTransition(text1, 0, -MOVE_UP);", "        TranslateTransition upText2 = createTranslateTransition(text2, 0, -MOVE_UP);", "", "        // Move circle1 right and circle2 left", "        TranslateTransition right1 = createTranslateTransition(circle1, MOVE_DISTANCE * (j - i), 0);", "        TranslateTransition left2 = createTranslateTransition(circle2, -MOVE_DISTANCE * (j - i), 0);", "        TranslateTransition rightText1 = createTranslateTransition(text1, MOVE_DISTANCE * (j - i), 0);", "        TranslateTransition leftText2 = createTranslateTransition(text2, -MOVE_DISTANCE * (j - i), 0);", "", "        // Move circle1 and circle2 down to their new positions", "        TranslateTransition down1 = createTranslateTransition(circle1, 0, MOVE_UP);", "        TranslateTransition down2 = createTranslateTransition(circle2, 0, MOVE_UP);", "        TranslateTransition downText1 = createTranslateTransition(text1, 0, MOVE_UP);", "        TranslateTransition downText2 = createTranslateTransition(text2, 0, MOVE_UP);", "", "        // Play the animations sequentially for each swap", "", "        up1.play();", "        up2.play();", "        upText1.play();", "        upText2.play();", "", "        // Wait for the upward movement to finish", "        Thread.sleep(300);", "", "        right1.play();", "        left2.play();", "        rightText1.play();", "        leftText2.play();", "", "        // Wait for the horizontal movement to finish", "        Thread.sleep(300);", "", "        down1.play();", "        down2.play();", "        downText1.play();", "        downText2.play();", "", "        // Wait for the downward movement to finish", "        Thread.sleep(500);", "", "        // Swap the positions in the array", "        circles[i] = circle2;", "        circles[j] = circle1;", "        texts[i] = text2;", "        texts[j] = text1;", "    }", "", "    // Function to create TranslateTransition for movement animation", "    private TranslateTransition createTranslateTransition(Object node, double x, double y) {", "        TranslateTransition transition = new TranslateTransition();", "        transition.setDuration(Duration.millis(500)); // Movement duration", "        transition.setByX(x);", "        transition.setByY(y);", "        transition.setNode((javafx.scene.Node) node);", "        return transition;", "    }", "}"];
+      const LINE = {"numbers": 40, "call": 83, "outer": 116, "minInit": 117, "inner": 119, "compare": 120, "minSet": 121, "ifSwap": 126, "swapCall": 127, "up": 180, "across": 188, "down": 196, "temp": 130, "sleep": 135, "over": 140};
+
+      const svgNS = 'http://www.w3.org/2000/svg';
+      const slotsG = document.getElementById('slots');
+      const ballsG = document.getElementById('balls');
+      const overText = document.getElementById('overText');
+      const heroPos = document.getElementById('heroPos');
+      const hero = document.getElementById('hero');
+      const bubble = document.getElementById('bubble');
+      const bubbleText = document.getElementById('bubbleText');
+      const bubbleTail = document.getElementById('bubbleTail');
+      const terminal = document.getElementById('terminal');
+      const codeEl = document.getElementById('code');
+      const codePanel = document.getElementById('codePanel');
+      const form = document.getElementById('sortForm');
+      const input = document.getElementById('numsInput');
+      const sortBtn = document.getElementById('sortBtn');
+      const defaultBtn = document.getElementById('defaultBtn');
+      const soundBtn = document.getElementById('soundBtn');
+      const speedBtn = document.getElementById('speedBtn');
+      const stagePanel = document.querySelector('.stage-panel');
+      const vI = document.getElementById('vI');
+      const vJ = document.getElementById('vJ');
+      const vCmp = document.getElementById('vCmp');
+      const vSwaps = document.getElementById('vSwaps');
+
+      const BALL_Y = 132, LIFT = 62, R = 30;
+      let spacing = 76, startX = 58;
+
+      // ---------- Read-only code panel ----------
+      function escapeHTML(s) {
+        return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      }
+      function highlightJava(line) {
+        return escapeHTML(line).replace(
+          /(\/\/.*$)|("(?:[^"\\]|\\.)*")|\b(import|public|private|static|final|class|extends|void|int|double|new|for|if|else|try|catch|throws|return|Override)\b|\b(\d+)\b/g,
+          (m, cm, str, kw, num) => {
+            if (cm) return '<span class="cm">' + cm + '</span>';
+            if (str) return '<span class="str">' + str + '</span>';
+            if (kw) return '<span class="kw">' + kw + '</span>';
+            return '<span class="num">' + num + '</span>';
+          }
+        );
+      }
+      codeEl.innerHTML = JAVA.map((l, i) =>
+        '<span class="ln" data-n="' + (i + 1) + '" id="L' + (i + 1) + '">' + (highlightJava(l) || ' ') + '</span>'
+      ).join('');
+
+      let lastUserScroll = 0;
+      ['touchstart', 'wheel', 'mousedown'].forEach((evt) =>
+        codePanel.addEventListener(evt, () => { lastUserScroll = Date.now(); }, { passive: true })
+      );
+      function markLine(n) {
+        codeEl.querySelectorAll('.ln.active').forEach((el) => el.classList.remove('active'));
+        if (!n) return;
+        const el = document.getElementById('L' + n);
+        if (!el) return;
+        el.classList.add('active');
+        if (Date.now() - lastUserScroll > 4000) {
+          codePanel.scrollTo({ top: Math.max(0, el.offsetTop - codePanel.clientHeight / 2), behavior: 'smooth' });
+        }
+      }
+
+      // ---------- Sound ----------
+      let audioCtx = null;
+      let soundOn = true;
+      function ensureAudio() {
+        if (!soundOn) return null;
+        if (!audioCtx) {
+          const AC = window.AudioContext || window.webkitAudioContext;
+          if (!AC) return null;
+          audioCtx = new AC();
+        }
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        return audioCtx;
+      }
+      function tone(freq, start, dur, type, vol) {
+        const ctx = ensureAudio();
+        if (!ctx) return;
+        const t = ctx.currentTime + start;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = type || 'sine';
+        osc.frequency.setValueAtTime(freq, t);
+        gain.gain.setValueAtTime(0.0001, t);
+        gain.gain.exponentialRampToValueAtTime(vol || 0.12, t + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+        osc.connect(gain).connect(ctx.destination);
+        osc.start(t);
+        osc.stop(t + dur + 0.05);
+      }
+      const sfx = {
+        steps() { for (let k = 0; k < 2; k++) tone(170 + k * 30, k * 0.15, 0.05, 'square', 0.035); },
+        hmm() { tone(520, 0, 0.1, 'sine', 0.08); tone(660, 0.1, 0.12, 'sine', 0.08); },
+        swap() { tone(330, 0, 0.12, 'triangle', 0.12); tone(494, 0.12, 0.12, 'triangle', 0.12); tone(392, 0.24, 0.14, 'triangle', 0.12); },
+        ok() { tone(700, 0, 0.1, 'sine', 0.08); },
+        sorted() { tone(880, 0, 0.15, 'triangle', 0.1); },
+        done() { [523, 659, 784, 1047, 784, 1047].forEach((f, k) => tone(f, k * 0.12, 0.2, 'triangle', 0.14)); }
+      };
+      soundBtn.addEventListener('click', () => {
+        soundOn = !soundOn;
+        soundBtn.innerHTML = soundOn ? '&#128266;' : '&#128263;';
+        soundBtn.setAttribute('aria-label', soundOn ? 'Turn sound off' : 'Turn sound on');
+        if (soundOn) ensureAudio();
+      });
+
+      const SPEEDS = [1, 2, 4];
+      let speed = 1;
+      speedBtn.addEventListener('click', () => {
+        speed = SPEEDS[(SPEEDS.indexOf(speed) + 1) % SPEEDS.length];
+        speedBtn.textContent = speed + 'x';
+      });
+      const sleep = (ms) => new Promise((r) => setTimeout(r, ms / speed));
+
+      // ---------- Cartoon helpers ----------
+      function setHeroState(state) { hero.setAttribute('class', state || ''); }
+      let heroX = -40;
+      function placeBubble() {
+        const flip = heroX > 540;
+        bubble.setAttribute('transform', flip ? 'translate(-212,-160)' : 'translate(42,-160)');
+        bubbleTail.setAttribute('d', flip ? 'M170 18 L182 24 L170 28 Z' : 'M0 18 L-12 24 L0 28 Z');
+      }
+      function say(text) { bubbleText.textContent = text; placeBubble(); }
+      async function walkTo(x) {
+        if (Math.abs(x - heroX) < 1) return;
+        const ms = Math.max(300, Math.round(Math.abs(x - heroX) * 6)) / speed;
+        heroPos.style.transitionDuration = ms + 'ms';
+        setHeroState('walk');
+        sfx.steps();
+        heroX = x;
+        heroPos.style.transform = 'translateX(' + x + 'px)';
+        placeBubble();
+        await new Promise((r) => setTimeout(r, ms));
+      }
+
+      function printLine(html) {
+        const cursor = terminal.querySelector('.cursor');
+        if (cursor) cursor.remove();
+        terminal.insertAdjacentHTML('beforeend', html + '\n');
+        terminal.scrollTop = terminal.scrollHeight;
+      }
+      function confetti() {
+        const colors = ['#f43f5e', '#f59e0b', '#22c55e', '#3b82f6', '#a855f7', '#fde047'];
+        for (let k = 0; k < 40; k++) {
+          const c = document.createElement('div');
+          c.className = 'confetti';
+          c.style.left = Math.random() * 100 + '%';
+          c.style.background = colors[k % colors.length];
+          c.style.setProperty('--dx', (Math.random() * 120 - 60) + 'px');
+          c.style.setProperty('--rot', (Math.random() * 720 - 360) + 'deg');
+          c.style.animationDelay = (Math.random() * 0.5) + 's';
+          stagePanel.appendChild(c);
+          setTimeout(() => c.remove(), 2600);
+        }
+      }
+
+      // ---------- Balls (circles with numbers) ----------
+      let balls = [];     // balls[k] = the ball currently standing in slot k
+      const slotX = (k) => startX + k * spacing;
+
+      function place(ball, x, y, ms) {
+        ball.el.style.transitionDuration = (ms || 0) / speed + 'ms';
+        ball.el.style.transform = 'translate(' + x + 'px,' + y + 'px)';
+      }
+
+      function buildBalls(values) {
+        const n = values.length;
+        spacing = Math.min(80, Math.floor(760 / n));
+        startX = Math.round(400 - (spacing * (n - 1)) / 2);
+        slotsG.innerHTML = '';
+        ballsG.innerHTML = '';
+        for (let k = 0; k < n; k++) {
+          slotsG.insertAdjacentHTML('beforeend',
+            '<circle class="slot" cx="' + slotX(k) + '" cy="' + BALL_Y + '" r="' + (R + 4) + '" />' +
+            '<text class="slot-idx" x="' + slotX(k) + '" y="' + (BALL_Y + R + 22) + '">[' + k + ']</text>');
+        }
+        balls = values.map((v, k) => {
+          const g = document.createElementNS(svgNS, 'g');
+          g.setAttribute('class', 'ball');
+          g.style.transition = 'transform 0.3s ease-in-out';
+          const hue = Math.floor(Math.random() * 360);
+          g.innerHTML = '<circle cx="0" cy="0" r="' + R + '" fill="hsl(' + hue + ',70%,42%)" />' +
+            '<text x="0" y="9">' + v + '</text>' +
+            '<text class="min-tag" x="0" y="-40">MIN</text>';
+          ballsG.appendChild(g);
+          const ball = { el: g, value: v };
+          place(ball, slotX(k), BALL_Y, 0);
+          return ball;
+        });
+      }
+
+      // Same three moves as swapElements(): up, across (by j - i places), down.
+      async function swapBalls(i, m) {
+        const a = balls[i], b = balls[m];
+        markLine(LINE.up);
+        place(a, slotX(i), BALL_Y - LIFT, 400);
+        place(b, slotX(m), BALL_Y - LIFT, 400);
+        await sleep(460);
+        markLine(LINE.across);
+        const across = 350 + 90 * (m - i);
+        place(a, slotX(m), BALL_Y - LIFT, across);
+        place(b, slotX(i), BALL_Y - LIFT, across);
+        await sleep(across + 60);
+        markLine(LINE.down);
+        place(a, slotX(m), BALL_Y, 400);
+        place(b, slotX(i), BALL_Y, 400);
+        await sleep(460);
+        balls[i] = b;
+        balls[m] = a;
+      }
+
+      // ---------- Selection sort (mirrors selectionSort() in the program) ----------
+      let running = false;
+
+      function parseNumbers(raw) {
+        const parts = raw.split(/[\s,]+/).filter(Boolean);
+        if (parts.length < 2 || parts.length > 10) return null;
+        const nums = parts.map((p) => (/^-?\d+$/.test(p) ? parseInt(p, 10) : NaN));
+        if (nums.some((v) => isNaN(v) || v < -99 || v > 999)) return null;
+        return nums;
+      }
+
+      async function runSort(values) {
+        running = true;
+        sortBtn.disabled = defaultBtn.disabled = input.disabled = true;
+        overText.classList.remove('show');
+        buildBalls(values);
+        const numbers = values.slice();
+        const n = numbers.length;
+        let swaps = 0, comparisons = 0;
+        vSwaps.textContent = '0';
+
+        terminal.innerHTML = '';
+        printLine('numbers = { <span class="user">' + numbers.join(', ') + '</span> }');
+        markLine(LINE.numbers);
+        say("Let's sort!");
+        await walkTo(slotX(0) - 20);
+        setHeroState('');
+        await sleep(800);
+        markLine(LINE.call);
+        await sleep(500);
+
+        for (let i = 0; i < n - 1; i++) {
+          markLine(LINE.outer);
+          vI.textContent = i;
+          vJ.textContent = '-';
+          say('Round ' + (i + 1) + ': find the smallest');
+          await walkTo(slotX(i) - 33);
+          setHeroState('');
+          await sleep(700);
+
+          let minIndex = i;
+          markLine(LINE.minInit);
+          balls[i].el.classList.add('min');
+          vCmp.textContent = i;
+          say('Smallest so far: ' + numbers[i]);
+          await sleep(900);
+
+          for (let j = i + 1; j < n; j++) {
+            markLine(LINE.inner);
+            vJ.textContent = j;
+            await walkTo(slotX(j) - 33);
+            balls[j].el.classList.add('compare');
+            markLine(LINE.compare);
+            comparisons++;
+            setHeroState('inspect');
+            say('Is ' + numbers[j] + ' < ' + numbers[minIndex] + ' ?');
+            sfx.hmm();
+            await sleep(850);
+
+            if (numbers[j] < numbers[minIndex]) {
+              markLine(LINE.minSet);
+              balls[minIndex].el.classList.remove('min');
+              minIndex = j;
+              balls[j].el.classList.add('min');
+              vCmp.textContent = j;
+              setHeroState('jump');
+              say('New smallest: ' + numbers[j] + '!');
+              sfx.ok();
+              await sleep(750);
+            } else {
+              setHeroState('nod');
+              say('No, ' + numbers[minIndex] + ' is smaller');
+              await sleep(750);
+            }
+            balls[j].el.classList.remove('compare');
+          }
+
+          markLine(LINE.ifSwap);
+          await sleep(450);
+          if (minIndex !== i) {
+            markLine(LINE.swapCall);
+            await walkTo((slotX(i) + slotX(minIndex)) / 2 - 33);
+            setHeroState('pointR');
+            say('Swap ' + numbers[i] + ' and ' + numbers[minIndex] + '!');
+            sfx.swap();
+            await sleep(400);
+            balls[minIndex].el.classList.remove('min');
+            await swapBalls(i, minIndex);
+            markLine(LINE.temp);
+            const temp = numbers[i];
+            numbers[i] = numbers[minIndex];
+            numbers[minIndex] = temp;
+            swaps++;
+            vSwaps.textContent = swaps;
+            markLine(LINE.sleep);
+            await sleep(600);
+          } else {
+            balls[i].el.classList.remove('min');
+            setHeroState('nod');
+            say(numbers[i] + ' is already in place');
+            await sleep(900);
+          }
+          balls[i].el.classList.add('sorted');
+          sfx.sorted();
+          printLine('After round ' + (i + 1) + ': ' + numbers.join(' '));
+        }
+        balls[n - 1].el.classList.add('sorted');
+
+        markLine(LINE.over);
+        overText.classList.add('show');
+        vCmp.textContent = '-';
+        printLine('<span class="ok">Sorting Over</span>');
+        printLine('Sorted: ' + numbers.join(' ') + '  (' + comparisons + ' comparisons, ' + swaps + ' swaps)');
+        await walkTo(400 - 33);
+        setHeroState('jump');
+        say('Sorting Over! \u{1F389}');
+        sfx.done();
+        confetti();
+        await new Promise((r) => setTimeout(r, 2600));
+        setHeroState('');
+        say(swaps + ' swaps \u{1F60A}');
+        printLine('\nType new numbers above and press Sort.');
+
+        running = false;
+        sortBtn.disabled = defaultBtn.disabled = input.disabled = false;
+        sortBtn.textContent = 'Sort Again';
+      }
+
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        if (running) return;
+        const nums = parseNumbers(input.value);
+        if (!nums) {
+          say('2 to 10 numbers!');
+          terminal.innerHTML = '<span class="bad">Please type 2 to 10 whole numbers (-99 to 999), e.g. 64 34 25 12 22</span>';
+          input.focus();
+          return;
+        }
+        ensureAudio();
+        input.blur();
+        runSort(nums);
+      });
+
+      defaultBtn.addEventListener('click', () => {
+        if (running) return;
+        input.value = DEFAULT_NUMBERS.join(' ');
+        form.requestSubmit();
+      });
+
+      // Initial scene: default numbers waiting to be sorted.
+      buildBalls(DEFAULT_NUMBERS);
+      terminal.innerHTML = 'Press <b>Sort</b> to sort the default numbers, or type your own. <span class="cursor">&nbsp;</span>';
+      markLine(LINE.numbers);
+      placeBubble();
+      requestAnimationFrame(() => {
+        heroPos.style.transitionDuration = '900ms';
+        heroX = slotX(0) - 20;
+        heroPos.style.transform = 'translateX(' + heroX + 'px)';
+        setHeroState('walk');
+        setTimeout(() => { if (!running) setHeroState(''); }, 900);
+      });
+    })();
+  </script>
+</body>
+</html>
