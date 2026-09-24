@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Linear Search Animation - BlueJ Lab</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; }
+    body {
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      background: #0f172a;
+      color: #0f172a;
+      display: flex;
+      flex-direction: column;
+      height: 100dvh;
+      overflow: hidden;
+    }
+
+    .topbar {
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      background: linear-gradient(135deg, #3b82f6, #1e40af);
+      color: #fff;
+    }
+    .back-btn {
+      flex: 0 0 auto;
+      color: #1e40af;
+      background: #fff;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 14px;
+      padding: 7px 12px;
+      border-radius: 999px;
+    }
+    .topbar h1 { margin: 0; font-size: 17px; line-height: 1.2; flex: 1; min-width: 0; }
+    .sound-btn {
+      flex: 0 0 auto;
+      border: 0;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.2);
+      color: #fff;
+      font-size: 17px;
+      width: 36px;
+      height: 36px;
+      cursor: pointer;
+    }
+
+    .layout { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+
+    /* Upper part: animation + output */
+    .stage-panel {
+      flex: 0 0 auto;
+      background: radial-gradient(circle at 50% 35%, #1e3a5f 0%, #0f172a 75%);
+      color: #e2e8f0;
+      padding: 6px 10px 8px;
+      position: relative;
+      overflow: hidden;
+    }
+    .stage-svg { display: block; width: 100%; max-width: 820px; height: auto; margin: 0 auto; }
+
+    .vars {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 4px;
+      margin: 2px 0 6px;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 12px;
+    }
+    .vars span {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 6px;
+      padding: 2px 6px;
+    }
+    .vars b { color: #fde047; }
+    @media (max-width: 420px) {
+      .vars { flex-wrap: nowrap; font-size: 11px; gap: 3px; }
+      .vars span { padding: 2px 5px; white-space: nowrap; }
+    }
+
+    .ask-row { display: flex; gap: 8px; max-width: 520px; margin: 0 auto 6px; }
+    .ask-row input {
+      flex: 1;
+      min-width: 0;
+      font-size: 17px;
+      padding: 9px 12px;
+      border-radius: 10px;
+      border: 2px solid #3b82f6;
+      background: #fff;
+      color: #0f172a;
+    }
+    .ask-row button {
+      border: 0;
+      border-radius: 10px;
+      padding: 9px 16px;
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+      background: linear-gradient(135deg, #10b981, #047857);
+      cursor: pointer;
+    }
+    .ask-row button:disabled { opacity: 0.55; cursor: not-allowed; }
+
+    .terminal {
+      max-width: 820px;
+      margin: 0 auto;
+      height: 74px;
+      overflow-y: auto;
+      background: #020617;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 13px;
+      line-height: 1.45;
+      color: #a7f3d0;
+      white-space: pre-wrap;
+    }
+    .terminal .cursor { display: inline-block; width: 8px; background: #a7f3d0; animation: blink 1s steps(1) infinite; }
+    .terminal .user { color: #fde047; }
+    .terminal .ok { color: #4ade80; font-weight: 700; }
+    .terminal .bad { color: #fca5a5; font-weight: 700; }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    /* Lower part: read-only program */
+    .code-panel {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
+      background: #fffdf0;
+      border-top: 4px solid #1e40af;
+    }
+    .code-title {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      background: #fef3c7;
+      border-bottom: 1px solid #fcd34d;
+      padding: 6px 12px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #92400e;
+    }
+    .code {
+      margin: 0;
+      padding: 6px 0 24px;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 13.5px;
+      line-height: 1.6;
+      user-select: text;
+    }
+    .code .ln {
+      display: block;
+      padding: 0 12px 0 0;
+      white-space: pre;
+      border-left: 4px solid transparent;
+      transition: background 0.2s ease;
+    }
+    .code .ln::before {
+      content: attr(data-n);
+      display: inline-block;
+      width: 32px;
+      margin-right: 10px;
+      text-align: right;
+      color: #94a3b8;
+    }
+    .code .ln.active { background: #fde68a; border-left-color: #f59e0b; }
+    .kw { color: #7c3aed; font-weight: 700; }
+    .str { color: #047857; }
+    .num { color: #c2410c; }
+    .cm { color: #64748b; font-style: italic; }
+
+    /* Pockets */
+    .pocket rect.box { fill: #ffffff; stroke: #60a5fa; stroke-width: 3; transition: fill 0.3s ease, stroke 0.3s ease; }
+    .pocket .flap { fill: none; stroke: #93c5fd; stroke-width: 2; stroke-dasharray: 5 4; }
+    .pocket text.val {
+      font: 700 26px "Segoe UI", Arial, sans-serif;
+      fill: #0f172a;
+      text-anchor: middle;
+      transform-box: fill-box;
+      transform-origin: center;
+      transition: transform 0.3s ease;
+    }
+    .pocket text.idx { font: 600 14px Consolas, monospace; fill: #93c5fd; text-anchor: middle; }
+    .pocket .mark { font: 700 22px Arial, sans-serif; fill: #dc2626; text-anchor: middle; opacity: 0; transition: opacity 0.3s ease; }
+    .pocket.checking rect.box { fill: #fde047; stroke: #f59e0b; }
+    .pocket.checking text.val { transform: scale(1.45); }
+    .pocket.no rect.box { fill: #fecaca; stroke: #f87171; }
+    .pocket.no .mark { opacity: 1; }
+    .pocket.found rect.box { fill: #86efac; stroke: #16a34a; }
+    .pocket.found text.val { transform: scale(1.3); }
+    .pocket.found rect.box { filter: drop-shadow(0 0 10px #4ade80); }
+
+    /* Cartoon teacher */
+    #heroPos { transition: transform 0.65s linear; }
+    #hero .part { transform-box: fill-box; }
+    #hero .leg { transform-origin: 50% 0%; }
+    #hero .arm { transform-origin: 50% 0%; transition: transform 0.35s ease; }
+    #hero .head { transform-origin: 50% 100%; transition: transform 0.3s ease; }
+    #hero .eyes { transform-origin: 50% 50%; animation: eyeBlink 4s infinite; }
+    #hero .armL { transform: rotate(8deg); }
+    #hero .armR { transform: rotate(-32deg); }
+    #hero .body { animation: breathe 2.4s ease-in-out infinite; transform-box: fill-box; }
+
+    #hero.walk .legL { animation: legSwing 0.33s ease-in-out infinite alternate; }
+    #hero.walk .legR { animation: legSwing 0.33s ease-in-out infinite alternate-reverse; }
+    #hero.walk .armL { animation: armSwing 0.33s ease-in-out infinite alternate; }
+    #hero.walk .body { animation: walkBob 0.33s ease-in-out infinite alternate; }
+
+    #hero.inspect .armR { transform: rotate(-178deg); }
+    #hero.inspect .armL { transform: rotate(18deg); }
+    #hero.inspect .head { transform: rotate(-6deg); }
+
+    #hero.shake .head { animation: headShake 0.7s ease-in-out; }
+    #hero.shake .armR { transform: rotate(-60deg); }
+
+    #hero.jump .body { animation: jump 0.42s ease-out infinite alternate; }
+    #hero.jump .armL { transform: rotate(158deg); }
+    #hero.jump .armR { transform: rotate(-158deg); }
+    #hero.jump .legL { animation: legSwing 0.21s ease-in-out infinite alternate; }
+    #hero.jump .legR { animation: legSwing 0.21s ease-in-out infinite alternate-reverse; }
+
+    #hero.sad .head { transform: translateY(4px) rotate(10deg); }
+    #hero.sad .armL { transform: rotate(2deg); }
+    #hero.sad .armR { transform: rotate(-6deg); }
+    #hero.sad .mouth { transform: translateY(6px) scaleY(-1); transform-box: fill-box; transform-origin: center; }
+
+    @keyframes legSwing { from { transform: rotate(-24deg); } to { transform: rotate(24deg); } }
+    @keyframes armSwing { from { transform: rotate(-26deg); } to { transform: rotate(30deg); } }
+    @keyframes walkBob { from { transform: translateY(0); } to { transform: translateY(-4px); } }
+    @keyframes breathe { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-1.5px); } }
+    @keyframes jump { from { transform: translateY(0); } to { transform: translateY(-34px); } }
+    @keyframes headShake {
+      0%, 100% { transform: rotate(0); }
+      20% { transform: rotate(-13deg); }
+      40% { transform: rotate(13deg); }
+      60% { transform: rotate(-11deg); }
+      80% { transform: rotate(9deg); }
+    }
+    @keyframes eyeBlink { 0%, 94%, 100% { transform: scaleY(1); } 97% { transform: scaleY(0.1); } }
+
+    .bubble rect { fill: #ffffff; stroke: #1e40af; stroke-width: 2; }
+    .bubble path { fill: #ffffff; stroke: #1e40af; stroke-width: 2; }
+    .bubble text { font: 700 17px "Segoe UI", Arial, sans-serif; fill: #0f172a; text-anchor: middle; }
+
+    .confetti {
+      position: absolute;
+      top: -12px;
+      width: 9px;
+      height: 14px;
+      border-radius: 2px;
+      pointer-events: none;
+      animation: fall 1.9s ease-in forwards;
+    }
+    @keyframes fall {
+      to { transform: translate(var(--dx), 420px) rotate(var(--rot)); opacity: 0.2; }
+    }
+
+    @media (min-width: 980px) {
+      .layout { flex-direction: row; }
+      .stage-panel { flex: 1 1 58%; display: flex; flex-direction: column; justify-content: center; }
+      .terminal { height: 150px; width: 100%; }
+      .code-panel { flex: 1 1 42%; border-top: 0; border-left: 4px solid #1e40af; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      #heroPos { transition-duration: 0.2s; }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <a class="back-btn" href="index.html" aria-label="Back to all topics">&larr; Back</a>
+    <h1>19. Linear Search</h1>
+    <button class="sound-btn" id="soundBtn" type="button" aria-label="Turn sound off" title="Sound on/off">&#128266;</button>
+  </div>
+
+  <div class="layout">
+    <section class="stage-panel" aria-label="Linear search animation and output">
+      <svg class="stage-svg" id="stage" viewBox="-10 40 830 340" role="img" aria-label="Cartoon teacher searching pockets one by one">
+        <defs>
+          <radialGradient id="lensGlass" cx="35%" cy="35%" r="70%">
+            <stop offset="0%" stop-color="#e0f2fe" stop-opacity="0.85" />
+            <stop offset="100%" stop-color="#7dd3fc" stop-opacity="0.35" />
+          </radialGradient>
+        </defs>
+
+        <rect x="0" y="372" width="800" height="8" fill="#1e293b" />
+        <g id="pockets"></g>
+
+        <g id="heroPos" style="transform: translateX(-40px)">
+          <g transform="translate(0,370) scale(1.25)">
+            <g id="hero">
+              <g class="body">
+                <g class="part leg legL">
+                  <rect x="-15" y="-46" width="12" height="42" rx="4" fill="#1d4ed8" />
+                  <ellipse cx="-11" cy="-3" rx="11" ry="5" fill="#111827" />
+                </g>
+                <g class="part leg legR">
+                  <rect x="3" y="-46" width="12" height="42" rx="4" fill="#1d4ed8" />
+                  <ellipse cx="11" cy="-3" rx="11" ry="5" fill="#111827" />
+                </g>
+
+                <rect x="-25" y="-101" width="50" height="60" rx="15" fill="#a5d8f3" />
+                <path d="M-11 -101 L0 -89 L11 -101 Z" fill="#ffffff" />
+                <path d="M-12 -101 L-3 -91 L-9 -86 Z M12 -101 L3 -91 L9 -86 Z" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1" />
+                <circle cx="0" cy="-78" r="2" fill="#7dd3fc" />
+                <circle cx="0" cy="-66" r="2" fill="#7dd3fc" />
+
+                <g class="part arm armL">
+                  <rect x="-33" y="-97" width="13" height="44" rx="6.5" fill="#bae6fd" />
+                  <circle cx="-26.5" cy="-50" r="7" fill="#f2b48a" />
+                </g>
+
+                <g class="part arm armR">
+                  <rect x="20" y="-97" width="13" height="44" rx="6.5" fill="#bae6fd" />
+                  <circle cx="26.5" cy="-50" r="7" fill="#f2b48a" />
+                  <rect x="23.5" y="-45" width="6" height="34" rx="3" fill="#92400e" />
+                  <circle cx="26.5" cy="11" r="21" fill="url(#lensGlass)" stroke="#475569" stroke-width="5" />
+                  <path d="M16 4 A12 12 0 0 1 24 -2" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" />
+                </g>
+
+                <rect x="-6" y="-106" width="12" height="8" fill="#f2b48a" />
+
+                <g class="part head">
+                  <circle cx="-29" cy="-127" r="6.5" fill="#e9a57a" />
+                  <circle cx="29" cy="-127" r="6.5" fill="#e9a57a" />
+                  <circle cx="0" cy="-128" r="29" fill="#f2b48a" />
+                  <path d="M-31 -130 C-34 -160 -14 -170 0 -169 C16 -170 34 -160 31 -130 C27 -140 22 -146 14 -148 C4 -150 -10 -150 -18 -147 C-24 -144 -28 -138 -31 -130 Z" fill="#1f2a37" />
+                  <ellipse cx="-27" cy="-140" rx="7" ry="11" fill="#1f2a37" />
+                  <ellipse cx="27" cy="-140" rx="7" ry="11" fill="#1f2a37" />
+                  <path d="M-19 -141 Q-12 -145 -5 -141 M5 -141 Q12 -145 19 -141" fill="none" stroke="#1f2a37" stroke-width="2.4" stroke-linecap="round" />
+                  <rect x="-21" y="-137" width="17" height="13" rx="4" fill="rgba(255,255,255,0.35)" stroke="#334155" stroke-width="2" />
+                  <rect x="4" y="-137" width="17" height="13" rx="4" fill="rgba(255,255,255,0.35)" stroke="#334155" stroke-width="2" />
+                  <path d="M-4 -132 L4 -132" stroke="#334155" stroke-width="2" />
+                  <g class="part eyes">
+                    <circle cx="-12.5" cy="-130.5" r="2.7" fill="#111827" />
+                    <circle cx="12.5" cy="-130.5" r="2.7" fill="#111827" />
+                  </g>
+                  <ellipse cx="0" cy="-120" rx="3.5" ry="3" fill="#e39870" />
+                  <path d="M-16 -111 C-10 -118 -3 -116 0 -113 C3 -116 10 -118 16 -111 C10 -109 4 -110 0 -112 C-4 -110 -10 -109 -16 -111 Z" fill="#111827" />
+                  <path class="mouth" d="M-6 -106 Q0 -101 6 -106" fill="none" stroke="#b91c1c" stroke-width="2.4" stroke-linecap="round" />
+                </g>
+              </g>
+            </g>
+
+            <g class="bubble" id="bubble" transform="translate(40,-158)">
+              <path id="bubbleTail" d="M0 18 L-12 24 L0 28 Z" />
+              <rect x="0" y="0" width="170" height="38" rx="12" />
+              <text id="bubbleText" x="85" y="25">Give me a number!</text>
+            </g>
+          </g>
+        </g>
+      </svg>
+
+      <div class="vars" aria-live="polite">
+        <span>target = <b id="vTarget">?</b></span>
+        <span>i = <b id="vI">-</b></span>
+        <span>numbers[i] = <b id="vVal">-</b></span>
+        <span>position = <b id="vPos">-1</b></span>
+      </div>
+
+      <form class="ask-row" id="askForm" autocomplete="off">
+        <input id="numInput" type="number" inputmode="numeric" placeholder="Enter a number, e.g. 18" aria-label="Number to search" required>
+        <button id="searchBtn" type="submit">Search</button>
+      </form>
+
+      <div class="terminal" id="terminal" aria-live="polite"></div>
+    </section>
+
+    <section class="code-panel" id="codePanel" aria-label="Java program (read only)">
+      <div class="code-title">LinearSearch.java (BlueJ) &middot; read only &middot; scroll to read</div>
+      <pre class="code" id="code"></pre>
+    </section>
+  </div>
+
+  <script>
+    (function () {
+      const NUMBERS = [12, 25, 7, 34, 18, 42, 9, 31];
+
+      const JAVA = [
+        'import java.util.Scanner;',
+        '',
+        'public class LinearSearch',
+        '{',
+        '    public static void main(String[] args)',
+        '    {',
+        '        Scanner sc = new Scanner(System.in);',
+        '        int[] numbers = {12, 25, 7, 34, 18, 42, 9, 31};',
+        '',
+        '        System.out.print("Enter the number to search: ");',
+        '        int target = sc.nextInt();',
+        '',
+        '        int position = -1;   // -1 means "not found yet"',
+        '',
+        '        // Check every element one by one, left to right',
+        '        for (int i = 0; i < numbers.length; i++)',
+        '        {',
+        '            System.out.println("Checking index " + i + " : " + numbers[i]);',
+        '            if (numbers[i] == target)',
+        '            {',
+        '                position = i;',
+        '                break;       // found it, stop searching',
+        '            }',
+        '        }',
+        '',
+        '        if (position != -1)',
+        '            System.out.println(target + " found at index " + position);',
+        '        else',
+        '            System.out.println(target + " is not present in the array");',
+        '    }',
+        '}'
+      ];
+      const LINE = { input: 11, pos: 13, loop: 16, print: 18, compare: 19, assign: 21, brk: 22, check: 26, found: 27, notFound: 29 };
+
+      const svgNS = 'http://www.w3.org/2000/svg';
+      const pocketsG = document.getElementById('pockets');
+      const heroPos = document.getElementById('heroPos');
+      const hero = document.getElementById('hero');
+      const bubble = document.getElementById('bubble');
+      const bubbleText = document.getElementById('bubbleText');
+      const bubbleTail = document.getElementById('bubbleTail');
+      const terminal = document.getElementById('terminal');
+      const codeEl = document.getElementById('code');
+      const codePanel = document.getElementById('codePanel');
+      const form = document.getElementById('askForm');
+      const input = document.getElementById('numInput');
+      const searchBtn = document.getElementById('searchBtn');
+      const soundBtn = document.getElementById('soundBtn');
+      const stagePanel = document.querySelector('.stage-panel');
+      const vTarget = document.getElementById('vTarget');
+      const vI = document.getElementById('vI');
+      const vVal = document.getElementById('vVal');
+      const vPos = document.getElementById('vPos');
+
+      const BOX_W = 78, BOX_H = 70, STEP = 94, START_X = 32, BOX_Y = 72;
+      const centerOf = (i) => START_X + BOX_W / 2 + i * STEP;
+      // The magnifying glass is held in the right hand, 33px (26.5 x 1.25 scale) right of the body centre.
+      const heroXFor = (i) => centerOf(i) - 33;
+
+      function escapeHTML(s) {
+        return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      }
+
+      function highlightJava(line) {
+        const safe = escapeHTML(line);
+        return safe.replace(
+          /(\/\/.*$)|("(?:[^"\\]|\\.)*")|\b(import|public|class|static|void|int|new|for|if|else|break|String)\b|\b(\d+)\b/g,
+          (m, cm, str, kw, num) => {
+            if (cm) return '<span class="cm">' + cm + '</span>';
+            if (str) return '<span class="str">' + str + '</span>';
+            if (kw) return '<span class="kw">' + kw + '</span>';
+            return '<span class="num">' + num + '</span>';
+          }
+        );
+      }
+
+      codeEl.innerHTML = JAVA.map((l, i) =>
+        '<span class="ln" data-n="' + (i + 1) + '" id="L' + (i + 1) + '">' + (highlightJava(l) || ' ') + '</span>'
+      ).join('');
+
+      let lastUserScroll = 0;
+      ['touchstart', 'wheel', 'mousedown'].forEach((evt) =>
+        codePanel.addEventListener(evt, () => { lastUserScroll = Date.now(); }, { passive: true })
+      );
+
+      function markLine(n) {
+        codeEl.querySelectorAll('.ln.active').forEach((el) => el.classList.remove('active'));
+        if (!n) return;
+        const el = document.getElementById('L' + n);
+        if (!el) return;
+        el.classList.add('active');
+        // Follow the running line only while the student isn't reading elsewhere.
+        if (Date.now() - lastUserScroll > 4000) {
+          const top = el.offsetTop - codePanel.clientHeight / 2;
+          codePanel.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+        }
+      }
+
+      const pockets = NUMBERS.map((val, i) => {
+        const g = document.createElementNS(svgNS, 'g');
+        g.setAttribute('class', 'pocket');
+        const x = START_X + i * STEP;
+        g.innerHTML =
+          '<text class="idx" x="' + (x + BOX_W / 2) + '" y="' + (BOX_Y - 10) + '">[' + i + ']</text>' +
+          '<rect class="box" x="' + x + '" y="' + BOX_Y + '" width="' + BOX_W + '" height="' + BOX_H + '" rx="12" />' +
+          '<path class="flap" d="M' + (x + 8) + ' ' + (BOX_Y + 16) + ' Q' + (x + BOX_W / 2) + ' ' + (BOX_Y + 28) + ' ' + (x + BOX_W - 8) + ' ' + (BOX_Y + 16) + '" />' +
+          '<text class="val" x="' + (x + BOX_W / 2) + '" y="' + (BOX_Y + 52) + '">' + val + '</text>' +
+          '<text class="mark" x="' + (x + BOX_W - 12) + '" y="' + (BOX_Y + 22) + '">&#10007;</text>';
+        pocketsG.appendChild(g);
+        return g;
+      });
+
+      // ---------- Sound (Web Audio, no files needed) ----------
+      let audioCtx = null;
+      let soundOn = true;
+      function ensureAudio() {
+        if (!soundOn) return null;
+        if (!audioCtx) {
+          const AC = window.AudioContext || window.webkitAudioContext;
+          if (!AC) return null;
+          audioCtx = new AC();
+        }
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        return audioCtx;
+      }
+      function tone(freq, start, dur, type, vol) {
+        const ctx = ensureAudio();
+        if (!ctx) return;
+        const t = ctx.currentTime + start;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = type || 'sine';
+        osc.frequency.setValueAtTime(freq, t);
+        gain.gain.setValueAtTime(0.0001, t);
+        gain.gain.exponentialRampToValueAtTime(vol || 0.12, t + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+        osc.connect(gain).connect(ctx.destination);
+        osc.start(t);
+        osc.stop(t + dur + 0.05);
+      }
+      const sfx = {
+        steps() { for (let k = 0; k < 4; k++) tone(170 + (k % 2) * 30, k * 0.16, 0.06, 'square', 0.04); },
+        hmm() { tone(520, 0, 0.12, 'sine', 0.09); tone(660, 0.12, 0.14, 'sine', 0.09); },
+        no() { tone(260, 0, 0.16, 'triangle', 0.13); tone(200, 0.18, 0.22, 'triangle', 0.13); },
+        found() { [523, 659, 784, 1047, 784, 1047].forEach((f, k) => tone(f, k * 0.12, 0.2, 'triangle', 0.14)); },
+        missing() { [392, 330, 262, 196].forEach((f, k) => tone(f, k * 0.22, 0.3, 'sine', 0.12)); }
+      };
+      soundBtn.addEventListener('click', () => {
+        soundOn = !soundOn;
+        soundBtn.innerHTML = soundOn ? '&#128266;' : '&#128263;';
+        soundBtn.setAttribute('aria-label', soundOn ? 'Turn sound off' : 'Turn sound on');
+        if (soundOn) ensureAudio();
+      });
+
+      // ---------- Helpers ----------
+      const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+      function setHeroState(state) {
+        hero.setAttribute('class', state || '');
+      }
+
+      let heroX = -40;
+      function placeBubble() {
+        const flip = heroX > 540;
+        bubble.setAttribute('transform', flip ? 'translate(-212,-160)' : 'translate(42,-160)');
+        bubbleTail.setAttribute('d', flip ? 'M170 18 L182 24 L170 28 Z' : 'M0 18 L-12 24 L0 28 Z');
+      }
+      function say(text) {
+        bubbleText.textContent = text;
+        placeBubble();
+      }
+
+      async function walkTo(x) {
+        const dist = Math.abs(x - heroX);
+        const ms = Math.max(350, Math.round(dist * 6.5));
+        heroPos.style.transitionDuration = ms + 'ms';
+        setHeroState('walk');
+        sfx.steps();
+        heroX = x;
+        heroPos.style.transform = 'translateX(' + x + 'px)';
+        placeBubble();
+        await sleep(ms);
+      }
+
+      function printLine(html) {
+        const cursor = terminal.querySelector('.cursor');
+        if (cursor) cursor.remove();
+        terminal.insertAdjacentHTML('beforeend', html + '\n');
+        terminal.scrollTop = terminal.scrollHeight;
+      }
+
+      function showPrompt() {
+        terminal.innerHTML = 'Enter the number to search: <span class="cursor">&nbsp;</span>';
+      }
+
+      function confetti() {
+        const colors = ['#f43f5e', '#f59e0b', '#22c55e', '#3b82f6', '#a855f7', '#fde047'];
+        for (let k = 0; k < 40; k++) {
+          const c = document.createElement('div');
+          c.className = 'confetti';
+          c.style.left = Math.random() * 100 + '%';
+          c.style.background = colors[k % colors.length];
+          c.style.setProperty('--dx', (Math.random() * 120 - 60) + 'px');
+          c.style.setProperty('--rot', (Math.random() * 720 - 360) + 'deg');
+          c.style.animationDelay = (Math.random() * 0.5) + 's';
+          stagePanel.appendChild(c);
+          setTimeout(() => c.remove(), 2600);
+        }
+      }
+
+      function resetBoard() {
+        pockets.forEach((p) => p.setAttribute('class', 'pocket'));
+        vI.textContent = '-';
+        vVal.textContent = '-';
+        vPos.textContent = '-1';
+      }
+
+      // ---------- The search itself (mirrors the Java program) ----------
+      let running = false;
+
+      async function runSearch(target) {
+        running = true;
+        searchBtn.disabled = true;
+        input.disabled = true;
+        resetBoard();
+
+        vTarget.textContent = target;
+        terminal.innerHTML = '';
+        printLine('Enter the number to search: <span class="user">' + target + '</span>');
+        markLine(LINE.input);
+        say('Searching for ' + target + '...');
+        await sleep(700);
+
+        markLine(LINE.pos);
+        await sleep(500);
+
+        let position = -1;
+        for (let i = 0; i < NUMBERS.length; i++) {
+          markLine(LINE.loop);
+          vI.textContent = i;
+          vVal.textContent = NUMBERS[i];
+          say('Next pocket...');
+          await walkTo(heroXFor(i));
+
+          markLine(LINE.print);
+          printLine('Checking index ' + i + ' : ' + NUMBERS[i]);
+          pockets[i].setAttribute('class', 'pocket checking');
+          setHeroState('inspect');
+          say('Is ' + NUMBERS[i] + ' = ' + target + ' ?');
+          sfx.hmm();
+          await sleep(1000);
+
+          markLine(LINE.compare);
+          await sleep(350);
+
+          if (NUMBERS[i] === target) {
+            position = i;
+            markLine(LINE.assign);
+            vPos.textContent = i;
+            pockets[i].setAttribute('class', 'pocket found');
+            await sleep(400);
+            markLine(LINE.brk);
+            await sleep(400);
+            break;
+          }
+
+          setHeroState('shake');
+          say('No, not here!');
+          sfx.no();
+          pockets[i].setAttribute('class', 'pocket no');
+          await sleep(800);
+        }
+
+        markLine(LINE.check);
+        await sleep(450);
+
+        if (position !== -1) {
+          markLine(LINE.found);
+          printLine('<span class="ok">' + target + ' found at index ' + position + '</span>');
+          setHeroState('jump');
+          say('Found it! Yay! \u{1F389}');
+          sfx.found();
+          confetti();
+          await sleep(2600);
+          setHeroState('');
+          say('Index ' + position + ' \u{1F60A}');
+        } else {
+          markLine(LINE.notFound);
+          printLine('<span class="bad">' + target + ' is not present in the array</span>');
+          setHeroState('sad');
+          say('Not present \u{1F614}');
+          sfx.missing();
+          await sleep(1500);
+        }
+
+        vI.textContent = position !== -1 ? position : NUMBERS.length;
+        vVal.textContent = position !== -1 ? NUMBERS[position] : '-';
+        printLine('\nTry another number above.');
+
+        running = false;
+        searchBtn.disabled = false;
+        input.disabled = false;
+        searchBtn.textContent = 'Search Again';
+      }
+
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        if (running) return;
+        const raw = input.value.trim();
+        if (!/^-?\d{1,9}$/.test(raw)) {
+          say('Whole numbers only!');
+          input.focus();
+          return;
+        }
+        ensureAudio();
+        input.blur();
+        runSearch(parseInt(raw, 10));
+      });
+
+      // Initial scene: the program is waiting at sc.nextInt()
+      showPrompt();
+      markLine(LINE.input);
+      placeBubble();
+      requestAnimationFrame(() => {
+        heroPos.style.transitionDuration = '900ms';
+        heroX = 45;
+        heroPos.style.transform = 'translateX(45px)';
+        setHeroState('walk');
+        setTimeout(() => { if (!running) setHeroState(''); }, 900);
+      });
+    })();
+  </script>
+</body>
+</html>
