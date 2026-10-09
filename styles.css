@@ -2343,6 +2343,12 @@ footer {
   background: linear-gradient(135deg, #fde047 0%, #eab308 50%, #ea580c 100%) !important;
 }
 
+.sg-hero-btn.sg-btn-lab {
+  --btn-dark: #134e4a;
+  --btn-glow: rgba(20, 184, 166, 0.55);
+  background: linear-gradient(135deg, #5eead4 0%, #14b8a6 50%, #0f766e 100%) !important;
+}
+
 .sg-hero-btn.sg-btn-class {
   --btn-dark: #134e4a;
   --btn-glow: rgba(20, 184, 166, 0.55);
